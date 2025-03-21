@@ -25,6 +25,7 @@ dist-ssr
 
 .vs
 *.csproj.user
+.env
 
 # Ignores bin/debug and bin/release
 bin/
