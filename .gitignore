@@ -30,3 +30,6 @@ dist-ssr
 # Ignores bin/debug and bin/release
 bin/
 obj/
+
+# Migrations
+Migrations/

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using RepairManagementSystem.Data;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 
@@ -5,7 +7,26 @@ namespace RepairManagementSystem.Services
 {
     public class UserService : IUserService
     {
-        /*TODO: add dbcontext here*/
+        private readonly ApplicationDbContext _context;
+
+        public UserService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        {
+            return await _context.Users
+            .Select(u => new UserDTO
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email,
+                Role = u.Role
+            })
+            .ToListAsync();
+        }
 
         public async Task<UserDTO?> GetUserAsync(string email, string password)
         {
@@ -18,7 +39,7 @@ namespace RepairManagementSystem.Services
                 return new UserDTO
                 {
                     Email = email,
-                    UserName = "username",
+                    FirstName = "username",
                     Role = "role"
                 };
             }

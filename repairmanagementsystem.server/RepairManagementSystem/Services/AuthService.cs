@@ -26,7 +26,7 @@ public class AuthService : IAuthService
             Token = token,
             Email = userDTO.Email,
             Role = userDTO.Role,
-            UserName = userDTO.UserName
+            FirstName = userDTO.FirstName
         };
     }
 }
