@@ -1,52 +1,35 @@
-using Microsoft.EntityFrameworkCore;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
+using RepairManagementSystem.Repositories.Interfaces;
+using AutoMapper;
 
 namespace RepairManagementSystem.Services
 {
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(ApplicationDbContext context)
+
+        public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository)
         {
             _context = context;
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
-            return await _context.Users
-            .Select(u => new UserDTO
-            {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Role = u.Role
-            })
-            .ToListAsync();
+            var users = await _userRepository.GetAllUsersAsync();
+            return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
         public async Task<UserDTO?> GetUserAsync(string email, string password)
         {
-            /*TODO: implement this method*/
-            /*if user exists return it */
-            /*else return null*/
-            /* mock functionality for now*/
-            if (email == "email@tab.com" && password == "password")
-            {
-                return new UserDTO
-                {
-                    Email = email,
-                    FirstName = "username",
-                    Role = "role"
-                };
-            }
-            else
-            {
-                return null;
-            }
+            var user = await _userRepository.GetUserAsync(email, password);
+            return _mapper.Map<UserDTO?>(user);
         }
 
     }
