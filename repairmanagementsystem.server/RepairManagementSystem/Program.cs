@@ -2,11 +2,11 @@ using Microsoft.OpenApi.Models;
 using DotNetEnv;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using RepairManagementSystem.Services.Interfaces;
-using RepairManagementSystem.Services;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Extensions;
+using Microsoft.EntityFrameworkCore.InMemory;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,9 +31,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddServices();
+builder.Services.AddRepositories();
+builder.Services.AddAutoMapper(cfg =>
+{
+    AutoMapperConfig.RegisterMappings(cfg);
+}, typeof(Program).Assembly);
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
@@ -87,30 +91,34 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//{
+//    // Computer Name (default local database Name)
+//    String machineName = Environment.MachineName;
+//    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
+//});
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    // Computer Name (default local database Name)
-    String machineName = Environment.MachineName;
-    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
+    options.UseInMemoryDatabase("DONTUSETHIS");
 });
-
 var app = builder.Build();
 
 // Auto migrate database data on startup
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Error while database data migration!");
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    try
+//    {
+//        var context = services.GetRequiredService<ApplicationDbContext>();
+//        context.Database.Migrate();
+//    }
+//    catch (Exception ex)
+//    {
+//        var logger = services.GetRequiredService<ILogger<Program>>();
+//        logger.LogError(ex, "Error while database data migration!");
+//    }
+//}
 
 app.UseCors("AllowFrontend");
 if (app.Environment.IsDevelopment())
