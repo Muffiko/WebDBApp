@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
+using DotNetEnv;
 using Microsoft.IdentityModel.Tokens;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
-using DotNetEnv;
-using System.Text;
 
 public class TokenService : ITokenService
 {
@@ -21,7 +21,7 @@ public class TokenService : ITokenService
         {
             new Claim(ClaimTypes.Name, user.FirstName),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role),
         };
 
         var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
@@ -53,7 +53,7 @@ public class TokenService : ITokenService
             ValidateAudience = true,
             ValidAudience = Env.GetString("JWT_AUDIENCE"),
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
         };
 
         try
@@ -67,4 +67,3 @@ public class TokenService : ITokenService
         }
     }
 }
-

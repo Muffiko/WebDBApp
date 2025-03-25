@@ -1,8 +1,8 @@
+using AutoMapper;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models.DTOs;
-using RepairManagementSystem.Services.Interfaces;
 using RepairManagementSystem.Repositories.Interfaces;
-using AutoMapper;
+using RepairManagementSystem.Services.Interfaces;
 
 namespace RepairManagementSystem.Services
 {
@@ -11,7 +11,6 @@ namespace RepairManagementSystem.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-
 
         public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository)
         {
@@ -31,6 +30,5 @@ namespace RepairManagementSystem.Services
             var user = await _userRepository.GetUserAsync(email, password);
             return _mapper.Map<UserDTO?>(user);
         }
-
     }
 }

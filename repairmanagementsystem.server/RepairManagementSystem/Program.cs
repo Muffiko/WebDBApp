@@ -1,22 +1,20 @@
-using Microsoft.OpenApi.Models;
-using DotNetEnv;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Extensions;
-using Microsoft.EntityFrameworkCore.InMemory;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
-
 string? _secretKey = Env.GetString("JWT_SECRET_KEY");
 byte[] keyBytes = Encoding.UTF8.GetBytes(_secretKey);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -27,68 +25,71 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = Env.GetString("JWT_ISSUER"),
             ValidAudience = Env.GetString("JWT_AUDIENCE"),
-            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
         };
     });
 
 builder.Services.AddServices();
 builder.Services.AddRepositories();
-builder.Services.AddAutoMapper(cfg =>
-{
-    AutoMapperConfig.RegisterMappings(cfg);
-}, typeof(Program).Assembly);
-
+builder.Services.AddAutoMapper(
+    cfg =>
+    {
+        AutoMapperConfig.RegisterMappings(cfg);
+    },
+    typeof(Program).Assembly
+);
 
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddPolicy(
+        "AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+        }
+    );
 });
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1.0", new OpenApiInfo
-    {
-        Title = "RepairManagementSystemAPI",
-        Version = "v1.0",
-        Description = "ASP.NET Core Web API for RMSystem",
-        Contact = new OpenApiContact
+    options.SwaggerDoc(
+        "v1.0",
+        new OpenApiInfo
         {
-            Name = "TAB",
-            Email = "email@email.com",
+            Title = "RepairManagementSystemAPI",
+            Version = "v1.0",
+            Description = "ASP.NET Core Web API for RMSystem",
+            Contact = new OpenApiContact { Name = "TAB", Email = "email@email.com" },
         }
-    });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        Description = "Please enter your Bearer token in the format **'Bearer &lt;token&gt;'**"
-    });
+    );
+    options.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            Description = "Please enter your Bearer token in the format **'Bearer &lt;token&gt;'**",
+        }
+    );
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
+                },
+                new string[] { }
             },
-            new string[] {}
         }
-    });
+    );
 });
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -125,14 +126,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
-       {
-           options.SwaggerEndpoint("/swagger/v1.0/swagger.json", "RMS");
-       });
+    {
+        options.SwaggerEndpoint("/swagger/v1.0/swagger.json", "RMS");
+    });
 }
 app.MapControllers();
+
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
-
