@@ -16,9 +16,9 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AuthRequest authRequest)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            var response = await _authService.AuthenticateAsync(authRequest);
+            var response = await _authService.AuthenticateAsync(loginRequest);
 
             if (response == null)
             {

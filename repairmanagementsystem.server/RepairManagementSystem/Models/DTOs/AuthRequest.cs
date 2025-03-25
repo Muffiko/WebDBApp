@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace RepairManagementSystem.Models.DTOs
 {
-    public class AuthRequest
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]

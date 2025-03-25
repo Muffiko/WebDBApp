@@ -4,5 +4,5 @@ namespace RepairManagementSystem.Services.Interfaces;
 
 public interface IAuthService
 {
-    Task<AuthResponse> AuthenticateAsync(AuthRequest request);
+    Task<AuthResponse?> AuthenticateAsync(LoginRequest loginRequest);
 }
