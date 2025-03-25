@@ -12,7 +12,7 @@ public class AuthService : IAuthService
         _userService = userService;
     }
 
-    public async Task<AuthResponse> AuthenticateAsync(AuthRequest request)
+    public async Task<AuthResponse?> AuthenticateAsync(LoginRequest request)
     {
         var userDTO = await _userService.GetUserAsync(request.Email, request.Password);
         if (userDTO == null)
