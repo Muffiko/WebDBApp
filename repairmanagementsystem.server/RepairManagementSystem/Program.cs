@@ -1,4 +1,4 @@
-using System.Text;
+using System.Security.Cryptography;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +10,11 @@ using RepairManagementSystem.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
-string? _secretKey = Env.GetString("JWT_SECRET_KEY");
-byte[] keyBytes = Encoding.UTF8.GetBytes(_secretKey);
+string? _publicKeyBase64 = Env.GetString("JWT_PUBLIC_KEY");
+byte[] _publicKeyBytes = Convert.FromBase64String(_publicKeyBase64);
+RSA rsa = RSA.Create();
+rsa.ImportSubjectPublicKeyInfo(_publicKeyBytes, out _);
+var _publicKey = new RsaSecurityKey(rsa);
 
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -25,7 +28,7 @@ builder
             ValidateIssuerSigningKey = true,
             ValidIssuer = Env.GetString("JWT_ISSUER"),
             ValidAudience = Env.GetString("JWT_AUDIENCE"),
-            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            IssuerSigningKey = _publicKey,
         };
     });
 
@@ -92,34 +95,34 @@ builder.Services.AddSwaggerGen(options =>
     );
 });
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    // Computer Name (default local database Name)
-    String machineName = Environment.MachineName;
-    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
-});
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //{
-//    options.UseInMemoryDatabase("DONTUSETHIS");
+//    // Computer Name (default local database Name)
+//    String machineName = Environment.MachineName;
+//    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
 //});
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseInMemoryDatabase("DONTUSETHIS");
+});
 var app = builder.Build();
 
 //Auto migrate database data on startup !!! REMEMBER ABOUT Add-Migration InitialCreate !!!
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Error while database data migration!");
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    try
+//    {
+//        var context = services.GetRequiredService<ApplicationDbContext>();
+//        context.Database.Migrate();
+//    }
+//    catch (Exception ex)
+//    {
+//        var logger = services.GetRequiredService<ILogger<Program>>();
+//        logger.LogError(ex, "Error while database data migration!");
+//    }
+//}
 
 app.UseCors("AllowFrontend");
 if (app.Environment.IsDevelopment())
