@@ -10,20 +10,28 @@ namespace RepairManagementSystem.Models
         public int RepairRequestId { get; set; }
 
         [Required]
-        [MaxLength(64)]
-        public string Name { get; set; } = string.Empty;
+        [MaxLength(256)]
+        public string Description { get; set; } = String.Empty;
 
         [Required]
-        public int RepairObjectTypeId { get; set; }
-
-        [ForeignKey(nameof(RepairObjectTypeId))]
-        public RepairObjectType RepairObjectType { get; set; }
+        [MaxLength(32)]
+        public string Result { get; set; } = String.Empty;
 
         [Required]
-        public int CustomerId { get; set; }
+        [MaxLength(3)]
+        public string Status { get; set; } = String.Empty;
 
-        [ForeignKey(nameof(CustomerId))]
-        public Customer Customer { get; set; }
+        [Required]
+        public int RepairObjectId { get; set; }
+
+        [ForeignKey(nameof(RepairObjectId))]
+        public RepairObject RepairObject { get; set; }
+
+        [Required]
+        public int ManagerId { get; set; }
+
+        [ForeignKey(nameof(ManagerId))]
+        public Manager Manager { get; set; }
 
         [Required]
         public bool IsPaid { get; set; }
@@ -37,6 +45,6 @@ namespace RepairManagementSystem.Models
         [Required]
         public DateTime FinishedAt { get; set; }
 
-        public ICollection<RepairTask> RepairsTasks { get; set; } = new List<RepairTask>();
+        public ICollection<RepairActivity> RepairsActivities { get; set; } = new List<RepairActivity>();
     }
 }

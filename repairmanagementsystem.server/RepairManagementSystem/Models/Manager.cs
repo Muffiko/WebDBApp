@@ -13,6 +13,6 @@ namespace RepairManagementSystem.Models
         [Required]
         public int ActiveRepairsCount { get; set; }
 
-        public ICollection<RepairTask> RepairsTasks { get; set; } = new List<RepairTask>();
+        public ICollection<RepairRequest> RepairsRequests { get; set; } = new List<RepairRequest>();
     }
 }

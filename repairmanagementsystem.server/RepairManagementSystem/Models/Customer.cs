@@ -10,6 +10,6 @@ namespace RepairManagementSystem.Models
         [MaxLength(32)]
         public string PaymentMethod { get; set; } = string.Empty;
 
-        public ICollection<RepairRequest> RepairsRequests { get; set; } = new List<RepairRequest>();
+        public ICollection<RepairObject> RepairsObjects { get; set; } = new List<RepairObject>();
     }
 }

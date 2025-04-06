@@ -41,6 +41,9 @@ namespace RepairManagementSystem.Models
         [Required]
         public DateTime LastLoginAt { get; set; }
 
-        public UserToken UserToken { get; set; }
+        [Required]
+        public bool IsActive { get; set; } = true;
+
+        //public UserToken UserToken { get; set; }
     }
 }
