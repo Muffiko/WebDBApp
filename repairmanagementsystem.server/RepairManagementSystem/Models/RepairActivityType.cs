@@ -7,7 +7,8 @@ namespace RepairManagementSystem.Models
     public class RepairActivityType
     {
         [Key]
-        public int RepairActivityTypeId { get; set; }
+        [MaxLength(16)]
+        public string RepairActivityTypeId { get; set; }
 
         [Required]
         [MaxLength(64)]

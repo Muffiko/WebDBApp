@@ -9,7 +9,6 @@ namespace RepairManagementSystem.Models
         [Key]
         public int UserTokenId { get; set; }
 
-        [Required]
         [ForeignKey("User")]
         public int UserId { get; set; }
 
