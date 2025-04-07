@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace RepairManagementSystem.Models
 {
@@ -21,6 +22,7 @@ namespace RepairManagementSystem.Models
         [Required]
         public DateTime ValidUntil { get; set; } = DateTime.Now;
 
+        [JsonIgnore]
         public User User { get; set; }
     }
 }

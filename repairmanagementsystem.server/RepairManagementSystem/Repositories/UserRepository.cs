@@ -16,12 +16,17 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            return await _context.Users.FindAsync(userId);
+            //return await _context.Users.FindAsync(userId);
+            return await _context.Users
+                .Include(u => u.UserToken)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(u => u.UserToken)
+                .ToListAsync();
         }
 
         public async Task AddUserAsync(User user)
