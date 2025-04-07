@@ -44,6 +44,6 @@ namespace RepairManagementSystem.Models
         [Required]
         public bool IsActive { get; set; } = true;
 
-        //public UserToken UserToken { get; set; }
+        public UserToken UserToken { get; set; }
     }
 }
