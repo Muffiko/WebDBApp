@@ -14,6 +14,6 @@ namespace RepairManagementSystem.Models
         [MaxLength(64)]
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<RepairActivity> RepairsActivities { get; set; } = new List<RepairActivity>();
+        public ICollection<RepairActivity> RepairActivities { get; set; } = new List<RepairActivity>();
     }
 }
