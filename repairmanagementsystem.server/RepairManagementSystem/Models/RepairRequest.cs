@@ -45,6 +45,6 @@ namespace RepairManagementSystem.Models
         [Required]
         public DateTime FinishedAt { get; set; }
 
-        public ICollection<RepairActivity> RepairsActivities { get; set; } = new List<RepairActivity>();
+        public ICollection<RepairActivity> RepairActivities { get; set; } = new List<RepairActivity>();
     }
 }

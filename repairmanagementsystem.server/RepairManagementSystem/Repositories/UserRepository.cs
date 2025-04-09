@@ -16,17 +16,25 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            //return await _context.Users.FindAsync(userId);
-            return await _context.Users
-                .Include(u => u.UserToken)
-                .FirstOrDefaultAsync(u => u.UserId == userId);
+            var user = await _context.Users.FindAsync(userId);
+                        //.Include(u => u.UserToken)
+                        //.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {userId} not found.");
+            }
+            else
+            {
+                return user;
+            }
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _context.Users
-                .Include(u => u.UserToken)
-                .ToListAsync();
+            return await _context.Users.ToListAsync();
+                //.Include(u => u.UserToken)
+                //.ToListAsync();
         }
 
         public async Task AddUserAsync(User user)
@@ -44,10 +52,15 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteUserAsync(int id)
         {
             var user = await GetUserByIdAsync(id);
+
             if (user != null)
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found.");
             }
         }
 
