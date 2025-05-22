@@ -8,6 +8,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import EditPersonalInfoPage from "./pages/EditPersonalInfoPage";
 import ChangeAddressPage from "./pages/ChangeAddressPage";
+import MyRepairObjectsPage from "./pages/MyRepairObjectsPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/profile/change-password" element={<ChangePasswordPage />} />
         <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
         <Route path="/profile/change-address" element={<ChangeAddressPage />} />
+        <Route path="/objects" element={<MyRepairObjectsPage />} />
       </Routes>
     </Router>
   );
