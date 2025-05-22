@@ -64,7 +64,20 @@ const RequestsPage = () => {
           filters={filters}
           setFilters={setFilters}
           onCreate={() => setShowModal(true)}
+          selects={[
+            {
+              key: "status",
+              label: "Status:",
+              options: ["Open", "In progress", "Closed"]
+            },
+            {
+              key: "manager",
+              label: "Manager:",
+              options: ["Jan Kowalski", "Marcin Kowalski", "Kamil Kowalski"]
+            }
+          ]}
         />
+
 
         <div className="requests-list">
           {filtered.map((req) => (
