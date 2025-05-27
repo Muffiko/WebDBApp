@@ -9,6 +9,7 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import EditPersonalInfoPage from "./pages/EditPersonalInfoPage";
 import ChangeAddressPage from "./pages/ChangeAddressPage";
 import MyRepairObjectsPage from "./pages/MyRepairObjectsPage";
+import NewRequestsPage from "./pages/NewRequestsPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
         <Route path="/profile/change-address" element={<ChangeAddressPage />} />
         <Route path="/objects" element={<MyRepairObjectsPage />} />
+        <Route path="/new-requests" element={<NewRequestsPage />} />
       </Routes>
     </Router>
   );

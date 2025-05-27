@@ -28,9 +28,11 @@ const FilterBar = ({ filters, setFilters, selects = [], onCreate, createLabel = 
         ))}
       </div>
 
-      <button className="create-button" onClick={onCreate}>
-        {createLabel}
-      </button>
+      {createLabel !== null && (
+        <button className="create-button" onClick={onCreate}>
+          {createLabel}
+        </button>
+      )}
     </div>
   );
 };
