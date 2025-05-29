@@ -1,8 +1,11 @@
 using AutoMapper;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
 using RepairManagementSystem.Services.Interfaces;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace RepairManagementSystem.Services
 {
@@ -29,6 +32,25 @@ namespace RepairManagementSystem.Services
         {
             var user = await _userRepository.GetUserAsync(email, password);
             return _mapper.Map<UserDTO?>(user);
+        }
+
+        public async Task RegisterUserAsync(UserCreateDTO userCreateDto)
+        {
+            var user = _mapper.Map<User>(userCreateDto);
+            user.PasswordHash = HashPassword(userCreateDto.Password);
+            user.CreatedAt = DateTime.UtcNow;
+            user.LastLoginAt = DateTime.UtcNow;
+            user.IsActive = true;
+            user.Role = "User";
+            await _userRepository.AddUserAsync(user);
+        }
+
+        private string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }

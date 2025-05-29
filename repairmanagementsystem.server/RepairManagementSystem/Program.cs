@@ -92,17 +92,17 @@ builder.Services.AddSwaggerGen(options =>
     );
 });
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    // Computer Name (default local database Name)
-    String machineName = Environment.MachineName;
-    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
-});
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //{
-//    options.UseInMemoryDatabase("DONTUSETHIS");
+//    // Computer Name (default local database Name)
+//    String machineName = Environment.MachineName;
+//    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
 //});
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseInMemoryDatabase("DONTUSETHIS");
+});
 var app = builder.Build();
 
 ////Auto migrate database data on startup !!! REMEMBER ABOUT Add-Migration InitialCreate !!!
