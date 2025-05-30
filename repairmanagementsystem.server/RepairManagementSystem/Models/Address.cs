@@ -25,8 +25,12 @@ namespace RepairManagementSystem.Models
         [MaxLength(64)]
         public string Street { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(16)]
-        public string ApartNumber { get; set; } = string.Empty;
+        //[Required] OK?
+        [MaxLength(8)]
+        public string? ApartNumber { get; set; } = string.Empty;
+
+        //[Required] OK?
+        [MaxLength(8)]
+        public string? HouseNumber { get; set; } = string.Empty;
     }
 }

@@ -7,12 +7,13 @@ namespace RepairManagementSystem.Models
     public class RepairObjectType
     {
         [Key]
-        public int RepairObjectTypeId { get; set; }
+        [MaxLength(16)]
+        public string RepairObjectTypeId { get; set; }
 
         [Required]
         [MaxLength(64)]
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<RepairRequest> RepairsRequests { get; set; } = new List<RepairRequest>();
+        public ICollection<RepairObject> RepairObjects { get; set; } = new List<RepairObject>();
     }
 }

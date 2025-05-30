@@ -10,7 +10,7 @@ namespace RepairManagementSystem.Models
         public int RepairActivityId { get; set; }
 
         [Required]
-        public int RepairActivityTypeId { get; set; }
+        public string RepairActivityTypeId { get; set; }
 
         [ForeignKey(nameof(RepairActivityTypeId))]
         public RepairActivityType RepairActivityType { get; set; }
@@ -32,13 +32,15 @@ namespace RepairManagementSystem.Models
         public string Status { get; set; } = string.Empty;
 
         [Required]
-        public int RepairTaskId { get; set; }
+        public int RepairRequestId { get; set; }
 
-        [ForeignKey(nameof(RepairTaskId))]
-        public RepairTask RepairTask { get; set; }
+        [ForeignKey(nameof(RepairRequestId))]
+        public RepairRequest RepairRequest { get; set; }
 
         [Required]
         public int WorkerId { get; set; }
+
+        [ForeignKey(nameof(WorkerId))]
         public Worker Worker { get; set; }
 
         [Required]

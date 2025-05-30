@@ -108,7 +108,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 var app = builder.Build();
 
-//Auto migrate database data on startup !!! REMEMBER ABOUT Add-Migration InitialCreate !!!
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
