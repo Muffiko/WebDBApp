@@ -9,6 +9,7 @@ namespace RepairManagementSystem.Repositories.Interfaces
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int userId);
-        Task<User> GetUserAsync(string email, string password);
+        Task<User?> GetUserAsync(string email, string password);
+        Task<User?> GetUserByEmailAsync(string email);
     }
 }

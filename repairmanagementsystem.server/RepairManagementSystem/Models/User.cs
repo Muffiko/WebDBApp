@@ -44,6 +44,9 @@ namespace RepairManagementSystem.Models
         [Required]
         public bool IsActive { get; set; } = true;
 
+        [Required]
+        public string PasswordSalt { get; set; } = String.Empty;
+
         //public UserToken UserToken { get; set; }
     }
 }
