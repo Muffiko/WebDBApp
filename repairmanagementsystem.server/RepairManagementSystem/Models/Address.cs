@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace RepairManagementSystem.Models
 {
     [Owned]
     public class Address
     {
+        [JsonIgnore]
         [Key]
         public int AddressId { get; set; }
 

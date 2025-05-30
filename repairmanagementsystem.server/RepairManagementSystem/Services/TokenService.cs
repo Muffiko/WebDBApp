@@ -6,13 +6,15 @@ using DotNetEnv;
 using Microsoft.IdentityModel.Tokens;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
+using RepairManagementSystem.Repositories.Interfaces;
 
 public class TokenService : ITokenService
 {
     private readonly RSA _privateKey;
     private readonly RSA _publicKey;
+    private readonly IUserTokenRepository _userTokenRepository;
 
-    public TokenService()
+    public TokenService(IUserTokenRepository userTokenRepository)
     {
         _privateKey = RSA.Create();
         _publicKey = RSA.Create();
@@ -25,6 +27,8 @@ public class TokenService : ITokenService
 
         byte[] publicKeyBytes = Convert.FromBase64String(publicKeyBase64);
         _publicKey.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
+
+        _userTokenRepository = userTokenRepository;
     }
 
     public string GenerateToken(UserDTO user)
@@ -77,5 +81,36 @@ public class TokenService : ITokenService
         {
             return false;
         }
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[64];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+        }
+        var refreshToken = Convert.ToBase64String(randomNumber);
+        return refreshToken;
+    }
+
+    public string HashToken(string token)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var bytes = Encoding.UTF8.GetBytes(token);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+    }
+
+    public Task<bool> RefreshTokenExists(string hashedRefreshToken)
+    {
+        return _userTokenRepository.RefreshTokenExists(hashedRefreshToken);
+    }
+
+    public Task<int> GetUserIdByRefreshToken(string hashedRefreshToken)
+    {
+        return _userTokenRepository.GetUserIdByRefreshToken(hashedRefreshToken);
     }
 }

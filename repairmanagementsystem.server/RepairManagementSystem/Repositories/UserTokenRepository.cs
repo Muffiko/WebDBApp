@@ -28,6 +28,34 @@ namespace RepairManagementSystem.Repositories
             }
         }
 
+        public async Task<UserToken?> GetUserTokenByUserIdAsync(int userId)
+        {
+            var userToken = await _context.UserTokens
+                .FirstOrDefaultAsync(ut => ut.UserId == userId);
+
+            if (userToken == null)
+            {
+                return null;
+            }
+            else
+            {
+                return userToken;
+            }
+        }
+
+        public async Task<int> GetUserIdByRefreshToken(string hashedRefreshToken)
+        {
+            var userToken = await _context.UserTokens
+                .FirstOrDefaultAsync(ut => ut.RefreshToken == hashedRefreshToken);
+
+            return userToken?.UserId ?? -1;
+        }
+
+        public async Task<bool> RefreshTokenExists(string hashedRefreshToken)
+        {
+            return await _context.UserTokens.AnyAsync(ut => ut.RefreshToken == hashedRefreshToken);
+        }
+
         public async Task<IEnumerable<UserToken>> GetAllUserTokensAsync()
         {
             return await _context.UserTokens.ToListAsync();

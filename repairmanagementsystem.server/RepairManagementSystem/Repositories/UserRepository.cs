@@ -17,8 +17,8 @@ namespace RepairManagementSystem.Repositories
         public async Task<User> GetUserByIdAsync(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-                        //.Include(u => u.UserToken)
-                        //.FirstOrDefaultAsync(u => u.UserId == userId);
+            //.Include(u => u.UserToken)
+            //.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
@@ -33,8 +33,8 @@ namespace RepairManagementSystem.Repositories
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _context.Users.ToListAsync();
-                //.Include(u => u.UserToken)
-                //.ToListAsync();
+            //.Include(u => u.UserToken)
+            //.ToListAsync();
         }
 
         public async Task AddUserAsync(User user)
@@ -64,25 +64,14 @@ namespace RepairManagementSystem.Repositories
             }
         }
 
-        public async Task<User?> GetUserAsync(string email, string password)
+        public async Task<User?> GetUserAsync(string email, string passwordHash)
         {
-            /*TODO: implement this method*/
-            /*if user exists return it */
-            /*else return null*/
-            /* mock functionality for now*/
-            if (email == "email@tab.com" && password == "password")
-            {
-                return new User
-                {
-                    Email = email,
-                    FirstName = "username",
-                    Role = "role"
-                };
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == passwordHash);
+        }
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

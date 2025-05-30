@@ -35,10 +35,7 @@ builder
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddAutoMapper(
-    cfg =>
-    {
-        AutoMapperConfig.RegisterMappings(cfg);
-    },
+    AutoMapperConfig.RegisterMappings,
     typeof(Program).Assembly
 );
 
@@ -49,7 +46,7 @@ builder.Services.AddCors(options =>
         "AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         }
     );
 });

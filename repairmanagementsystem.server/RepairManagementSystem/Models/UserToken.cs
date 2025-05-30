@@ -21,8 +21,5 @@ namespace RepairManagementSystem.Models
 
         [Required]
         public DateTime ValidUntil { get; set; } = DateTime.Now;
-
-        [JsonIgnore]
-        public User User { get; set; }
     }
 }
