@@ -127,10 +127,10 @@ public class AuthService : IAuthService
             ErrorMessage = null
         };
     }
-    public async Task<RefreshTokenResponse?> RefreshTokenAsync(RefreshTokenRequest request)
+    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string refreshToken)
     {
 
-        var hashedRefreshToken = _tokenService.HashToken(request.RefreshToken!);
+        var hashedRefreshToken = _tokenService.HashToken(refreshToken);
         if (!await _tokenService.RefreshTokenExists(hashedRefreshToken))
         {
             return null;

@@ -67,9 +67,15 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
+        public async Task<IActionResult> RefreshToken()
         {
-            var response = await _authService.RefreshTokenAsync(refreshTokenRequest);
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            var response = await _authService.RefreshTokenAsync(refreshToken);
             if (response == null)
             {
                 return Unauthorized();
