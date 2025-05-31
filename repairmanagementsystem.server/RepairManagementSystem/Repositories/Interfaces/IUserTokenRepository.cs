@@ -4,7 +4,7 @@ namespace RepairManagementSystem.Repositories.Interfaces
 {
     public interface IUserTokenRepository
     {
-        Task<UserToken> GetUserTokenByIdAsync(int userTokenId);
+        Task<UserToken?> GetUserTokenByIdAsync(int userTokenId);
         Task<IEnumerable<UserToken>> GetAllUserTokensAsync();
         Task AddUserTokenAsync(UserToken userToken);
         Task UpdateUserTokenAsync(UserToken userToken);

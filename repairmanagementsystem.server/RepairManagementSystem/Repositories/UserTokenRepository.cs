@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Repositories.Interfaces;
@@ -8,19 +9,21 @@ namespace RepairManagementSystem.Repositories
     public class UserTokenRepository : IUserTokenRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<UserTokenRepository> _logger;
 
-        public UserTokenRepository(ApplicationDbContext context)
+        public UserTokenRepository(ApplicationDbContext context, ILogger<UserTokenRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        public async Task<UserToken> GetUserTokenByIdAsync(int userTokenId)
+        public async Task<UserToken?> GetUserTokenByIdAsync(int userTokenId)
         {
             var userToken = await _context.UserTokens.FindAsync(userTokenId);
 
             if (userToken == null)
             {
-                throw new KeyNotFoundException($"User token with ID {userTokenId} not found.");
+                return null;
             }
             else
             {
@@ -84,7 +87,7 @@ namespace RepairManagementSystem.Repositories
             }
             else
             {
-                throw new KeyNotFoundException($"User token with ID {userTokenId} not found.");
+                _logger.LogWarning($"Tried to delete a non-existing user token with ID {userTokenId}.");
             }
         }
     }
