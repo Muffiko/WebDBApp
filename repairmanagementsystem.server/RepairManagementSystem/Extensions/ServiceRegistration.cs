@@ -10,6 +10,7 @@ namespace RepairManagementSystem.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IRepairObjectService, RepairObjectService>();
             return services;
         }
     }

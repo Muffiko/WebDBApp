@@ -20,7 +20,7 @@ namespace RepairManagementSystem.Repositories
 
             if (repairObject == null)
             {
-                throw new KeyNotFoundException($"Repair object with ID {repairObjectId} not found.");
+                return null;
             }
             else
             {
