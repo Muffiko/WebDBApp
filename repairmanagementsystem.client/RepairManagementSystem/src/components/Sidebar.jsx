@@ -10,7 +10,7 @@ const Sidebar = ({ menuItems }) => {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // przekierowanie na stronę logowania
+    navigate("/");
   };
 
   return (
@@ -33,12 +33,12 @@ const Sidebar = ({ menuItems }) => {
       <div className="sidebar-footer">
         {user && (
           <div className="user-info">
-            <div className="logged-as">Zalogowano jako:</div>
+            <div className="logged-as">Logged as:</div>
             <div className="user-email">{user.firstName} ({user.email})</div>
           </div>
         )}
         <button className="logout-button" onClick={handleLogout}>
-          Wyloguj
+          Logout
         </button>
       </div>
     </div>
