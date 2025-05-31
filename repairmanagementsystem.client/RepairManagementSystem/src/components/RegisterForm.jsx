@@ -74,14 +74,16 @@ const RegisterForm = () => {
 
       setSuccess("Account created successfully.");
 
-      login(response.token, {
+      console.log(data);
+
+      login(data.token, {
         email: data.email,
         role: data.role,
         firstName: data.firstName
       });
 
       if (response.role === "Manager") navigate("/new-requests");
-      else navigate("/requests");
+      else navigate("/profile");
 
     } catch (err) {
       setGlobalError("Unexpected error occurred.");
