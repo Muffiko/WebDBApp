@@ -1,13 +1,22 @@
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./styles/Sidebar.css";
+import { useAuth } from "../contexts/AuthContext";
 
 const Sidebar = ({ menuItems }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/"); // przekierowanie na stronę logowania
+  };
 
   return (
     <div className="sidebar">
       <div className="sidebar-logo">LOGO</div>
+
       <nav className="sidebar-nav">
         {menuItems.map((item) => (
           <NavLink
@@ -20,6 +29,18 @@ const Sidebar = ({ menuItems }) => {
           </NavLink>
         ))}
       </nav>
+
+      <div className="sidebar-footer">
+        {user && (
+          <div className="user-info">
+            <div className="logged-as">Zalogowano jako:</div>
+            <div className="user-email">{user.firstName} ({user.email})</div>
+          </div>
+        )}
+        <button className="logout-button" onClick={handleLogout}>
+          Wyloguj
+        </button>
+      </div>
     </div>
   );
 };
