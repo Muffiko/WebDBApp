@@ -6,6 +6,5 @@ namespace RepairManagementSystem.Services.Interfaces
     {
         Task<UserDTO?> GetUserAsync(string email, string password);
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
-        Task RegisterUserAsync(UserCreateDTO userCreateDto);
     }
 }

@@ -22,14 +22,5 @@ namespace RepairManagementSystem.Controllers
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserCreateDTO userCreateDto)
-        {
-            if (userCreateDto == null)
-                return BadRequest("User data is required");
-            await _userService.RegisterUserAsync(userCreateDto);
-            return Ok(userCreateDto);
-        }
     }
 }
