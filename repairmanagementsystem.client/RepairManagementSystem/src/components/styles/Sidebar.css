@@ -51,3 +51,39 @@
     font-size: 1.1rem;
   }
   
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 1rem;
+    border-top: 1px solid #444;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .logout-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .logout-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .logged-as {
+    font-size: 0.85rem;
+    color: #999;
+  }
+  
+  .user-email {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #fff;
+  }
+  
