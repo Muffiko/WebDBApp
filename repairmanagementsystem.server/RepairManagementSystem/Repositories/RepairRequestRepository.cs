@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<RepairRequest> GetRepairRequestByIdAsync(int repairRequestId)
         {
-            var repairRequest = await _context.RepairRequests.FindAsync(repairRequestId);
-
-            if (repairRequest == null)
-            {
-                throw new KeyNotFoundException($"Repair request with ID {repairRequestId} not found.");
-            }
-            else
-            {
-                return repairRequest;
-            }
+            return await _context.RepairRequests.FindAsync(repairRequestId);
         }
 
         public async Task<IEnumerable<RepairRequest>> GetAllRepairRequestsAsync()
@@ -41,6 +32,10 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateRepairRequestAsync(RepairRequest repairRequest)
         {
+            if (repairRequest == null)
+            {
+                return;
+            }
             _context.RepairRequests.Update(repairRequest);
             await _context.SaveChangesAsync();
         }
@@ -48,16 +43,12 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteRepairRequestAsync(int repairRequestId)
         {
             var repairRequest = await GetRepairRequestByIdAsync(repairRequestId);
-
-            if (repairRequest != null)
+            if (repairRequest == null)
             {
-                _context.RepairRequests.Remove(repairRequest);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Repair request with ID {repairRequestId} not found.");
-            }
+            _context.RepairRequests.Remove(repairRequest);
+            await _context.SaveChangesAsync();
         }
     }
 }

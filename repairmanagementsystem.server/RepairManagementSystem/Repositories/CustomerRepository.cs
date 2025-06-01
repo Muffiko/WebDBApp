@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<Customer> GetCustomerByIdAsync(int customerId)
         {
-            var customer = await _context.Customers.FindAsync(customerId);
-
-            if (customer == null)
-            {
-                throw new KeyNotFoundException($"Customer with ID {customerId} not found.");
-            }
-            else
-            {
-                return customer;
-            }
+            return await _context.Customers.FindAsync(customerId);
         }
 
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
@@ -48,16 +39,12 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteCustomerAsync(int customerId)
         {
             var customer = await GetCustomerByIdAsync(customerId);
-
-            if (customer != null)
+            if (customer == null)
             {
-                _context.Customers.Remove(customer);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Customer with ID {customerId} not found.");
-            }
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync();
         }
     }
 }

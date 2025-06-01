@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<RepairObjectType> GetRepairObjectTypeByIdAsync(int repairObjectTypeId)
         {
-            var repairObjectType = await _context.RepairObjectTypes.FindAsync(repairObjectTypeId);
-
-            if (repairObjectType == null)
-            {
-                throw new KeyNotFoundException($"Repair object type with ID {repairObjectTypeId} not found.");
-            }
-            else
-            {
-                return repairObjectType;
-            }
+            return await _context.RepairObjectTypes.FindAsync(repairObjectTypeId);
         }
 
         public async Task<IEnumerable<RepairObjectType>> GetAllRepairObjectTypesAsync()
@@ -41,6 +32,10 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateRepairObjectTypeAsync(RepairObjectType repairObjectType)
         {
+            if (repairObjectType == null)
+            {
+                return;
+            }
             _context.RepairObjectTypes.Update(repairObjectType);
             await _context.SaveChangesAsync();
         }
@@ -49,15 +44,12 @@ namespace RepairManagementSystem.Repositories
         {
             var repairObjectType = await GetRepairObjectTypeByIdAsync(repairObjectTypeId);
 
-            if (repairObjectType != null)
+            if (repairObjectType == null)
             {
-                _context.RepairObjectTypes.Remove(repairObjectType);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Repair object type with ID {repairObjectTypeId} not found.");
-            }
+            _context.RepairObjectTypes.Remove(repairObjectType);
+            await _context.SaveChangesAsync();
         }
     }
 }

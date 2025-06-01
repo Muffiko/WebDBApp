@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<Worker> GetWorkerByIdAsync(int workerId)
         {
-            var worker = await _context.Workers.FindAsync(workerId);
-
-            if (worker == null)
-            {
-                throw new KeyNotFoundException($"Worker with ID {workerId} not found.");
-            }
-            else
-            {
-                return worker;
-            }
+            return await _context.Workers.FindAsync(workerId);
         }
 
         public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
@@ -41,6 +32,10 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateWorkerAsync(Worker worker)
         {
+            if (worker == null)
+            {
+                return;
+            }
             _context.Workers.Update(worker);
             await _context.SaveChangesAsync();
         }
@@ -48,16 +43,12 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteWorkerAsync(int workerId)
         {
             var worker = await GetWorkerByIdAsync(workerId);
-
-            if (worker != null)
+            if (worker == null)
             {
-                _context.Workers.Remove(worker);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Worker with ID {workerId} not found.");
-            }
+            _context.Workers.Remove(worker);
+            await _context.SaveChangesAsync();
         }
     }
 }
