@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<Manager> GetManagerByIdAsync(int managerId)
         {
-            var manager = await _context.Managers.FindAsync(managerId);
-
-            if (manager == null)
-            {
-                throw new KeyNotFoundException($"Manager with ID {managerId} not found.");
-            }
-            else
-            {
-                return manager;
-            }
+            return await _context.Managers.FindAsync(managerId);
         }
 
         public async Task<IEnumerable<Manager>> GetAllManagersAsync()
@@ -40,6 +31,10 @@ namespace RepairManagementSystem.Repositories
         }
         public async Task UpdateManagerAsync(Manager manager)
         {
+            if (manager == null)
+            {
+                return;
+            }
             _context.Managers.Update(manager);
             await _context.SaveChangesAsync();
         }
@@ -47,16 +42,12 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteManagerAsync(int managerId)
         {
             var manager = await GetManagerByIdAsync(managerId);
-
-            if (manager != null)
+            if (manager == null)
             {
-                _context.Managers.Remove(manager);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Manager with ID {managerId} not found.");
-            }
+            _context.Managers.Remove(manager);
+            await _context.SaveChangesAsync();
         }
     }
 }

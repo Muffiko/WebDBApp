@@ -16,16 +16,7 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<RepairActivity> GetRepairActivityByIdAsync(int repairActivityId)
         {
-            var repairActivity = await _context.RepairActivities.FindAsync(repairActivityId);
-
-            if (repairActivity == null)
-            {
-                throw new KeyNotFoundException($"Repair activity with ID {repairActivityId} not found.");
-            }
-            else
-            {
-                return repairActivity;
-            }
+            return await _context.RepairActivities.FindAsync(repairActivityId);
         }
 
         public async Task<IEnumerable<RepairActivity>> GetAllRepairActivitiesAsync()
@@ -41,6 +32,10 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateRepairActivityAsync(RepairActivity repairActivity)
         {
+            if (repairActivity == null)
+            {
+                return;
+            }
             _context.RepairActivities.Update(repairActivity);
             await _context.SaveChangesAsync();
         }
@@ -48,16 +43,12 @@ namespace RepairManagementSystem.Repositories
         public async Task DeleteRepairActivityAsync(int repairActivityId)
         {
             var repairActivity = await GetRepairActivityByIdAsync(repairActivityId);
-
-            if (repairActivity != null)
+            if (repairActivity == null)
             {
-                _context.RepairActivities.Remove(repairActivity);
-                await _context.SaveChangesAsync();
+                return;
             }
-            else
-            {
-                throw new KeyNotFoundException($"Repair activity with ID {repairActivityId} not found.");
-            }
+            _context.RepairActivities.Remove(repairActivity);
+            await _context.SaveChangesAsync();
         }
     }
 }
