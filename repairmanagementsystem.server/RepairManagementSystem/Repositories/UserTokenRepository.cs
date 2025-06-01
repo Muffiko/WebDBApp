@@ -60,23 +60,21 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateUserTokenAsync(UserToken userToken)
         {
-            if (userToken == null)
+            if (userToken != null)
             {
-                return;
+                _context.UserTokens.Update(userToken);
+                await _context.SaveChangesAsync();
             }
-            _context.UserTokens.Update(userToken);
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUserTokenAsync(int userTokenId)
         {
             var userToken = await GetUserTokenByIdAsync(userTokenId);
-            if (userToken == null)
+            if (userToken != null)
             {
-                return;
+                _context.UserTokens.Remove(userToken);
+                await _context.SaveChangesAsync();
             }
-            _context.UserTokens.Remove(userToken);
-            await _context.SaveChangesAsync();
         }
     }
 }
