@@ -32,19 +32,21 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateCustomerAsync(Customer customer)
         {
-            _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
+            if (customer != null)
+            {
+                _context.Customers.Update(customer);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteCustomerAsync(int customerId)
         {
             var customer = await GetCustomerByIdAsync(customerId);
-            if (customer == null)
+            if (customer != null)
             {
-                return;
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
             }
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
         }
     }
 }

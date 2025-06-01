@@ -32,23 +32,21 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateUserAsync(User user)
         {
-            if (user == null)
+            if (user != null)
             {
-                return;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
             }
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUserAsync(int id)
         {
             var user = await GetUserByIdAsync(id);
-            if (user == null)
+            if (user != null)
             {
-                return;
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
             }
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<User?> GetUserAsync(string email, string passwordHash)
