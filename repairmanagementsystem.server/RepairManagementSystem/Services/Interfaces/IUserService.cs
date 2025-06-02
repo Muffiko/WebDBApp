@@ -11,6 +11,7 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<UserDTO?> GetUserByIdAsync(int userId);
         Task<User?> GetUserByEmailAsync(string email);
         Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request);
+        Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request);
 
     }
 }
