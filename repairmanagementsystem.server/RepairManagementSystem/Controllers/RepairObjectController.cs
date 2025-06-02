@@ -20,8 +20,7 @@ namespace RepairManagementSystem.Controllers
             var repairObjects = await _repairObjectService.GetAllRepairObjectsAsync();
             return Ok(repairObjects);
         }
-        [HttpGet]
-        [Route("{repairObjectId:int}")]
+        [HttpGet("{repairObjectId:int}")]
         public async Task<IActionResult> GetRepairObject(int repairObjectId)
         {
             var repairObject = await _repairObjectService.GetRepairObjectByIdAsync(repairObjectId);
