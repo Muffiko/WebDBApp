@@ -4,11 +4,13 @@ namespace RepairManagementSystem.Models.DTOs
     public class RegisterRequest
     {
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid email address format.")]
+        [MaxLength(256, ErrorMessage = "Email cannot exceed 256 characters.")]
         public string? Email { get; set; }
 
         [Required]
-        [MinLength(8)]
+        [MinLength(8, ErrorMessage = "The new password must be at least 8 characters long.")]
+        [MaxLength(30, ErrorMessage = "The new password cannot exceed 30 characters.")]
         public string? Password { get; set; }
 
         [Required]

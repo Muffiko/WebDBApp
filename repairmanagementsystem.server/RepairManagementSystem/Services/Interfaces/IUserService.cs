@@ -10,8 +10,7 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<bool> RegisterUserAsync(User user);
         Task<UserDTO?> GetUserByIdAsync(int userId);
         Task<User?> GetUserByEmailAsync(string email);
-
-        
+        Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request);
 
     }
 }

@@ -50,11 +50,34 @@ namespace RepairManagementSystem.Services
 
             return await _userRepository.AddUserAsync(user);
         }
-
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _userRepository.GetUserByEmailAsync(email);
 
+        }
+        public async Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
+            }
+
+            if (!_cryptoService.VerifyPassword(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+            {
+                return new PasswordResetResponse { Success = false, Message = "Old password is incorrect." };
+            }
+
+            var (newHash, newSalt) = _cryptoService.HashPassword(request.NewPassword);
+            user.PasswordHash = newHash;
+            user.PasswordSalt = newSalt;
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                return new PasswordResetResponse { Success = true, Message = "Password reset successfully." };
+            }
+
+            return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
         }
     }
 }
