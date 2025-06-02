@@ -75,7 +75,7 @@ namespace RepairManagementSystem.Controllers
 
         [HttpPatch("address")]
         [Authorize]
-        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateRequest request)
+        public async Task<IActionResult> UpdateAddress([FromBody] UpdateAddressRequest request)
         {
             if (!ModelState.IsValid)
             {

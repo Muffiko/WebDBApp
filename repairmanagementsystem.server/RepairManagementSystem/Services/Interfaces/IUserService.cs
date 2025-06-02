@@ -12,6 +12,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<User?> GetUserByEmailAsync(string email);
         Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request);
         Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request);
-        Task<UpdateAddressResponse> UpdateAddressAsync(int userId, AddressUpdateRequest request);
+        Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request);
     }
 }

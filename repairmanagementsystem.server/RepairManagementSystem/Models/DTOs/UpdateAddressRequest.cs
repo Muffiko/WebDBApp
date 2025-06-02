@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RepairManagementSystem.Models.DTOs
 {
-    public class AddressUpdateRequest
+    public class UpdateAddressRequest
     {
 
         [MaxLength(3)]

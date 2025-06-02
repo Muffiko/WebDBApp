@@ -21,10 +21,10 @@ namespace RepairManagementSystem.Models.DTOs
         [MaxLength(64, ErrorMessage = "Street cannot be longer than 64 characters.")]
         public string Street { get; set; } = string.Empty;
 
-        [MaxLength(8, ErrorMessage = "Apartment number cannot be longer than 10 characters.")]
+        [MaxLength(8, ErrorMessage = "Apartment number cannot be longer than 8 characters.")]
         public string? ApartNumber { get; set; } = string.Empty;
 
-        [MaxLength(8, ErrorMessage = "House number cannot be longer than 10 characters.")]
+        [MaxLength(8, ErrorMessage = "House number cannot be longer than 8 characters.")]
         public string? HouseNumber { get; set; } = string.Empty;
     }
 }

@@ -124,7 +124,7 @@ namespace RepairManagementSystem.Services
             return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
         }
 
-        public async Task<UpdateAddressResponse> UpdateAddressAsync(int userId, AddressUpdateRequest request)
+        public async Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
