@@ -86,8 +86,8 @@ public class AuthService : IAuthService
             Email = request.Email!,
             PasswordHash = Hash,
             PasswordSalt = Salt,
-            Number = request.Number,
-            Address = request.Address,
+            Number = request.PhoneNumber,
+            Address = _mapper.Map<Address>(request.Address),
             Role = "User",
             CreatedAt = DateTime.UtcNow
         };

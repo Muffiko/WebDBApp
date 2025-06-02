@@ -50,11 +50,132 @@ namespace RepairManagementSystem.Services
 
             return await _userRepository.AddUserAsync(user);
         }
-
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _userRepository.GetUserByEmailAsync(email);
 
+        }
+        public async Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
+            }
+
+            if (!_cryptoService.VerifyPassword(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+            {
+                return new PasswordResetResponse { Success = false, Message = "Old password is incorrect." };
+            }
+
+            var (newHash, newSalt) = _cryptoService.HashPassword(request.NewPassword);
+            user.PasswordHash = newHash;
+            user.PasswordSalt = newSalt;
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                return new PasswordResetResponse { Success = true, Message = "Password reset successfully." };
+            }
+
+            return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
+        }
+
+        public async Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+            }
+
+            var updatedFields = new List<string>();
+            if (request.FirstName != null)
+            {
+                user.FirstName = request.FirstName;
+                updatedFields.Add("first name");
+            }
+            if (request.LastName != null)
+            {
+                user.LastName = request.LastName;
+                updatedFields.Add("last name");
+            }
+            if (request.Email != null)
+            {
+                user.Email = request.Email;
+                updatedFields.Add("email");
+            }
+            if (request.PhoneNumber != null)
+            {
+                user.Number = request.PhoneNumber;
+                updatedFields.Add("phone number");
+            }
+
+            if (updatedFields.Count == 0)
+            {
+                return new UpdateUserInfoResponse { Success = false, Message = "No fields were provided to update." };
+            }
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                var updatedList = string.Join(", ", updatedFields);
+                return new UpdateUserInfoResponse { Success = true, Message = $"Updated {updatedList}." };
+            }
+
+            return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+        }
+
+        public async Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
+            }
+
+            var updatedFields = new List<string>();
+            if (request.Street != null)
+            {
+                user.Address.Street = request.Street;
+                updatedFields.Add("street");
+            }
+            if (request.City != null)
+            {
+                user.Address.City = request.City;
+                updatedFields.Add("city");
+            }
+            if (request.PostalCode != null)
+            {
+                user.Address.PostalCode = request.PostalCode;
+                updatedFields.Add("postal code");
+            }
+            if (request.Country != null)
+            {
+                user.Address.Country = request.Country;
+                updatedFields.Add("country");
+            }
+            if (request.ApartNumber != null)
+            {
+                user.Address.ApartNumber = request.ApartNumber;
+                updatedFields.Add("apartment number");
+            }
+            if (request.HouseNumber != null)
+            {
+                user.Address.HouseNumber = request.HouseNumber;
+                updatedFields.Add("house number");
+            }
+
+            if (updatedFields.Count == 0)
+            {
+                return new UpdateAddressResponse { Success = false, Message = "No address fields were provided to update." };
+            }
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                var updatedList = string.Join(", ", updatedFields);
+                return new UpdateAddressResponse { Success = true, Message = $"Updated address fields: {updatedList}." };
+            }
+
+            return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
         }
     }
 }

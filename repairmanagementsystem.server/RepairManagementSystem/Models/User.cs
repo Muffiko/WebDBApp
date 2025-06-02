@@ -11,29 +11,29 @@ namespace RepairManagementSystem.Models
 
         [Required]
         [MaxLength(32)]
-        public string FirstName { get; set; } = String.Empty;
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(32)]
-        public string LastName { get; set; } = String.Empty; 
+        public string LastName { get; set; } = string.Empty; 
 
         [Required]
         [MaxLength(64)]
-        public string Email { get; set; } = String.Empty;
+        public string Email { get; set; } = string.Empty;
 
         [Required]
-        public string PasswordHash { get; set; } = String.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(16)]
-        public string Number { get; set; } = String.Empty;
+        public string Number { get; set; } = string.Empty;
 
         [Required]
         public Address Address { get; set; } = new Address();
 
         [Required]
         [MaxLength(32)]
-        public string Role { get; set; } = String.Empty;
+        public string Role { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedAt { get; set; }
@@ -45,8 +45,7 @@ namespace RepairManagementSystem.Models
         public bool IsActive { get; set; } = true;
 
         [Required]
-        public string PasswordSalt { get; set; } = String.Empty;
+        public string PasswordSalt { get; set; } = string.Empty;
 
-        //public UserToken UserToken { get; set; }
     }
 }

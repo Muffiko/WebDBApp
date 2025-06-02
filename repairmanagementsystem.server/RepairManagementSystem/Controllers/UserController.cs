@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
@@ -17,10 +18,83 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
+        }
+
+        [HttpPost("password-reset")]
+        [Authorize]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            int userId = int.Parse(userIdClaim.Value);
+
+            var response = await _userService.ResetPasswordAsync(userId, request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response.Message);
+        }
+
+        [HttpPatch("update")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UserInfoUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            int userId = int.Parse(userIdClaim.Value);
+
+            var response = await _userService.UpdateUserInfoAsync(userId, request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response.Message);
+        }
+
+        [HttpPatch("address")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAddress([FromBody] UpdateAddressRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            int userId = int.Parse(userIdClaim.Value);
+
+            var response = await _userService.UpdateAddressAsync(userId, request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response.Message);
         }
     }
 }
