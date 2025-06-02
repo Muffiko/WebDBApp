@@ -123,5 +123,59 @@ namespace RepairManagementSystem.Services
 
             return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
         }
+
+        public async Task<UpdateAddressResponse> UpdateAddressAsync(int userId, AddressUpdateRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
+            }
+
+            var updatedFields = new List<string>();
+            if (request.Street != null)
+            {
+                user.Address.Street = request.Street;
+                updatedFields.Add("street");
+            }
+            if (request.City != null)
+            {
+                user.Address.City = request.City;
+                updatedFields.Add("city");
+            }
+            if (request.PostalCode != null)
+            {
+                user.Address.PostalCode = request.PostalCode;
+                updatedFields.Add("postal code");
+            }
+            if (request.Country != null)
+            {
+                user.Address.Country = request.Country;
+                updatedFields.Add("country");
+            }
+            if (request.ApartNumber != null)
+            {
+                user.Address.ApartNumber = request.ApartNumber;
+                updatedFields.Add("apartment number");
+            }
+            if (request.HouseNumber != null)
+            {
+                user.Address.HouseNumber = request.HouseNumber;
+                updatedFields.Add("house number");
+            }
+
+            if (updatedFields.Count == 0)
+            {
+                return new UpdateAddressResponse { Success = false, Message = "No address fields were provided to update." };
+            }
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                var updatedList = string.Join(", ", updatedFields);
+                return new UpdateAddressResponse { Success = true, Message = $"Updated address fields: {updatedList}." };
+            }
+
+            return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
+        }
     }
 }
