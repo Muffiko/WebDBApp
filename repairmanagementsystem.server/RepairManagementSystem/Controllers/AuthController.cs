@@ -2,6 +2,7 @@ using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RepairManagementSystem.Controllers
 {
@@ -67,7 +68,6 @@ namespace RepairManagementSystem.Controllers
                 firstName = result.Response.FirstName
             });
         }
-
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken()
         {
@@ -93,7 +93,7 @@ namespace RepairManagementSystem.Controllers
 
             return Ok(new { token = response.Token });
         }
-
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
