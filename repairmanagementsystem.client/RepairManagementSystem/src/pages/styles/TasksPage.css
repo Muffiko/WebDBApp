@@ -1,0 +1,44 @@
+.tasks-container {
+    display: flex;
+    background-color: #0d0d12;
+    min-height: 100vh;
+    color: white;
+}
+  
+.tasks-page {
+  flex: 1;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tasks-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 2.5rem;
+  align-self: flex-start;
+  max-width: 1400px;
+  width: 100%;
+}
+
+.tasks-card {
+  background-color: #2a2a33;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 300px;
+  font-size: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.tasks-description {
+  background-color: #1e1e24;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
