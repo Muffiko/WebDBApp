@@ -86,7 +86,7 @@ public class AuthService : IAuthService
             Email = request.Email!,
             PasswordHash = Hash,
             PasswordSalt = Salt,
-            Number = request.Number,
+            Number = request.PhoneNumber,
             Address = request.Address,
             Role = "User",
             CreatedAt = DateTime.UtcNow
