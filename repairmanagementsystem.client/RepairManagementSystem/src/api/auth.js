@@ -67,7 +67,7 @@ export const logoutUser = async (accessToken) => {
   let response = await performLogout(accessToken);
 
   if (response.status === 401) {
-    const refreshed_token = await refreshAccessToken(accessToken);
+    const refreshed_token = await refreshAccessToken();
     if (refreshed_token) {
       response = await performLogout(refreshed_token);
     }
