@@ -44,7 +44,7 @@ namespace RepairManagementSystem.Controllers
             var result = await _repairObjectService.UpdateRepairObjectAsync(repairObjectId, updatedRepairObject);
             if (result == null)
                 return NotFound($"Repair object with ID {repairObjectId} not found.");
-            return Ok($"Repair object with ID {repairObjectId} update successfully.");
+            return Ok($"Repair object with ID {repairObjectId} updated successfully.");
         }
         [HttpDelete]
         [Route("{repairObjectId:int}")]
