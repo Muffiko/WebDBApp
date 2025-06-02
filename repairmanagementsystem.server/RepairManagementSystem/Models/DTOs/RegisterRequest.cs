@@ -26,7 +26,7 @@ namespace RepairManagementSystem.Models.DTOs
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
-        public Address Address { get; set; } = new Address();
+        public AddressDTO Address { get; set; } = new AddressDTO();
 
     }
 }
