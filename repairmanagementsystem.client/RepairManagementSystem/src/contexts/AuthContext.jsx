@@ -32,8 +32,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
   
-  
-
   const restoreSession = async () => {
     try {
       const newToken = await refreshAccessToken();

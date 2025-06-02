@@ -14,6 +14,9 @@ const EditPersonalInfoPage = lazy(() => import("./pages/EditPersonalInfoPage"));
 const ChangeAddressPage = lazy(() => import("./pages/ChangeAddressPage"));
 const MyRepairObjectsPage = lazy(() => import("./pages/MyRepairObjectsPage"));
 const NewRequestsPage = lazy(() => import("./pages/NewRequestsPage"));
+const OpenRequestsPage = lazy(() => import("./pages/OpenRequestsPage"));
+const WorkersPage = lazy(() => import("./pages/WorkersPage"));
+const TasksPage = lazy(() => import("./pages/TasksPage"));
 
 function App() {
   const { isAuthenticated, isAuthReady } = useAuth();
@@ -36,6 +39,9 @@ function App() {
             <Route path="/profile/change-address" element={<ChangeAddressPage />} />
             <Route path="/objects" element={<MyRepairObjectsPage />} />
             <Route path="/new-requests" element={<NewRequestsPage />} />
+            <Route path="/open-requests" element={<OpenRequestsPage />} />
+            <Route path="/workers" element={<WorkersPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
           </>
         )}
 
