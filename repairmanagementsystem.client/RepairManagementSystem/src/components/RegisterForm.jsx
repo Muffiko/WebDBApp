@@ -76,11 +76,7 @@ const RegisterForm = () => {
 
       console.log(data);
 
-      login(data.token, {
-        email: data.email,
-        role: data.role,
-        firstName: data.firstName
-      });
+      login(data.token);
 
       if (response.role === "Manager") navigate("/new-requests");
       else navigate("/profile");

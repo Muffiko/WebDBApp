@@ -15,7 +15,7 @@ const Sidebar = ({ menuItems }) => {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo">LOGO</div>
+      <div className="sidebar-logo">RMS</div>
 
       <nav className="sidebar-nav">
         {menuItems.map((item) => (

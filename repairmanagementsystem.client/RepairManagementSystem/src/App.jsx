@@ -1,43 +1,47 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
+import LoadingScreen from "./components/LoadingScreen";
 
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import RequestsPage from "./pages/RequestsPage";
-import RepairDetailsPage from "./pages/RepairDetailsPage";
-import ProfilePage from "./pages/ProfilePage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import EditPersonalInfoPage from "./pages/EditPersonalInfoPage";
-import ChangeAddressPage from "./pages/ChangeAddressPage";
-import MyRepairObjectsPage from "./pages/MyRepairObjectsPage";
-import NewRequestsPage from "./pages/NewRequestsPage";
+// Lazy-loaded pages
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const RequestsPage = lazy(() => import("./pages/RequestsPage"));
+const RepairDetailsPage = lazy(() => import("./pages/RepairDetailsPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const ChangePasswordPage = lazy(() => import("./pages/ChangePasswordPage"));
+const EditPersonalInfoPage = lazy(() => import("./pages/EditPersonalInfoPage"));
+const ChangeAddressPage = lazy(() => import("./pages/ChangeAddressPage"));
+const MyRepairObjectsPage = lazy(() => import("./pages/MyRepairObjectsPage"));
+const NewRequestsPage = lazy(() => import("./pages/NewRequestsPage"));
 
 function App() {
   const { isAuthenticated, isAuthReady } = useAuth();
 
-  if (!isAuthReady) return null;
+  if (!isAuthReady) return <LoadingScreen />;
 
   return (
-    <Routes>
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+    <Suspense fallback={<LoadingScreen />}>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      {isAuthenticated && (
-        <>
-          <Route path="/requests" element={<RequestsPage />} />
-          <Route path="/requests/:id" element={<RepairDetailsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/change-password" element={<ChangePasswordPage />} />
-          <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
-          <Route path="/profile/change-address" element={<ChangeAddressPage />} />
-          <Route path="/objects" element={<MyRepairObjectsPage />} />
-          <Route path="/new-requests" element={<NewRequestsPage />} />
-        </>
-      )}
+        {isAuthenticated && (
+          <>
+            <Route path="/requests" element={<RequestsPage />} />
+            <Route path="/requests/:id" element={<RepairDetailsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/change-password" element={<ChangePasswordPage />} />
+            <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
+            <Route path="/profile/change-address" element={<ChangeAddressPage />} />
+            <Route path="/objects" element={<MyRepairObjectsPage />} />
+            <Route path="/new-requests" element={<NewRequestsPage />} />
+          </>
+        )}
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
 

@@ -20,11 +20,7 @@ const LoginForm = () => {
     try {
       const response = await loginUser(formData);
       console.log(response);
-      login(response.token, {
-        email: response.email,
-        role: response.role,
-        firstName: response.firstName
-      });
+      login(response.token);
 
       if (response.role === "Manager") navigate("/new-requests");
       else navigate("/requests");

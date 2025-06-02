@@ -39,20 +39,39 @@ export const registerUser = async (formData) => {
   });
 };
 
-export const refreshAccessToken = async (accessToken) => {
-    const res = await fetch(`${API_URL}/refresh-token`, {
+export const refreshAccessToken = async () => {
+    const res = await fetch("http://localhost:5062/api/Auth/refresh", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include",
-      body: JSON.stringify({ refreshToken: accessToken })
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
     });
   
-    if (!res.ok) {
-      throw new Error("Token refresh failed");
-    }
+    if (!res.ok) return null;
   
     const data = await res.json();
-    return data.token; 
+    return data.token;
+};
+
+export const logoutUser = async (accessToken) => {
+  const performLogout = async (token) => {
+    return fetch(`${API_URL}/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include"
+    });
   };
+
+  let response = await performLogout(accessToken);
+
+  if (response.status === 401) {
+    const refreshed_token = await refreshAccessToken(accessToken);
+    if (refreshed_token) {
+      response = await performLogout(refreshed_token);
+    }
+  }
+
+  return response;
+};
