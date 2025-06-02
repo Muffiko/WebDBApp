@@ -16,7 +16,16 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<RepairObject> GetRepairObjectByIdAsync(int repairObjectId)
         {
-            return await _context.RepairObjects.FindAsync(repairObjectId);
+            var repairObject = await _context.RepairObjects.FindAsync(repairObjectId);
+
+            if (repairObject == null)
+            {
+                return null;
+            }
+            else
+            {
+                return repairObject;
+            }
         }
 
         public async Task<IEnumerable<RepairObject>> GetAllRepairObjectsAsync()

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using RepairManagementSystem.Models;
+using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 
 namespace RepairManagementSystem.Controllers
