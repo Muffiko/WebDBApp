@@ -3,9 +3,17 @@ using RepairManagementSystem.Services.Interfaces;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 public class CryptoService : ICryptoService
 {
+    private readonly ILogger<CryptoService> _logger;
+
+    public CryptoService(ILogger<CryptoService> logger)
+    {
+        _logger = logger;
+    }
+
     public (string Hash, string Salt) HashPassword(string password)
     {
         const int saltSize = 16;
@@ -34,7 +42,8 @@ public class CryptoService : ICryptoService
         var hashBytes = Convert.FromBase64String(hashedPassword);
         if (hashBytes.Length != keySize + 4)
         {
-            throw new InvalidOperationException("Invalid hash format.");
+            _logger.LogError("Invalid hash format for password verification.");
+            return false;
         }
 
         var key = new byte[keySize];

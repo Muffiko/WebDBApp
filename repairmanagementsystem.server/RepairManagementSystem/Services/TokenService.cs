@@ -7,14 +7,16 @@ using Microsoft.IdentityModel.Tokens;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 using RepairManagementSystem.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 public class TokenService : ITokenService
 {
     private readonly RSA _privateKey;
     private readonly RSA _publicKey;
     private readonly IUserTokenRepository _userTokenRepository;
+    private readonly ILogger<TokenService> _logger;
 
-    public TokenService(IUserTokenRepository userTokenRepository)
+    public TokenService(IUserTokenRepository userTokenRepository, ILogger<TokenService> logger)
     {
         _privateKey = RSA.Create();
         _publicKey = RSA.Create();
@@ -29,15 +31,17 @@ public class TokenService : ITokenService
         _publicKey.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
 
         _userTokenRepository = userTokenRepository;
+        _logger = logger;
     }
 
     public string GenerateToken(UserDTO user)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.FirstName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role),
+            new(ClaimTypes.Name, user.FirstName),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role),
+            new("userId", user.UserId.ToString()),
         };
 
         var credentials = new SigningCredentials(
@@ -112,5 +116,31 @@ public class TokenService : ITokenService
     public Task<int> GetUserIdByRefreshToken(string hashedRefreshToken)
     {
         return _userTokenRepository.GetUserIdByRefreshToken(hashedRefreshToken);
+    }
+
+    public int? GetUserIdFromToken(string token)
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type is "userId" or ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                _logger.LogWarning("UserId claim not found in token.");
+                return null;
+            }
+            if (int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return userId;
+            }
+            _logger.LogWarning("UserId claim in token is not a valid integer.");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to extract userId from token.");
+            return null;
+        }
     }
 }
