@@ -72,5 +72,27 @@ namespace RepairManagementSystem.Controllers
             }
             return Ok(response.Message);
         }
+
+    [HttpPatch("address")]
+    public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized();
+        }
+        int userId = int.Parse(userIdClaim.Value);
+
+        var response = await _userService.UpdateAddressAsync(userId, request);
+        if (!response.Success)
+        {
+            return BadRequest(response.Message);
+        }
+        return Ok(response.Message);
     }
 }
