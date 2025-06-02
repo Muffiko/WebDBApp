@@ -79,5 +79,49 @@ namespace RepairManagementSystem.Services
 
             return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
         }
+
+        public async Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+            }
+
+            var updatedFields = new List<string>();
+            if (request.FirstName != null)
+            {
+                user.FirstName = request.FirstName;
+                updatedFields.Add("first name");
+            }
+            if (request.LastName != null)
+            {
+                user.LastName = request.LastName;
+                updatedFields.Add("last name");
+            }
+            if (request.Email != null)
+            {
+                user.Email = request.Email;
+                updatedFields.Add("email");
+            }
+            if (request.PhoneNumber != null)
+            {
+                user.Number = request.PhoneNumber;
+                updatedFields.Add("phone number");
+            }
+
+            if (updatedFields.Count == 0)
+            {
+                return new UpdateUserInfoResponse { Success = false, Message = "No fields were provided to update." };
+            }
+
+            if (await _userRepository.UpdateUserAsync(user))
+            {
+                var updatedList = string.Join(", ", updatedFields);
+                return new UpdateUserInfoResponse { Success = true, Message = $"Updated {updatedList}." };
+            }
+
+            return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+        }
     }
 }

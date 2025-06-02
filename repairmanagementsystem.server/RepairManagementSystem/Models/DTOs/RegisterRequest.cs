@@ -5,7 +5,7 @@ namespace RepairManagementSystem.Models.DTOs
     {
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address format.")]
-        [MaxLength(256, ErrorMessage = "Email cannot exceed 256 characters.")]
+        [MaxLength(100, ErrorMessage = "Email cannot exceed 100 characters.")]
         public string? Email { get; set; }
 
         [Required]
@@ -14,16 +14,16 @@ namespace RepairManagementSystem.Models.DTOs
         public string? Password { get; set; }
 
         [Required]
-        [MaxLength(32)]
+        [MaxLength(32, ErrorMessage = "First name cannot exceed 32 characters.")]
         public string FirstName { get; set; } = String.Empty;
 
         [Required]
-        [MaxLength(32)]
+        [MaxLength(32, ErrorMessage = "Last name cannot exceed 32 characters.")]
         public string LastName { get; set; } = String.Empty; 
 
         [Required]
-        [MaxLength(16)]
-        public string Number { get; set; } = String.Empty;
+        [Phone(ErrorMessage = "Invalid phone number format.")]
+        public string PhoneNumber { get; set; } = String.Empty;
 
         [Required]
         public Address Address { get; set; } = new Address();
