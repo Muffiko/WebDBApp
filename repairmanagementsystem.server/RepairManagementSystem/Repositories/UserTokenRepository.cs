@@ -21,14 +21,7 @@ namespace RepairManagementSystem.Repositories
         {
             var userToken = await _context.UserTokens.FindAsync(userTokenId);
 
-            if (userToken == null)
-            {
-                return null;
-            }
-            else
-            {
-                return userToken;
-            }
+            return userToken;
         }
 
         public async Task<UserToken?> GetUserTokenByUserIdAsync(int userId)
