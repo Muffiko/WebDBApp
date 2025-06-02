@@ -33,7 +33,8 @@ namespace RepairManagementSystem.Controllers
                 Expires = DateTime.UtcNow.AddDays(30)
             });
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = result.Response.Token,
                 email = result.Response.Email,
                 role = result.Response.Role,
@@ -58,7 +59,8 @@ namespace RepairManagementSystem.Controllers
                 Expires = DateTime.UtcNow.AddDays(30)
             });
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = result.Response.Token,
                 email = result.Response.Email,
                 role = result.Response.Role,
@@ -66,7 +68,7 @@ namespace RepairManagementSystem.Controllers
             });
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
@@ -90,6 +92,18 @@ namespace RepairManagementSystem.Controllers
             });
 
             return Ok(new { token = response.Token });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                await _authService.DeleteRefreshTokenAsync(refreshToken);
+            }
+            Response.Cookies.Delete("refreshToken");
+            return Ok(new { message = "Logged out successfully" });
         }
     }
 }

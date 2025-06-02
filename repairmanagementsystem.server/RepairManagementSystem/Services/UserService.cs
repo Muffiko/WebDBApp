@@ -48,8 +48,7 @@ namespace RepairManagementSystem.Services
                 return false;
             }
 
-            await _userRepository.AddUserAsync(user);
-            return true;
+            return await _userRepository.AddUserAsync(user);
         }
 
         public async Task<User?> GetUserByEmailAsync(string email)

@@ -40,7 +40,6 @@ public class AuthService : IAuthService
         }
         var userDTO = _mapper.Map<UserDTO>(user);
 
-        //find if refresh token exists for the user
         var existingUserToken = await _userTokenRepository.GetUserTokenByUserIdAsync(userDTO.UserId);
         if (existingUserToken != null)
         {
@@ -178,5 +177,24 @@ public class AuthService : IAuthService
             Token = token,
             RefreshToken = newRefreshToken
         };
+    }
+    public int? GetUserIdFromToken(string token)
+    {
+        return _tokenService.GetUserIdFromToken(token);
+    }
+
+    public async Task DeleteRefreshTokenAsync(string refreshToken)
+    {
+        var hashedRefreshToken = _tokenService.HashToken(refreshToken);
+        var userToken = await _userTokenRepository.GetUserTokenByRefreshToken(hashedRefreshToken);
+        if (userToken != null)
+        {
+            await _userTokenRepository.DeleteUserTokenAsync(userToken.UserTokenId);
+            _logger.LogInformation("Refresh token deleted from database for logout.");
+        }
+        else
+        {
+            _logger.LogWarning("Attempted to delete a non-existing refresh token during logout.");
+        }
     }
 }

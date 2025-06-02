@@ -72,16 +72,14 @@ namespace RepairManagementSystem.Repositories
 
         public async Task UpdateUserTokenAsync(UserToken userToken)
         {
-            if (userToken != null)
-            {
-                _context.UserTokens.Update(userToken);
-                await _context.SaveChangesAsync();
-            }
+            _context.UserTokens.Update(userToken);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUserTokenAsync(int userTokenId)
         {
             var userToken = await GetUserTokenByIdAsync(userTokenId);
+
             if (userToken != null)
             {
                 _context.UserTokens.Remove(userToken);
@@ -91,6 +89,11 @@ namespace RepairManagementSystem.Repositories
             {
                 _logger.LogWarning($"Tried to delete a non-existing user token with ID {userTokenId}.");
             }
+        }
+        public async Task<UserToken?> GetUserTokenByRefreshToken(string hashedRefreshToken)
+        {
+            return await _context.UserTokens
+                .FirstOrDefaultAsync(ut => ut.RefreshToken == hashedRefreshToken);
         }
     }
 }

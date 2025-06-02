@@ -12,5 +12,6 @@ namespace RepairManagementSystem.Repositories.Interfaces
         Task<bool> RefreshTokenExists(string hashedRefreshToken);
         Task<int> GetUserIdByRefreshToken(string hashedRefreshToken);
         Task<UserToken?> GetUserTokenByUserIdAsync(int userId);
+        Task<UserToken?> GetUserTokenByRefreshToken(string hashedRefreshToken);
     }
 }
