@@ -15,15 +15,15 @@ namespace RepairManagementSystem.Models.DTOs
 
         [Required]
         [MaxLength(32, ErrorMessage = "First name cannot exceed 32 characters.")]
-        public string FirstName { get; set; } = String.Empty;
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(32, ErrorMessage = "Last name cannot exceed 32 characters.")]
-        public string LastName { get; set; } = String.Empty; 
+        public string LastName { get; set; } = string.Empty; 
 
         [Required]
         [Phone(ErrorMessage = "Invalid phone number format.")]
-        public string PhoneNumber { get; set; } = String.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
         public Address Address { get; set; } = new Address();
