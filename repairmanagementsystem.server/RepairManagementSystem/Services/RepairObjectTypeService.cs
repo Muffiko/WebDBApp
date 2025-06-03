@@ -58,5 +58,10 @@ namespace RepairManagementSystem.Services
             await _repairObjectTypeRepository.DeleteRepairObjectTypeAsync(repairObjectTypeId);
             return _mapper.Map<RepairObjectType>(existingRepairObjectType);
         }
+        public async Task<IEnumerable<RepairObjectTypeDTO>> GetAllRepairObjectNameAsync()
+        {
+            var repairObjectTypes = await _repairObjectTypeRepository.GetAllRepairObjectTypesAsync();
+            return _mapper.Map<IEnumerable<RepairObjectTypeDTO>>(repairObjectTypes);
+        }
     }
 }
