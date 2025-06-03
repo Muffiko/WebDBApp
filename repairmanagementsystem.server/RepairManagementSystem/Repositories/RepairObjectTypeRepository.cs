@@ -14,7 +14,7 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<RepairObjectType> GetRepairObjectTypeByIdAsync(int repairObjectTypeId)
+        public async Task<RepairObjectType> GetRepairObjectTypeByIdAsync(string repairObjectTypeId)
         {
             return await _context.RepairObjectTypes.FindAsync(repairObjectTypeId);
         }
@@ -39,7 +39,7 @@ namespace RepairManagementSystem.Repositories
             }
         }
 
-        public async Task DeleteRepairObjectTypeAsync(int repairObjectTypeId)
+        public async Task DeleteRepairObjectTypeAsync(string repairObjectTypeId)
         {
             var repairObjectType = await GetRepairObjectTypeByIdAsync(repairObjectTypeId);
 

@@ -13,6 +13,7 @@ namespace RepairManagementSystem.Extensions
             services.AddScoped<IRepairObjectService, RepairObjectService>();
             services.AddScoped<IRepairRequestService, RepairRequestService>();
             services.AddScoped<IRepairActivityService, RepairActivityService>();
+            services.AddScoped<IRepairObjectTypeService, RepairObjectTypeService>();
             services.AddScoped<ICryptoService, CryptoService>();
             return services;
         }
