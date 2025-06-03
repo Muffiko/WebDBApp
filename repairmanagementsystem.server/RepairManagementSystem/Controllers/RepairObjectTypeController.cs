@@ -51,5 +51,11 @@ namespace RepairManagementSystem.Controllers
                 return NotFound($"Repair object type with ID {repairObjectTypeId} not found.");
             return Ok($"Repair object type with ID {repairObjectTypeId} deleted successfully.");
         }
+        [HttpGet("names")]
+        public async Task<IActionResult> GetAllRepairObjectNames()
+        {
+            var repairObjectNames = await _repairObjectTypeService.GetAllRepairObjectNameAsync();
+            return Ok(repairObjectNames);
+        }
     }
 }
