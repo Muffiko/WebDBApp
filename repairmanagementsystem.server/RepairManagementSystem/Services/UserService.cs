@@ -177,5 +177,10 @@ namespace RepairManagementSystem.Services
 
             return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
         }
+
+        public async Task<User?> GetUserEntityByIdAsync(int userId)
+        {
+            return await _userRepository.GetUserByIdAsync(userId);
+        }
     }
 }

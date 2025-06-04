@@ -63,7 +63,7 @@ namespace RepairManagementSystem.Controllers
                     404,
                     new { RepairObject = new[] { $"Repair object with ID {repairObjectId} not found." } }
                 );
-            return Ok($"Repair object with ID {repairObjectId} updated successfully.");
+            return Ok(new { message = $"Repair object with ID {repairObjectId} updated successfully." });
         }
         [HttpDelete]
         [Route("{repairObjectId:int}")]
@@ -78,7 +78,7 @@ namespace RepairManagementSystem.Controllers
                     404,
                     new { RepairObject = new[] { $"Repair object with ID {repairObjectId} not found." } }
                 );
-            return Ok($"Repair object with ID {repairObjectId} deleted successfully.");
+            return Ok(new { message = $"Repair object with ID {repairObjectId} deleted successfully." });
         }
     }
 }

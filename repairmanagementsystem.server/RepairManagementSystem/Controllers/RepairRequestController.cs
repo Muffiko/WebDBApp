@@ -61,7 +61,7 @@ namespace RepairManagementSystem.Controllers
                     404,
                     new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
                 );
-            return Ok($"Repair request with ID {repairRequestId} updated successfully.");
+            return Ok(new { message = $"Repair request with ID {repairRequestId} updated successfully." });
         }
         [HttpDelete("{repairRequestId:int}")]
         public async Task<IActionResult> DeleteRepairRequest(int repairRequestId)
@@ -75,7 +75,7 @@ namespace RepairManagementSystem.Controllers
                     404,
                     new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
                 );
-            return Ok($"Repair request with ID {repairRequestId} deleted successfully.");
+            return Ok(new { message = $"Repair request with ID {repairRequestId} deleted successfully." });
         }
     }
 }

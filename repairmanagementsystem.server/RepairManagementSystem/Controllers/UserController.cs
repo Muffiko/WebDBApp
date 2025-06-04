@@ -4,6 +4,7 @@ using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
+using AutoMapper;
 
 namespace RepairManagementSystem.Controllers
 {
@@ -12,10 +13,12 @@ namespace RepairManagementSystem.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -64,7 +67,7 @@ namespace RepairManagementSystem.Controllers
                     new { Password = new[] { response.Message } }
                 );
             }
-            return Ok(response.Message);
+            return Ok(new { message = response.Message });
         }
 
         [HttpPatch("update")]
@@ -105,7 +108,7 @@ namespace RepairManagementSystem.Controllers
                     new { User = new[] { response.Message } }
                 );
             }
-            return Ok(response.Message);
+            return Ok(new { message = response.Message });
         }
 
         [HttpPatch("address")]
@@ -146,7 +149,37 @@ namespace RepairManagementSystem.Controllers
                     new { Address = new[] { response.Message } }
                 );
             }
-            return Ok(response.Message);
+            return Ok(new { message = response.Message });
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMyInfo()
+        {
+            int? userId = User.GetUserId();
+            if (userId == null)
+            {
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                    "Unauthorized",
+                    401,
+                    new { User = new[] { "User is not authenticated." } }
+                );
+            }
+            var user = await _userService.GetUserEntityByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "User not found",
+                    404,
+                    new { User = new[] { "User not found." } }
+                );
+            }
+            var response = _mapper.Map<UserMyInfoResponse>(user);
+            return Ok(response);
         }
     }
 }
