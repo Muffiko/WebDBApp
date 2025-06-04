@@ -85,5 +85,13 @@ namespace RepairManagementSystem.Controllers
                 return BadRequest("Repair request cannot be null or invalid.");
             return Ok(result);
         }
+        [HttpGet("customer/{customerId:int}")]
+        public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
+        {
+            var repairRequests = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId);
+            if (repairRequests == null || !repairRequests.Any())
+                return NotFound($"No repair requests found for customer with ID {customerId}.");
+            return Ok(repairRequests);
+        }
     }
 }
