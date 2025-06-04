@@ -9,7 +9,7 @@ const RegisterForm = () => {
     name: "",
     surname: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     country: "",
     city: "",
     postalCode: "",
@@ -113,9 +113,9 @@ const RegisterForm = () => {
         </div>
 
         <div className="input-wrapper">
-          <label>Phone</label>
-          <input name="phone" placeholder="e.g. +48 123 456 789" value={formData.phone} onChange={handleChange} />
-          {errors.phone && <small className="error">{errors.phone}</small>}
+          <label>Phone number</label>
+          <input name="phoneNumber" placeholder="e.g. +48 123 456 789" value={formData.phoneNumber} onChange={handleChange} />
+          {errors.phonenumber && <small className="error">{errors.phonenumber}</small>}
         </div>
 
         <div className="input-wrapper">

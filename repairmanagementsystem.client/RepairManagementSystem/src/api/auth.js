@@ -26,7 +26,7 @@ export const registerUser = async (formData) => {
       password: formData.password,
       firstName: formData.name,
       lastName: formData.surname,
-      number: formData.phoneNumber,
+      phoneNumber: formData.phoneNumber,
       address: {
         country: formData.country,
         city: formData.city,
