@@ -28,6 +28,12 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      'indent': ['error', 2],
+      'quotes': ['error', 'single'],
+      'comma-dangle': ['error', 'always-multiline'],
+      'max-len': ['error', { code: 120 }],
+      'no-trailing-spaces': 'error',
+      'eol-last': ['error', 'always'],
     },
   },
 ]

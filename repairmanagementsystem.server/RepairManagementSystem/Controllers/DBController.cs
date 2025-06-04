@@ -1,6 +1,8 @@
 //ONLY FOR DB TESTS!!!
 using Microsoft.AspNetCore.Mvc;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
+using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
 
 namespace RepairManagementSystem.Controllers
@@ -29,7 +31,13 @@ namespace RepairManagementSystem.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "User not found",
+                    404,
+                    new { User = new[] { $"User with ID {userId} not found." } }
+                );
             }
 
             return Ok(user);
@@ -40,7 +48,13 @@ namespace RepairManagementSystem.Controllers
         {
             if (user == null)
             {
-                return BadRequest("User cannot be null");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Invalid user",
+                    400,
+                    new { User = new[] { "User cannot be null." } }
+                );
             }
 
             await _userRepository.AddUserAsync(user);
@@ -52,14 +66,26 @@ namespace RepairManagementSystem.Controllers
         {
             if (updatedUser == null || updatedUser.UserId != userId)
             {
-                return BadRequest("User ID mismatch");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "User ID mismatch",
+                    400,
+                    new { User = new[] { "User ID mismatch." } }
+                );
             }
 
             var existingUser = await _userRepository.GetUserByIdAsync(userId);
 
             if (existingUser == null)
             {
-                return NotFound();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "User not found",
+                    404,
+                    new { User = new[] { $"User with ID {userId} not found." } }
+                );
             }
 
             existingUser.FirstName = updatedUser.FirstName;
@@ -85,7 +111,13 @@ namespace RepairManagementSystem.Controllers
 
             if (existingUser == null)
             {
-                return NotFound();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "User not found",
+                    404,
+                    new { User = new[] { $"User with ID {userId} not found." } }
+                );
             }
 
             await _userRepository.DeleteUserAsync(userId);

@@ -105,6 +105,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RepairManagementSystem.DevDataSeeder.SeedAdminUserAsync(services);
+}
+
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
