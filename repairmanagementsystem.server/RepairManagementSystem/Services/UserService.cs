@@ -182,5 +182,10 @@ namespace RepairManagementSystem.Services
         {
             return await _userRepository.GetUserByIdAsync(userId);
         }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            return await _userRepository.UpdateUserAsync(user);
+        }
     }
 }

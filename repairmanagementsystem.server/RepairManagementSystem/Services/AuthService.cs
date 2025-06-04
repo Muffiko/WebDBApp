@@ -38,6 +38,18 @@ public class AuthService : IAuthService
                 ErrorMessage = "Wrong email or password"
             };
         }
+        user.LastLoginAt = DateTime.UtcNow;
+        var updateResult = await _userService.UpdateUserAsync(user);
+        if (!updateResult)
+        {
+            _logger.LogWarning("Failed to update LastLoginAt for user: {Email}", user.Email);
+            return new AuthResult
+            {
+                Success = false,
+                Response = null,
+                ErrorMessage = "Login failed due to a server error. Please try again."
+            };
+        }
         var userDTO = _mapper.Map<UserDTO>(user);
 
         var existingUserToken = await _userTokenRepository.GetUserTokenByUserIdAsync(userDTO.UserId);

@@ -11,7 +11,9 @@ public class UserProfile : Profile
         CreateMap<Address, AddressDTO>();
         CreateMap<AddressDTO, Address>();
         CreateMap<User, UserMyInfoResponse>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Number));
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Number))
+            .ForMember(dest => dest.LastLoginAt, opt => opt.MapFrom(src => src.LastLoginAt))
+            .ForMember(dest => dest.AccountCreated, opt => opt.MapFrom(src => src.CreatedAt));
     }
 }
 
