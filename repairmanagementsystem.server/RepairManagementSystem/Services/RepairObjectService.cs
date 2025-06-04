@@ -70,5 +70,11 @@ namespace RepairManagementSystem.Services
             await _repairObjectRepository.AddRepairObjectAsync(repairObject);
             return repairObject;
         }
+
+        public async Task<IEnumerable<RepairObject>> GetAllRepairObjectsFromCustomerAsync(int customerId)
+        {
+            var repairObjects = await _repairObjectRepository.GetAllRepairObjectsFromCustomerAsync(customerId);
+            return repairObjects;
+        }
     }
 }

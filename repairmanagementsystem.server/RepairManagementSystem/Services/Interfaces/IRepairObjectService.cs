@@ -11,5 +11,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<RepairObject?> UpdateRepairObjectAsync(int repairObjectId, RepairObjectDTO repairObject);
         Task<RepairObject?> DeleteRepairObjectAsync(int repairObjectId);
         Task<RepairObject?> AddRepairObjectAsync(RepairObjectAddDTO repairObject);
+        Task<IEnumerable<RepairObject>> GetAllRepairObjectsFromCustomerAsync(int customerId);
     }
 }
