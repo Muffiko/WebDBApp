@@ -9,5 +9,6 @@ namespace RepairManagementSystem.Repositories.Interfaces
         Task AddRepairObjectAsync(RepairObject repairObject);
         Task UpdateRepairObjectAsync(RepairObject repairObject);
         Task DeleteRepairObjectAsync(int repairObjectId);
+        Task<IEnumerable<RepairObject>> GetAllRepairObjectsFromCustomerAsync(int customerId);
     }
 }
