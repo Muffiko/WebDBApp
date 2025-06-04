@@ -25,6 +25,5 @@ namespace RepairManagementSystem.Models
         [ForeignKey(nameof(CustomerId))]
         public Customer Customer { get; set; }
 
-        public ICollection<RepairRequest> RepairRequests { get; set; } = new List<RepairRequest>();
     }
 }

@@ -21,7 +21,9 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<IEnumerable<RepairRequest>> GetAllRepairRequestsAsync()
         {
-            return await _context.RepairRequests.ToListAsync();
+            return await _context.RepairRequests
+                .Include(r => r.RepairObject)
+                .ToListAsync();
         }
 
         public async Task AddRepairRequestAsync(RepairRequest repairRequest)
