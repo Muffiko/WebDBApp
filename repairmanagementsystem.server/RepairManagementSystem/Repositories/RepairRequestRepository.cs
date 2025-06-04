@@ -48,5 +48,13 @@ namespace RepairManagementSystem.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<RepairRequest>> GetAllRepairObjectsFromCustomerAsync(int customerId)
+        {
+            return await _context.RepairRequests
+                .Include(rr => rr.RepairObject)
+                .Where(rr => rr.RepairObject.CustomerId == customerId)
+                .ToListAsync();
+        }
     }
 }

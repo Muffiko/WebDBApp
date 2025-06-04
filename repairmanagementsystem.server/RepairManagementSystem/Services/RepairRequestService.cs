@@ -2,6 +2,7 @@ using AutoMapper;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
+using RepairManagementSystem.Repositories;
 using RepairManagementSystem.Repositories.Interfaces;
 using RepairManagementSystem.Services.Interfaces;
 
@@ -66,6 +67,12 @@ namespace RepairManagementSystem.Services
             var repairRequest = _mapper.Map<RepairRequest>(repairRequestAddDTO);
             await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
             return repairRequest;
+        }
+
+        public async Task<IEnumerable<RepairRequest>> GetAllRepairRequestsFromCustomerAsync(int customerId)
+        {
+            var repairRequests = await _repairRequestRepository.GetAllRepairObjectsFromCustomerAsync(customerId);
+            return repairRequests;
         }
     }
 }
