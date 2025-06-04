@@ -14,5 +14,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request);
         Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request);
         Task<User?> GetUserEntityByIdAsync(int userId);
+        Task<bool> UpdateUserAsync(User user);
     }
 }
