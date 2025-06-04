@@ -10,6 +10,8 @@ public class UserProfile : Profile
         CreateMap<UserDTO, User>();
         CreateMap<Address, AddressDTO>();
         CreateMap<AddressDTO, Address>();
+        CreateMap<User, UserMyInfoResponse>()
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Number));
     }
 }
 
