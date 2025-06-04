@@ -10,8 +10,8 @@ namespace RepairManagementSystem.AutoMapper
         {
             CreateMap<RepairRequest, RepairRequestDTO>();
             CreateMap<RepairRequestDTO, RepairRequest>();
-            CreateMap<RepairRequest, RepairRequestAddDTO>();
-            CreateMap<RepairRequestAddDTO, RepairRequest>();
+            CreateMap<RepairRequest, RepairRequestAdd>();
+            CreateMap<RepairRequestAdd, RepairRequest>();
         }
     }
 }

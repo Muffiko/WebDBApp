@@ -14,16 +14,16 @@ namespace RepairManagementSystem.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string RepairObjectTypeId { get; set; }
+        public string RepairObjectTypeId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(RepairObjectTypeId))]
-        public RepairObjectType RepairObjectType { get; set; }
+        public RepairObjectType RepairObjectType { get; set; } = null!;
 
         [Required]
         public int CustomerId { get; set; }
 
         [ForeignKey(nameof(CustomerId))]
-        public Customer Customer { get; set; }
+        public Customer Customer { get; set; } = null!;
 
     }
 }

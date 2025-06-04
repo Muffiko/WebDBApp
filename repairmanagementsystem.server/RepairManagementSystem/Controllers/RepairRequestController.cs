@@ -21,6 +21,7 @@ namespace RepairManagementSystem.Controllers
             var repairRequests = await _repairRequestService.GetAllRepairRequestsAsync();
             return Ok(repairRequests);
         }
+        
         [HttpGet("{repairRequestId:int}")]
         public async Task<IActionResult> GetRepairRequest(int repairRequestId)
         {
@@ -35,6 +36,7 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(repairRequest);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestDTO repairRequestDTO)
         {
@@ -49,11 +51,12 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(result);
         }
+
         [HttpPut("{repairRequestId:int}")]
         public async Task<IActionResult> UpdateRepairRequest(int repairRequestId, [FromBody] RepairRequestDTO updatedRepairRequest)
         {
             var result = await _repairRequestService.UpdateRepairRequestAsync(repairRequestId, updatedRepairRequest);
-            if (result == null)
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.5",
@@ -64,10 +67,11 @@ namespace RepairManagementSystem.Controllers
             return Ok(new { message = $"Repair request with ID {repairRequestId} updated successfully." });
         }
         [HttpDelete("{repairRequestId:int}")]
+        
         public async Task<IActionResult> DeleteRepairRequest(int repairRequestId)
         {
             var result = await _repairRequestService.DeleteRepairRequestAsync(repairRequestId);
-            if (result == null)
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.5",
@@ -78,7 +82,8 @@ namespace RepairManagementSystem.Controllers
             return Ok(new { message = $"Repair request with ID {repairRequestId} deleted successfully." });
         }
         [HttpPost("add")]
-        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAddDTO repairRequestAddDTO)
+
+        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAdd repairRequestAddDTO)
         {
             var result = await _repairRequestService.AddRepairRequestAsync(repairRequestAddDTO);
             if (result == null)
@@ -86,27 +91,18 @@ namespace RepairManagementSystem.Controllers
             return Ok(result);
         }
         [HttpGet("customer/{customerId:int}")]
+
         public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
         {
             var repairRequests = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId);
             if (repairRequests == null || !repairRequests.Any())
-                return NotFound($"No repair requests found for customer with ID {customerId}.");
-            return Ok(repairRequests);
-        }
-        [HttpPost("add")]
-        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAddDTO repairRequestAddDTO)
-        {
-            var result = await _repairRequestService.AddRepairRequestAsync(repairRequestAddDTO);
-            if (result == null)
-                return BadRequest("Repair request cannot be null or invalid.");
-            return Ok(result);
-        }
-        [HttpGet("customer/{customerId:int}")]
-        public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
-        {
-            var repairRequests = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId);
-            if (repairRequests == null || !repairRequests.Any())
-                return NotFound($"No repair requests found for customer with ID {customerId}.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No repair requests found",
+                    404,
+                    new { RepairRequest = new[] { $"No repair requests found for customer with ID {customerId}." } }
+                );
             return Ok(repairRequests);
         }
     }

@@ -14,51 +14,42 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<RepairObject> GetRepairObjectByIdAsync(int repairObjectId)
+        public async Task<RepairObject?> GetRepairObjectByIdAsync(int repairObjectId)
         {
-            var repairObject = await _context.RepairObjects.FindAsync(repairObjectId);
-
-            if (repairObject == null)
-            {
-                return null;
-            }
-            else
-            {
-                return repairObject;
-            }
+            return await _context.RepairObjects.FindAsync(repairObjectId);
         }
 
-        public async Task<IEnumerable<RepairObject>> GetAllRepairObjectsAsync()
+        public async Task<IEnumerable<RepairObject?>> GetAllRepairObjectsAsync()
         {
             return await _context.RepairObjects.ToListAsync();
         }
 
-        public async Task AddRepairObjectAsync(RepairObject repairObject)
+        public async Task<bool> AddRepairObjectAsync(RepairObject repairObject)
         {
             _context.RepairObjects.Add(repairObject);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateRepairObjectAsync(RepairObject repairObject)
+        public async Task<bool> UpdateRepairObjectAsync(RepairObject repairObject)
         {
-            if (repairObject != null)
-            {
-                _context.RepairObjects.Update(repairObject);
-                await _context.SaveChangesAsync();
-            }
+            var existing = await GetRepairObjectByIdAsync(repairObject.RepairObjectId);
+            if (existing == null) return false;
+            _context.Entry(existing).CurrentValues.SetValues(repairObject);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task DeleteRepairObjectAsync(int repairObjectId)
+        public async Task<bool> DeleteRepairObjectAsync(int repairObjectId)
         {
             var repairObject = await GetRepairObjectByIdAsync(repairObjectId);
             if (repairObject != null)
             {
                 _context.RepairObjects.Remove(repairObject);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task<IEnumerable<RepairObject>> GetAllRepairObjectsFromCustomerAsync(int customerId)
+        public async Task<IEnumerable<RepairObject?>> GetAllRepairObjectsFromCustomerAsync(int customerId)
         {
             return await _context.RepairObjects
                 .Where(ro => ro.CustomerId == customerId)

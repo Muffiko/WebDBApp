@@ -5,12 +5,12 @@ namespace RepairManagementSystem.Services.Interfaces
 {
     public interface IRepairRequestService
     {
-        Task<IEnumerable<RepairRequest>> GetAllRepairRequestsAsync();
+        Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync();
         Task<RepairRequest?> GetRepairRequestByIdAsync(int repairRequestId);
         Task<RepairRequest?> AddRepairRequestAsync(RepairRequestDTO repairRequest);
-        Task<RepairRequest?> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequest);
-        Task<RepairRequest?> DeleteRepairRequestAsync(int repairRequestId);
-        Task<RepairRequest?> AddRepairRequestAsync(RepairRequestAddDTO repairRequest);
-        Task<IEnumerable<RepairRequest>> GetAllRepairRequestsFromCustomerAsync(int customerId);
+        Task<bool> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequest);
+        Task<bool> DeleteRepairRequestAsync(int repairRequestId);
+        Task<RepairRequest?> AddRepairRequestAsync(RepairRequestAdd repairRequest);
+        Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId);
     }
 }

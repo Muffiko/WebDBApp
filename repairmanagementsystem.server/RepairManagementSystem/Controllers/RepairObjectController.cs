@@ -22,6 +22,7 @@ namespace RepairManagementSystem.Controllers
             var repairObjects = await _repairObjectService.GetAllRepairObjectsAsync();
             return Ok(repairObjects);
         }
+
         [HttpGet("{repairObjectId:int}")]
         public async Task<IActionResult> GetRepairObject(int repairObjectId)
         {
@@ -36,11 +37,15 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(repairObject);
         }
+
         [HttpPost]
-        public async Task<IActionResult> AddRepairObject([FromBody] RepairObjectDTO repairObjectDTO)
+        public async Task<IActionResult> AddRepairObject([FromBody] RepairObjectRequest repairObjectRequest)
         {
-            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectDTO);
-            if (result == null)
+            int? userId = User.GetUserId();
+            if (userId == null)
+                return Unauthorized();
+            var result = await _repairObjectService.AddRepairObjectAsync(userId.Value, repairObjectRequest);
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -50,12 +55,15 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(result);
         }
-        [HttpPut]
-        [Route("{repairObjectId:int}")]
-        public async Task<IActionResult> UpdateRepairObject(int repairObjectId, [FromBody] RepairObjectDTO updatedRepairObject)
+
+        [HttpPut("{repairObjectId:int}")]
+        public async Task<IActionResult> UpdateRepairObject(int repairObjectId, [FromBody] RepairObjectRequest updatedRepairObject)
         {
+            int? userId = User.GetUserId();
+            if (userId == null)
+                return Unauthorized();
             var result = await _repairObjectService.UpdateRepairObjectAsync(repairObjectId, updatedRepairObject);
-            if (result == null)
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.5",
@@ -65,12 +73,12 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair object with ID {repairObjectId} updated successfully." });
         }
-        [HttpDelete]
-        [Route("{repairObjectId:int}")]
+        
+        [HttpDelete("{repairObjectId:int}")]
         public async Task<IActionResult> DeleteRepairObject(int repairObjectId)
         {
             var result = await _repairObjectService.DeleteRepairObjectAsync(repairObjectId);
-            if(result == null)
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.5",
@@ -80,36 +88,19 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair object with ID {repairObjectId} deleted successfully." });
         }
-        [HttpPost("add")]
-        public async Task<IActionResult> AddRepairObjectWithUserToken([FromBody] RepairObjectAddDTO repairObjectAddDTO)
-        {
-            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectAddDTO);
-            if (result == null)
-                return BadRequest("Repair object cannot be null or invalid.");
-            return Ok(result);
-        }
+
         [HttpGet("customer/{customerId:int}")]
         public async Task<IActionResult> GetAllRepairObjectsFromCustomer(int customerId)
         {
             var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(customerId);
             if (repairObjects == null || !repairObjects.Any())
-                return NotFound($"No repair objects found for customer with ID {customerId}.");
-            return Ok(repairObjects);
-        }
-        [HttpPost("add")]
-        public async Task<IActionResult> AddRepairObjectWithUserToken([FromBody] RepairObjectAddDTO repairObjectAddDTO)
-        {
-            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectAddDTO);
-            if (result == null)
-                return BadRequest("Repair object cannot be null or invalid.");
-            return Ok(result);
-        }
-        [HttpGet("customer/{customerId:int}")]
-        public async Task<IActionResult> GetAllRepairObjectsFromCustomer(int customerId)
-        {
-            var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(customerId);
-            if (repairObjects == null || !repairObjects.Any())
-                return NotFound($"No repair objects found for customer with ID {customerId}.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No repair objects found",
+                    404,
+                    new { RepairObject = new[] { $"No repair objects found for customer with ID {customerId}." } }
+                );
             return Ok(repairObjects);
         }
     }

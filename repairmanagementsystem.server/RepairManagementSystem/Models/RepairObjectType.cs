@@ -9,7 +9,7 @@ namespace RepairManagementSystem.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [MaxLength(16)]
-        public string RepairObjectTypeId { get; set; }
+        public string RepairObjectTypeId { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(64)]

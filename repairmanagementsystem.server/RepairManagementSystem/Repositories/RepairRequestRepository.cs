@@ -14,48 +14,50 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<RepairRequest> GetRepairRequestByIdAsync(int repairRequestId)
+        public async Task<RepairRequest?> GetRepairRequestByIdAsync(int repairRequestId)
         {
             return await _context.RepairRequests.FindAsync(repairRequestId);
         }
 
-        public async Task<IEnumerable<RepairRequest>> GetAllRepairRequestsAsync()
+        public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync()
         {
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                 .ToListAsync();
         }
 
-        public async Task AddRepairRequestAsync(RepairRequest repairRequest)
+        public async Task<bool> AddRepairRequestAsync(RepairRequest repairRequest)
         {
             _context.RepairRequests.Add(repairRequest);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateRepairRequestAsync(RepairRequest repairRequest)
+        public async Task<bool> UpdateRepairRequestAsync(RepairRequest repairRequest)
         {
             if (repairRequest != null)
             {
                 _context.RepairRequests.Update(repairRequest);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteRepairRequestAsync(int repairRequestId)
+        public async Task<bool> DeleteRepairRequestAsync(int repairRequestId)
         {
             var repairRequest = await GetRepairRequestByIdAsync(repairRequestId);
             if (repairRequest != null)
             {
                 _context.RepairRequests.Remove(repairRequest);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task<IEnumerable<RepairRequest>> GetAllRepairObjectsFromCustomerAsync(int customerId)
+        public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId)
         {
             return await _context.RepairRequests
-                .Include(rr => rr.RepairObject)
-                .Where(rr => rr.RepairObject.CustomerId == customerId)
+                .Include(r => r.RepairObject)
+                .Where(r => r.RepairObject.CustomerId == customerId)
                 .ToListAsync();
         }
     }
