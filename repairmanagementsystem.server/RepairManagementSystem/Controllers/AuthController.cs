@@ -3,6 +3,7 @@ using RepairManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Authorization;
+using RepairManagementSystem.Helpers;
 
 namespace RepairManagementSystem.Controllers
 {
@@ -23,7 +24,13 @@ namespace RepairManagementSystem.Controllers
             var result = await _authService.AuthenticateAsync(loginRequest);
             if (!result.Success || result.Response == null || string.IsNullOrEmpty(result.Response.RefreshToken))
             {
-                return Unauthorized(result.ErrorMessage);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.2",
+                    "Authentication failed",
+                    401,
+                    new { Login = new[] { result.ErrorMessage ?? "Login failed" } }
+                );
             }
 
             Response.Cookies.Append("refreshToken", result.Response.RefreshToken, new CookieOptions
@@ -49,7 +56,13 @@ namespace RepairManagementSystem.Controllers
             var result = await _authService.RegisterAsync(registerRequest);
             if (!result.Success || result.Response == null || string.IsNullOrEmpty(result.Response.RefreshToken))
             {
-                return BadRequest(result.ErrorMessage);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Registration failed",
+                    400,
+                    new { Register = new[] { result.ErrorMessage ?? "Registration failed" } }
+                );
             }
 
             Response.Cookies.Append("refreshToken", result.Response.RefreshToken, new CookieOptions

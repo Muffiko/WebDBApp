@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 
@@ -13,6 +14,7 @@ namespace RepairManagementSystem.Controllers
         {
             _repairRequestService = repairRequestService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetRepairRequests()
         {
@@ -24,7 +26,13 @@ namespace RepairManagementSystem.Controllers
         {
             var repairRequest = await _repairRequestService.GetRepairRequestByIdAsync(repairRequestId);
             if (repairRequest == null)
-                return NotFound($"Repair request with ID {repairRequestId} not found.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "Repair request not found",
+                    404,
+                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
+                );
             return Ok(repairRequest);
         }
         [HttpPost]
@@ -32,7 +40,13 @@ namespace RepairManagementSystem.Controllers
         {
             var result = await _repairRequestService.AddRepairRequestAsync(repairRequestDTO);
             if (result == null)
-                return BadRequest("Repair request cannot be null or invalid.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Invalid repair request",
+                    400,
+                    new { RepairRequest = new[] { "Repair request cannot be null or invalid." } }
+                );
             return Ok(result);
         }
         [HttpPut("{repairRequestId:int}")]
@@ -40,7 +54,13 @@ namespace RepairManagementSystem.Controllers
         {
             var result = await _repairRequestService.UpdateRepairRequestAsync(repairRequestId, updatedRepairRequest);
             if (result == null)
-                return NotFound($"Repair request with ID {repairRequestId} not found.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "Repair request not found",
+                    404,
+                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
+                );
             return Ok($"Repair request with ID {repairRequestId} updated successfully.");
         }
         [HttpDelete("{repairRequestId:int}")]
@@ -48,7 +68,13 @@ namespace RepairManagementSystem.Controllers
         {
             var result = await _repairRequestService.DeleteRepairRequestAsync(repairRequestId);
             if (result == null)
-                return NotFound($"Repair request with ID {repairRequestId} not found.");
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "Repair request not found",
+                    404,
+                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
+                );
             return Ok($"Repair request with ID {repairRequestId} deleted successfully.");
         }
     }

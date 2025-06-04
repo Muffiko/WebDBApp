@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
@@ -31,20 +32,37 @@ namespace RepairManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Validation failed",
+                    400,
+                    ModelState
+                );
             }
 
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            int? userId = User.GetUserId();
+            if (userId == null)
             {
-                return Unauthorized();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                    "Unauthorized",
+                    401,
+                    new { User = new[] { "User is not authenticated." } }
+                );
             }
-            int userId = int.Parse(userIdClaim.Value);
 
-            var response = await _userService.ResetPasswordAsync(userId, request);
+            var response = await _userService.ResetPasswordAsync(userId.Value, request);
             if (!response.Success)
             {
-                return BadRequest(response.Message);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Password reset failed",
+                    400,
+                    new { Password = new[] { response.Message } }
+                );
             }
             return Ok(response.Message);
         }
@@ -55,20 +73,37 @@ namespace RepairManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Validation failed",
+                    400,
+                    ModelState
+                );
             }
 
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            int? userId = User.GetUserId();
+            if (userId == null)
             {
-                return Unauthorized();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                    "Unauthorized",
+                    401,
+                    new { User = new[] { "User is not authenticated." } }
+                );
             }
-            int userId = int.Parse(userIdClaim.Value);
 
-            var response = await _userService.UpdateUserInfoAsync(userId, request);
+            var response = await _userService.UpdateUserInfoAsync(userId.Value, request);
             if (!response.Success)
             {
-                return BadRequest(response.Message);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "User info update failed",
+                    400,
+                    new { User = new[] { response.Message } }
+                );
             }
             return Ok(response.Message);
         }
@@ -79,20 +114,37 @@ namespace RepairManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Validation failed",
+                    400,
+                    ModelState
+                );
             }
 
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            int? userId = User.GetUserId();
+            if (userId == null)
             {
-                return Unauthorized();
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                    "Unauthorized",
+                    401,
+                    new { User = new[] { "User is not authenticated." } }
+                );
             }
-            int userId = int.Parse(userIdClaim.Value);
 
-            var response = await _userService.UpdateAddressAsync(userId, request);
+            var response = await _userService.UpdateAddressAsync(userId.Value, request);
             if (!response.Success)
             {
-                return BadRequest(response.Message);
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Address update failed",
+                    400,
+                    new { Address = new[] { response.Message } }
+                );
             }
             return Ok(response.Message);
         }
