@@ -3,6 +3,7 @@ import "./styles/LoginForm.css";
 import { loginUser } from "../api/auth";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -31,30 +32,36 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-card">
-      <h1 className="login-title">RMS</h1>
-      <p className="login-subtitle">Login</p>
-      <form onSubmit={handleSubmit} className="login-form">
-        <label>Email</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        {error && <p className="login-error">{error}</p>}
-        <button type="submit" className="login-button">Login</button>
-      </form>
-    </div>
+      <div className="login-card">
+        <h1 className="login-title">RMS</h1>
+        <p className="login-subtitle">Login</p>
+        <form onSubmit={handleSubmit} className="login-form">
+          <label>Email</label>
+          <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+          />
+          <label>Password</label>
+          <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+          />
+          {error && <p className="login-error">{error}</p>}
+          <button type="submit" className="general-button">Login</button>
+          <button
+              type="button"
+              onClick={() => navigate("/register")}
+              className="general-button"
+          >Register
+          </button>
+        </form>
+      </div>
   );
 };
 
