@@ -18,7 +18,7 @@ const ChangePasswordPage = () => {
   };
 
   const navigate = useNavigate();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -27,12 +27,16 @@ const ChangePasswordPage = () => {
     try {
       const msg = await changePassword(form);
       setForm({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
-      navigate("/profile");
+      navigate("/profile", { state: { message: msg.message } });
     } catch (err) {
       if (err.errors) {
         const mapped = {};
         for (const key in err.errors) {
-          mapped[key.charAt(0).toLowerCase() + key.slice(1)] = err.errors[key][0];
+          if (key === "password") {
+            mapped.oldPassword = err.errors[key][0];
+          } else {
+            mapped[key.charAt(0).toLowerCase() + key.slice(1)] = err.errors[key][0];
+          }
         }
         setErrors(mapped);
       } else {
