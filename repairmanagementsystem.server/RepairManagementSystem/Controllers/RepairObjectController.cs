@@ -96,5 +96,21 @@ namespace RepairManagementSystem.Controllers
                 return NotFound($"No repair objects found for customer with ID {customerId}.");
             return Ok(repairObjects);
         }
+        [HttpPost("add")]
+        public async Task<IActionResult> AddRepairObjectWithUserToken([FromBody] RepairObjectAddDTO repairObjectAddDTO)
+        {
+            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectAddDTO);
+            if (result == null)
+                return BadRequest("Repair object cannot be null or invalid.");
+            return Ok(result);
+        }
+        [HttpGet("customer/{customerId:int}")]
+        public async Task<IActionResult> GetAllRepairObjectsFromCustomer(int customerId)
+        {
+            var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(customerId);
+            if (repairObjects == null || !repairObjects.Any())
+                return NotFound($"No repair objects found for customer with ID {customerId}.");
+            return Ok(repairObjects);
+        }
     }
 }
