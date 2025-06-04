@@ -35,4 +35,13 @@ namespace RepairManagementSystem.Models.DTOs
         [Required]
         public DateTime FinishedAt { get; set; }
     }
+    public class RepairRequestAddDTO
+    {
+        [Required]
+        [MaxLength(256)]
+        public string Description { get; set; } = String.Empty;
+
+        [Required]
+        public int RepairObjectId { get; set; }
+    }
 }
