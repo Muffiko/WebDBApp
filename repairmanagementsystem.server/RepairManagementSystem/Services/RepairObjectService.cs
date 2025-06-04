@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
@@ -13,6 +14,7 @@ namespace RepairManagementSystem.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IRepairObjectRepository _repairObjectRepository;
+        private readonly IRepairObjectTypeRepository _repairObjectTypeRepository;
 
         public RepairObjectService(ApplicationDbContext context, IMapper mapper, IRepairObjectRepository repairObjectRepository)
         {
@@ -58,6 +60,15 @@ namespace RepairManagementSystem.Services
                 return null;
             await _repairObjectRepository.DeleteRepairObjectAsync(repairObjectId);
             return _mapper.Map<RepairObject>(existingRepairObject);
+        }
+
+        public async Task<RepairObject?> AddRepairObjectAsync(RepairObjectAddDTO repairObjectAddDTO)
+        {
+            if (repairObjectAddDTO == null)
+                return null;
+            var repairObject = _mapper.Map<RepairObject>(repairObjectAddDTO);
+            await _repairObjectRepository.AddRepairObjectAsync(repairObject);
+            return repairObject;
         }
     }
 }

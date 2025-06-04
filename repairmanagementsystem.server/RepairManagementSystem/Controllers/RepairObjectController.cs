@@ -50,9 +50,17 @@ namespace RepairManagementSystem.Controllers
         public async Task<IActionResult> DeleteRepairObject(int repairObjectId)
         {
             var result = await _repairObjectService.DeleteRepairObjectAsync(repairObjectId);
-            if(result == null)
+            if (result == null)
                 return NotFound($"Repair object with ID {repairObjectId} not found.");
             return Ok($"Repair object with ID {repairObjectId} deleted successfully.");
+        }
+        [HttpPost("add")]
+        public async Task<IActionResult> AddRepairObjectWithUserToken([FromBody] RepairObjectAddDTO repairObjectAddDTO)
+        {
+            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectAddDTO);
+            if (result == null)
+                return BadRequest("Repair object cannot be null or invalid.");
+            return Ok(result);
         }
     }
 }
