@@ -7,10 +7,9 @@ namespace RepairManagementSystem.Services.Interfaces
     {
         Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync();
         Task<RepairRequest?> GetRepairRequestByIdAsync(int repairRequestId);
-        Task<RepairRequest?> AddRepairRequestAsync(RepairRequestDTO repairRequest);
+        Task<bool> AddRepairRequestAsync(RepairRequestAdd request);
         Task<bool> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequest);
         Task<bool> DeleteRepairRequestAsync(int repairRequestId);
-        Task<RepairRequest?> AddRepairRequestAsync(RepairRequestAdd repairRequest);
         Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId);
     }
 }

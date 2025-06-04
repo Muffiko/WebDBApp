@@ -33,13 +33,16 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<RepairRequest?>(repairRequest);
         }
 
-        public async Task<RepairRequest?> AddRepairRequestAsync(RepairRequestDTO repairRequestDTO)
+        public async Task<bool> AddRepairRequestAsync(RepairRequestAdd request)
         {
-            if (repairRequestDTO == null)
-                return null;
-            var repairRequest = _mapper.Map<RepairRequest>(repairRequestDTO);
+            if (request == null)
+                return false;
+            var repairRequest = _mapper.Map<RepairRequest>(request);
+            repairRequest.CreatedAt = DateTime.UtcNow;
+            repairRequest.Status = "Open";
+            repairRequest.IsPaid = false;
             await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
-            return repairRequest;
+            return true;
         }
 
         public async Task<bool> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequestDTO)
@@ -52,15 +55,6 @@ namespace RepairManagementSystem.Services
         public async Task<bool> DeleteRepairRequestAsync(int repairRequestId)
         {
             return await _repairRequestRepository.DeleteRepairRequestAsync(repairRequestId);
-        }
-
-        public async Task<RepairRequest?> AddRepairRequestAsync(RepairRequestAdd repairRequestAddDTO)
-        {
-            if (repairRequestAddDTO == null)
-                return null;
-            var repairRequest = _mapper.Map<RepairRequest>(repairRequestAddDTO);
-            await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
-            return repairRequest;
         }
 
         public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId)

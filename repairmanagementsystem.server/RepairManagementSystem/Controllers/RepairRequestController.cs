@@ -38,10 +38,10 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestDTO repairRequestDTO)
+        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAdd request)
         {
-            var result = await _repairRequestService.AddRepairRequestAsync(repairRequestDTO);
-            if (result == null)
+            var result = await _repairRequestService.AddRepairRequestAsync(request);
+            if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
                     "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -81,15 +81,7 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair request with ID {repairRequestId} deleted successfully." });
         }
-        [HttpPost("add")]
-
-        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAdd repairRequestAddDTO)
-        {
-            var result = await _repairRequestService.AddRepairRequestAsync(repairRequestAddDTO);
-            if (result == null)
-                return BadRequest("Repair request cannot be null or invalid.");
-            return Ok(result);
-        }
+        
         [HttpGet("customer/{customerId:int}")]
 
         public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
