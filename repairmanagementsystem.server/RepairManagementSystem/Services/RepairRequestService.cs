@@ -58,5 +58,14 @@ namespace RepairManagementSystem.Services
             await _repairRequestRepository.DeleteRepairRequestAsync(repairRequestId);
             return _mapper.Map<RepairRequest>(existingRepairRequest);
         }
+
+        public async Task<RepairRequest?> AddRepairRequestAsync(RepairRequestAddDTO repairRequestAddDTO)
+        {
+            if (repairRequestAddDTO == null)
+                return null;
+            var repairRequest = _mapper.Map<RepairRequest>(repairRequestAddDTO);
+            await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
+            return repairRequest;
+        }
     }
 }

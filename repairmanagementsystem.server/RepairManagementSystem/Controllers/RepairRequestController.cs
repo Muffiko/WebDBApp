@@ -51,5 +51,13 @@ namespace RepairManagementSystem.Controllers
                 return NotFound($"Repair request with ID {repairRequestId} not found.");
             return Ok($"Repair request with ID {repairRequestId} deleted successfully.");
         }
+        [HttpPost("add")]
+        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAddDTO repairRequestAddDTO)
+        {
+            var result = await _repairRequestService.AddRepairRequestAsync(repairRequestAddDTO);
+            if (result == null)
+                return BadRequest("Repair request cannot be null or invalid.");
+            return Ok(result);
+        }
     }
 }
