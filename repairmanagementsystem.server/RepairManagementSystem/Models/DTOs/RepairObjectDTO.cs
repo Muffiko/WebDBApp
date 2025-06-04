@@ -15,4 +15,14 @@ namespace RepairManagementSystem.Models.DTOs
         [Required]
         public int CustomerId { get; set; }
     }
+
+    public class RepairObjectAddDTO
+    {
+        [Required]
+        [MaxLength(64)]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        public string RepairObjectTypeId { get; set; }
+    }
 }

@@ -80,5 +80,13 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair object with ID {repairObjectId} deleted successfully." });
         }
+        [HttpPost("add")]
+        public async Task<IActionResult> AddRepairObjectWithUserToken([FromBody] RepairObjectAddDTO repairObjectAddDTO)
+        {
+            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectAddDTO);
+            if (result == null)
+                return BadRequest("Repair object cannot be null or invalid.");
+            return Ok(result);
+        }
     }
 }
