@@ -10,5 +10,6 @@ namespace RepairManagementSystem.Repositories.Interfaces
         Task<bool> UpdateRepairRequestAsync(RepairRequest repairRequest);
         Task<bool> DeleteRepairRequestAsync(int repairRequestId);
         Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId);
+        Task<IEnumerable<RepairRequest?>?> GetUnassignedRepairRequestsAsync();
     }
 }

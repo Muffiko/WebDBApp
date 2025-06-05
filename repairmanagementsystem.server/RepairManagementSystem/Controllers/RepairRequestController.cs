@@ -97,5 +97,21 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(repairRequests);
         }
+
+        [HttpGet("unassigned")]
+
+        public async Task<IActionResult> GetUnassignedRepairRequests()
+        {
+            var unassignedRepairRequests = await _repairRequestService.GetUnassignedRepairRequestsAsync();
+            if (unassignedRepairRequests == null || !unassignedRepairRequests.Any())
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No unassigned repair requests found",
+                    404,
+                    new { RepairRequest = new[] { "No unassigned repair requests found." } }
+                );
+            return Ok(unassignedRepairRequests);
+        }
     }
 }

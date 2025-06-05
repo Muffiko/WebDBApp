@@ -12,6 +12,8 @@ namespace RepairManagementSystem.AutoMapper
             CreateMap<RepairRequestDTO, RepairRequest>();
             CreateMap<RepairRequest, RepairRequestAdd>();
             CreateMap<RepairRequestAdd, RepairRequest>();
+            CreateMap<RepairRequest, UnassignedRepairRequest>();
+            CreateMap<UnassignedRepairRequest, RepairRequest>();
         }
     }
 }

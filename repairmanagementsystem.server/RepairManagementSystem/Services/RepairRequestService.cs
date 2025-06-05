@@ -61,5 +61,11 @@ namespace RepairManagementSystem.Services
         {
             return await _repairRequestRepository.GetAllRepairRequestsFromCustomerAsync(customerId);
         }
+
+        public async Task<IEnumerable<UnassignedRepairRequest?>?> GetUnassignedRepairRequestsAsync()
+        {
+            var repairRequest = await _repairRequestRepository.GetUnassignedRepairRequestsAsync();
+            return _mapper.Map<IEnumerable<UnassignedRepairRequest?>?>(repairRequest);
+        }
     }
 }
