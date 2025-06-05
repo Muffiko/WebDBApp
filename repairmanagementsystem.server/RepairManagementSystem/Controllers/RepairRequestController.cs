@@ -21,7 +21,7 @@ namespace RepairManagementSystem.Controllers
             var repairRequests = await _repairRequestService.GetAllRepairRequestsAsync();
             return Ok(repairRequests);
         }
-        
+
         [HttpGet("{repairRequestId:int}")]
         public async Task<IActionResult> GetRepairRequest(int repairRequestId)
         {
@@ -49,7 +49,7 @@ namespace RepairManagementSystem.Controllers
                     400,
                     new { RepairRequest = new[] { "Repair request cannot be null or invalid." } }
                 );
-            return Ok( new { message = "Repair request added successfully." });
+            return Ok(new { message = "Repair request added successfully." });
         }
 
         [HttpPut("{repairRequestId:int}")]
@@ -67,7 +67,7 @@ namespace RepairManagementSystem.Controllers
             return Ok(new { message = $"Repair request with ID {repairRequestId} updated successfully." });
         }
         [HttpDelete("{repairRequestId:int}")]
-        
+
         public async Task<IActionResult> DeleteRepairRequest(int repairRequestId)
         {
             var result = await _repairRequestService.DeleteRepairRequestAsync(repairRequestId);
@@ -81,7 +81,7 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair request with ID {repairRequestId} deleted successfully." });
         }
-        
+
         [HttpGet("customer/{customerId:int}")]
 
         public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
@@ -112,6 +112,22 @@ namespace RepairManagementSystem.Controllers
                     new { RepairRequest = new[] { "No unassigned repair requests found." } }
                 );
             return Ok(unassignedRepairRequests);
+        }
+
+        [HttpGet("active")]
+
+        public async Task<IActionResult> GetActiveRepairRequests()
+        {
+            var activeRepairRequests = await _repairRequestService.GetActiveRepairRequestsAsync();
+            if (activeRepairRequests == null || !activeRepairRequests.Any())
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No active repair requests found",
+                    404,
+                    new { RepairRequest = new[] { "No active repair requests found." } }
+                );
+            return Ok(activeRepairRequests);
         }
     }
 }

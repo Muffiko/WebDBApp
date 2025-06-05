@@ -68,5 +68,13 @@ namespace RepairManagementSystem.Repositories
                 .Where(r => r.ManagerId == 0)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<RepairRequest?>?> GetActiveRepairRequestsAsync()
+        {
+            return await _context.RepairRequests
+                .Include(r => r.RepairObject)
+                .Where(r => r.ManagerId > 0 && r.Status == "active")
+                .ToListAsync();
+        }
     }
 }

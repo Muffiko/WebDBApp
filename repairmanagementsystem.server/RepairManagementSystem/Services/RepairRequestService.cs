@@ -67,5 +67,10 @@ namespace RepairManagementSystem.Services
             var repairRequest = await _repairRequestRepository.GetUnassignedRepairRequestsAsync();
             return _mapper.Map<IEnumerable<UnassignedRepairRequest?>?>(repairRequest);
         }
+        public async Task<IEnumerable<UnassignedRepairRequest?>?> GetActiveRepairRequestsAsync()
+        {
+            var repairRequest = await _repairRequestRepository.GetActiveRepairRequestsAsync();
+            return _mapper.Map<IEnumerable<UnassignedRepairRequest?>?>(repairRequest);
+        }
     }
 }

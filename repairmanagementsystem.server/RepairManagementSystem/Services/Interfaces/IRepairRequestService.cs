@@ -12,5 +12,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<bool> DeleteRepairRequestAsync(int repairRequestId);
         Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId);
         Task<IEnumerable<UnassignedRepairRequest?>?> GetUnassignedRepairRequestsAsync();
+        Task<IEnumerable<UnassignedRepairRequest?>?> GetActiveRepairRequestsAsync();
     }
 }
