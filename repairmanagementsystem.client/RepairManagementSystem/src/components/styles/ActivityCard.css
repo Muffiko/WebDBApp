@@ -1,0 +1,50 @@
+.activity-card {
+  display: flex;
+  align-items: center;
+  background-color: #3b3b45;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  cursor: default;
+  height: 80px;
+}
+
+.activity-badge {
+  width: 40px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.activity-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem;
+  color: #ffffff;
+}
+
+.activity-field {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.field-label {
+  font-weight: 500;
+  margin-right: 0.4rem;
+}
+
+.activity-status {
+  min-width: 100px;
+  text-align: center;
+  color: #1f1f23;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  margin-right: 1rem;
+}

@@ -22,23 +22,8 @@
   width: 100%;
 }
 
-.open-requests-card {
-  background-color: #2a2a33;
-  padding: 3rem;
-  border-radius: 1.5rem;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 300px;
-  font-size: 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+ .open-requests-list {
+    width: 100%;
+    max-width: 1300px;
+  }
 
-.open-requests-description {
-  background-color: #1e1e24;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  line-height: 1.7;
-  font-size: 1.05rem;
-}
