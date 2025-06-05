@@ -49,7 +49,7 @@ namespace RepairManagementSystem.Controllers
                     400,
                     new { RepairObjectType = new[] { "Repair object type cannot be null or invalid." } }
                 );
-            return Ok(result);
+            return Ok(new { message = "Repair object type added successfully." });
         }
 
         [HttpPut("{repairObjectTypeId}")]

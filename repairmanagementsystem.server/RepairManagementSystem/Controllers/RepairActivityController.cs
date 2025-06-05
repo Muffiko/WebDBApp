@@ -47,7 +47,7 @@ namespace RepairManagementSystem.Controllers
                     400,
                     new { RepairActivity = new[] { "Repair activity cannot be null or invalid." } }
                 );
-            return Ok(result);
+            return Ok( new { message = "Repair activity added successfully." });
         }
         [HttpPut("{repairActivityId:int}")]
         public async Task<IActionResult> UpdateRepairActivity(int repairActivityId, [FromBody] RepairActivityDTO updatedRepairActivity)

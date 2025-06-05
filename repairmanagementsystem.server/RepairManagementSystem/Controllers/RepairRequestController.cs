@@ -49,7 +49,7 @@ namespace RepairManagementSystem.Controllers
                     400,
                     new { RepairRequest = new[] { "Repair request cannot be null or invalid." } }
                 );
-            return Ok(result);
+            return Ok( new { message = "Repair request added successfully." });
         }
 
         [HttpPut("{repairRequestId:int}")]

@@ -53,7 +53,7 @@ namespace RepairManagementSystem.Controllers
                     400,
                     new { RepairObject = new[] { "Repair object cannot be null or invalid." } }
                 );
-            return Ok(result);
+            return Ok( new { message = "Repair object added successfully." });
         }
 
         [HttpPut("{repairObjectId:int}")]
