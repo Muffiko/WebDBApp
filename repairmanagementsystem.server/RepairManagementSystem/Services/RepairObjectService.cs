@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
@@ -13,51 +14,62 @@ namespace RepairManagementSystem.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IRepairObjectRepository _repairObjectRepository;
+        private readonly IRepairObjectTypeRepository _repairObjectTypeRepository;
+        private readonly ICustomerRepository _customerRepository;
 
-        public RepairObjectService(ApplicationDbContext context, IMapper mapper, IRepairObjectRepository repairObjectRepository)
+        public RepairObjectService(ApplicationDbContext context, IMapper mapper, IRepairObjectRepository repairObjectRepository, IRepairObjectTypeRepository repairObjectTypeRepository, ICustomerRepository customerRepository)
         {
             _context = context;
             _mapper = mapper;
             _repairObjectRepository = repairObjectRepository;
+            _repairObjectTypeRepository = repairObjectTypeRepository;
+            _customerRepository = customerRepository;
         }
-
-        public async Task<IEnumerable<RepairObject>> GetAllRepairObjectsAsync()
+        public async Task<IEnumerable<RepairObjectResponse?>?> GetAllRepairObjectsAsync()
         {
             var repairObjects = await _repairObjectRepository.GetAllRepairObjectsAsync();
-            return _mapper.Map<IEnumerable<RepairObject>>(repairObjects);
+            if (repairObjects == null || !repairObjects.Any())
+                return null;
+            return _mapper.Map<IEnumerable<RepairObjectResponse?>?>(repairObjects);
         }
-
-        public async Task<RepairObject?> GetRepairObjectByIdAsync(int repairObjectId)
+        public async Task<RepairObjectResponse?> GetRepairObjectByIdAsync(int repairObjectId)
         {
             var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(repairObjectId);
-            return _mapper.Map<RepairObject>(repairObject);
-        }
-
-        public async Task<RepairObject?> AddRepairObjectAsync(RepairObjectDTO repairObjectDTO)
-        {
-            if (repairObjectDTO == null)
+            if (repairObject == null)
                 return null;
-            var repairObject = _mapper.Map<RepairObject>(repairObjectDTO);
-            await _repairObjectRepository.AddRepairObjectAsync(repairObject);
-            return repairObject;
+            return _mapper.Map<RepairObjectResponse?>(repairObject);
         }
-
-        public async Task<RepairObject?> UpdateRepairObjectAsync(int repairObjectId, RepairObjectDTO repairObjectDTO)
+        public async Task<bool> AddRepairObjectAsync(int userId, RepairObjectRequest repairObjectAddRequest)
         {
-            var updatedRepairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(repairObjectId);
-            if (updatedRepairObject == null)
-                return null;
-            await _repairObjectRepository.UpdateRepairObjectAsync(_mapper.Map(repairObjectDTO, updatedRepairObject));
-            return _mapper.Map<RepairObject>(updatedRepairObject);
+            var repairObject = _mapper.Map<RepairObject>(repairObjectAddRequest);
+            repairObject.CustomerId = userId;
+            var customer = await _customerRepository.GetCustomerByIdAsync(userId);
+            if (customer == null)
+                return false;
+            repairObject.Customer = customer;
+            var repairObjectType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectAddRequest.RepairObjectTypeId);
+            if (repairObjectType == null)
+                return false;
+            repairObject.RepairObjectType = repairObjectType;
+            return await _repairObjectRepository.AddRepairObjectAsync(repairObject);
         }
-
-        public async Task<RepairObject?> DeleteRepairObjectAsync(int repairObjectId)
+        public async Task<bool> UpdateRepairObjectAsync(int repairObjectId, RepairObjectRequest repairObjectRequest)
         {
-            var existingRepairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(repairObjectId);
-            if (existingRepairObject == null)
-                return null;
-            await _repairObjectRepository.DeleteRepairObjectAsync(repairObjectId);
-            return _mapper.Map<RepairObject>(existingRepairObject);
+            var repairObjectType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectRequest.RepairObjectTypeId);
+            if (repairObjectType == null)
+                return false;
+            var updated = _mapper.Map<RepairObject>(repairObjectRequest);
+            updated.RepairObjectId = repairObjectId;
+            return await _repairObjectRepository.UpdateRepairObjectAsync(updated);
+        }
+        public async Task<bool> DeleteRepairObjectAsync(int repairObjectId)
+        {
+            return await _repairObjectRepository.DeleteRepairObjectAsync(repairObjectId);
+        }
+        public async Task<IEnumerable<RepairObject?>?> GetAllRepairObjectsFromCustomerAsync(int customerId)
+        {
+            var repairObjects = await _repairObjectRepository.GetAllRepairObjectsFromCustomerAsync(customerId);
+            return repairObjects;
         }
     }
 }

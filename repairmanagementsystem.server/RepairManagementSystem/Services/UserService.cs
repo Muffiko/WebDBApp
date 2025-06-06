@@ -14,13 +14,15 @@ namespace RepairManagementSystem.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly ICryptoService _cryptoService;
+        private readonly ICustomerRepository _customerRepository;
 
-        public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository, ICryptoService cryptoService)
+        public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository, ICryptoService cryptoService, ICustomerRepository customerRepository)
         {
             _context = context;
             _mapper = mapper;
             _userRepository = userRepository;
             _cryptoService = cryptoService;
+            _customerRepository = customerRepository;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
@@ -48,7 +50,14 @@ namespace RepairManagementSystem.Services
                 return false;
             }
 
-            return await _userRepository.AddUserAsync(user);
+            var result = await _userRepository.AddUserAsync(user);
+            if (!result)
+                return false;
+
+            var customer = new Customer { UserId = user.UserId, PaymentMethod = string.Empty, User = user };
+            await _customerRepository.AddCustomerAsync(customer);
+
+            return true;
         }
         public async Task<User?> GetUserByEmailAsync(string email)
         {

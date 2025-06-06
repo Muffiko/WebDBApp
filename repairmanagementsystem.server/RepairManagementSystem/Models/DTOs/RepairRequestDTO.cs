@@ -7,15 +7,15 @@ namespace RepairManagementSystem.Models.DTOs
     {
         [Required]
         [MaxLength(256)]
-        public string Description { get; set; } = String.Empty;
+        public string Description { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(32)]
-        public string Result { get; set; } = String.Empty;
+        public string Result { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(3)]
-        public string Status { get; set; } = String.Empty;
+        public string Status { get; set; } = string.Empty;
 
         [Required]
         public int RepairObjectId { get; set; }

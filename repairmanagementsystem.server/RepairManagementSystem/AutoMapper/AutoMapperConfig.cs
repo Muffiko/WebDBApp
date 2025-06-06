@@ -9,6 +9,8 @@ public static class AutoMapperConfig
         cfg.AddProfile(new RepairObjectProfile());
         cfg.AddProfile(new RepairRequestProfile());
         cfg.AddProfile(new RepairActivityProfile());
+        cfg.AddProfile(new RepairObjectTypeProfile());
+        cfg.AddProfile(new RepairActivityTypeProfile());
     }
 }
 

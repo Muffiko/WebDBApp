@@ -9,7 +9,7 @@ namespace RepairManagementSystem.Models
         [Key, ForeignKey(nameof(User))]
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
         [Required]
         [MaxLength(8)]

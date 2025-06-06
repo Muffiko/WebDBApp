@@ -8,8 +8,9 @@ namespace RepairManagementSystem.AutoMapper
     {
         public RepairObjectProfile()
         {
-            CreateMap<RepairObject, RepairObjectDTO>();
-            CreateMap<RepairObjectDTO, RepairObject>();
+            CreateMap<RepairObject, RepairObjectRequest>();
+            CreateMap<RepairObjectRequest, RepairObject>();
+            CreateMap<RepairObject, RepairObjectResponse>();
         }
     }
 }

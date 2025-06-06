@@ -10,10 +10,10 @@ namespace RepairManagementSystem.Models
         public int RepairActivityId { get; set; }
 
         [Required]
-        public string RepairActivityTypeId { get; set; }
+        public string RepairActivityTypeId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(RepairActivityTypeId))]
-        public RepairActivityType RepairActivityType { get; set; }
+        public RepairActivityType RepairActivityType { get; set; } = null!;
 
         [Required]
         [MaxLength(16)]
@@ -35,13 +35,13 @@ namespace RepairManagementSystem.Models
         public int RepairRequestId { get; set; }
 
         [ForeignKey(nameof(RepairRequestId))]
-        public RepairRequest RepairRequest { get; set; }
+        public RepairRequest RepairRequest { get; set; } = null!;
 
         [Required]
         public int WorkerId { get; set; }
 
         [ForeignKey(nameof(WorkerId))]
-        public Worker Worker { get; set; }
+        public Worker Worker { get; set; } = null!;
 
         [Required]
         public DateTime CreatedAt { get; set; }

@@ -20,7 +20,7 @@ namespace RepairManagementSystem.Data
         {
             modelBuilder.Entity<RepairRequest>()
                 .HasOne(rq => rq.RepairObject)
-                .WithMany(ro => ro.RepairRequests)
+                .WithMany()
                 .HasForeignKey(rq => rq.RepairObjectId)
                 .OnDelete(DeleteBehavior.Restrict);
 

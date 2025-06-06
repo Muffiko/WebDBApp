@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
 
 namespace RepairManagementSystem.Models
 {
@@ -14,17 +16,18 @@ namespace RepairManagementSystem.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string RepairObjectTypeId { get; set; }
+        [JsonIgnore]
+        public string RepairObjectTypeId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(RepairObjectTypeId))]
-        public RepairObjectType RepairObjectType { get; set; }
+        public RepairObjectType RepairObjectType { get; set; } = null!;
 
         [Required]
         public int CustomerId { get; set; }
 
         [ForeignKey(nameof(CustomerId))]
-        public Customer Customer { get; set; }
+        [JsonIgnore]
+        public Customer Customer { get; set; } = null!;
 
-        public ICollection<RepairRequest> RepairRequests { get; set; } = new List<RepairRequest>();
     }
 }

@@ -6,7 +6,7 @@ namespace RepairManagementSystem.Models.DTOs
     public class RepairActivityDTO
     {
         [Required]
-        public string RepairActivityTypeId { get; set; }
+        public string RepairActivityTypeId { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(16)]
