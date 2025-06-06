@@ -6,8 +6,8 @@ namespace RepairManagementSystem.Services.Interfaces
 {
     public interface IRepairObjectService
     {
-        Task<IEnumerable<RepairObject?>?> GetAllRepairObjectsAsync();
-        Task<RepairObject?> GetRepairObjectByIdAsync(int repairObjectId);
+        Task<IEnumerable<RepairObjectResponse?>?> GetAllRepairObjectsAsync();
+        Task<RepairObjectResponse?> GetRepairObjectByIdAsync(int repairObjectId);
         Task<bool> AddRepairObjectAsync(int userId, RepairObjectRequest repairObject);
         Task<bool> UpdateRepairObjectAsync(int repairObjectId, RepairObjectRequest repairObject);
         Task<bool> DeleteRepairObjectAsync(int repairObjectId);

@@ -10,6 +10,7 @@ namespace RepairManagementSystem.AutoMapper
         {
             CreateMap<RepairObject, RepairObjectRequest>();
             CreateMap<RepairObjectRequest, RepairObject>();
+            CreateMap<RepairObject, RepairObjectResponse>();
         }
     }
 }

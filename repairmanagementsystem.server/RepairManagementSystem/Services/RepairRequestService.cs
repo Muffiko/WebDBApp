@@ -13,12 +13,14 @@ namespace RepairManagementSystem.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IRepairRequestRepository _repairRequestRepository;
+        private readonly IRepairObjectRepository _repairObjectRepository;
 
-        public RepairRequestService(ApplicationDbContext context, IMapper mapper, IRepairRequestRepository repairRequestRepository)
+        public RepairRequestService(ApplicationDbContext context, IMapper mapper, IRepairRequestRepository repairRequestRepository, IRepairObjectRepository repairObjectRepository)
         {
             _context = context;
             _mapper = mapper;
             _repairRequestRepository = repairRequestRepository;
+            _repairObjectRepository = repairObjectRepository;
         }
 
         public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync()
@@ -32,15 +34,20 @@ namespace RepairManagementSystem.Services
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
             return _mapper.Map<RepairRequest?>(repairRequest);
         }
-
+ 
         public async Task<bool> AddRepairRequestAsync(RepairRequestAdd request)
         {
-            if (request == null)
-                return false;
             var repairRequest = _mapper.Map<RepairRequest>(request);
             repairRequest.CreatedAt = DateTime.UtcNow;
             repairRequest.Status = "Open";
             repairRequest.IsPaid = false;
+            repairRequest.RepairObjectId = request.RepairObjectId;
+            var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(request.RepairObjectId);
+            if (repairObject == null)
+            {
+                return false;
+            }
+            repairRequest.RepairObject = repairObject;
             await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
             return true;
         }
@@ -62,15 +69,15 @@ namespace RepairManagementSystem.Services
             return await _repairRequestRepository.GetAllRepairRequestsFromCustomerAsync(customerId);
         }
 
-        public async Task<IEnumerable<UnassignedRepairRequest?>?> GetUnassignedRepairRequestsAsync()
+        public async Task<IEnumerable<RepairRequestResponse?>?> GetUnassignedRepairRequestsAsync()
         {
             var repairRequest = await _repairRequestRepository.GetUnassignedRepairRequestsAsync();
-            return _mapper.Map<IEnumerable<UnassignedRepairRequest?>?>(repairRequest);
+            return _mapper.Map<IEnumerable<RepairRequestResponse?>?>(repairRequest);
         }
-        public async Task<IEnumerable<UnassignedRepairRequest?>?> GetActiveRepairRequestsAsync()
+        public async Task<IEnumerable<RepairRequestResponse?>?> GetActiveRepairRequestsAsync()
         {
             var repairRequest = await _repairRequestRepository.GetActiveRepairRequestsAsync();
-            return _mapper.Map<IEnumerable<UnassignedRepairRequest?>?>(repairRequest);
+            return _mapper.Map<IEnumerable<RepairRequestResponse?>?>(repairRequest);
         }
     }
 }

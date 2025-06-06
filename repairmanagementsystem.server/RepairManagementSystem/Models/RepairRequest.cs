@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace RepairManagementSystem.Models
 {
@@ -22,15 +23,16 @@ namespace RepairManagementSystem.Models
         public string Status { get; set; } = string.Empty;
 
         [Required]
+        [JsonIgnore]
         public int RepairObjectId { get; set; }
 
         [ForeignKey(nameof(RepairObjectId))]
         public RepairObject RepairObject { get; set; } = null!;
 
-        [Required]
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; } = null;
 
-        [ForeignKey(nameof(ManagerId))]
+        [ForeignKey(nameof(ManagerId))] 
+        [JsonIgnore]
         public Manager Manager { get; set; } = null!;
 
         [Required]
@@ -39,11 +41,9 @@ namespace RepairManagementSystem.Models
         [Required]
         public DateTime CreatedAt { get; set; }
 
-        [Required]
-        public DateTime StartedAt { get; set; }
+        public DateTime? StartedAt { get; set; } = null;
 
-        [Required]
-        public DateTime FinishedAt { get; set; }
+        public DateTime? FinishedAt { get; set; } = null;
 
         public ICollection<RepairActivity> RepairActivities { get; set; } = new List<RepairActivity>();
     }

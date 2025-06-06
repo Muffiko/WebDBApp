@@ -14,39 +14,41 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(int customerId)
+        public async Task<Customer?> GetCustomerByIdAsync(int customerId)
         {
             return await _context.Customers.FindAsync(customerId);
         }
 
-        public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
+        public async Task<IEnumerable<Customer?>?> GetAllCustomersAsync()
         {
             return await _context.Customers.ToListAsync();
         }
 
-        public async Task AddCustomerAsync(Customer customer)
+        public async Task<bool> AddCustomerAsync(Customer customer)
         {
             _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateCustomerAsync(Customer customer)
+        public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
             if (customer != null)
             {
                 _context.Customers.Update(customer);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteCustomerAsync(int customerId)
+        public async Task<bool> DeleteCustomerAsync(int customerId)
         {
             var customer = await GetCustomerByIdAsync(customerId);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
     }
 }

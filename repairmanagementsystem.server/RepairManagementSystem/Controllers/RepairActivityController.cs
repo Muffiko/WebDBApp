@@ -6,7 +6,7 @@ using RepairManagementSystem.Services.Interfaces;
 namespace RepairManagementSystem.Controllers
 {
     [ApiController]
-    [Route("api/[controller]s")]
+    [Route("api/RepairActivities")]
     public class RepairActivityController : ControllerBase
     {
         private readonly IRepairActivityService _repairActivityService;

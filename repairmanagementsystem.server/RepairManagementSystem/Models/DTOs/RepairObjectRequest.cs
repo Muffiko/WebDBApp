@@ -5,11 +5,11 @@ namespace RepairManagementSystem.Models.DTOs
 {
     public class RepairObjectRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Repair Object Name is required.")]
         [MaxLength(64)]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Repair Object Type ID is required.")]
         public string RepairObjectTypeId { get; set; } = string.Empty;
 
     }

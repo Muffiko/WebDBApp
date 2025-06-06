@@ -16,13 +16,17 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<RepairRequest?> GetRepairRequestByIdAsync(int repairRequestId)
         {
-            return await _context.RepairRequests.FindAsync(repairRequestId);
+            return await _context.RepairRequests
+                .Include(r => r.RepairObject)
+                    .ThenInclude(ro => ro.RepairObjectType)
+                .FirstOrDefaultAsync(r => r.RepairRequestId == repairRequestId);
         }
 
         public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync()
         {
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
+                    .ThenInclude(ro => ro.RepairObjectType)
                 .ToListAsync();
         }
 
@@ -57,6 +61,7 @@ namespace RepairManagementSystem.Repositories
         {
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
+                    .ThenInclude(ro => ro.RepairObjectType)
                 .Where(r => r.RepairObject.CustomerId == customerId)
                 .ToListAsync();
         }
@@ -65,7 +70,8 @@ namespace RepairManagementSystem.Repositories
         {
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
-                .Where(r => r.ManagerId == 0)
+                    .ThenInclude(ro => ro.RepairObjectType)
+                .Where(r => r.ManagerId == null)
                 .ToListAsync();
         }
 
@@ -73,7 +79,8 @@ namespace RepairManagementSystem.Repositories
         {
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
-                .Where(r => r.ManagerId > 0 && r.Status == "active")
+                    .ThenInclude(ro => ro.RepairObjectType)
+                .Where(r => r.ManagerId != null && r.Status == "Active")
                 .ToListAsync();
         }
     }

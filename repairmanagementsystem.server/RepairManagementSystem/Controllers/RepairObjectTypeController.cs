@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
 using RepairManagementSystem.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RepairManagementSystem.Controllers
 {

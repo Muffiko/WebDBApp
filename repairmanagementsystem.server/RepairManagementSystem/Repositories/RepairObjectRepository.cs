@@ -21,7 +21,9 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<IEnumerable<RepairObject?>> GetAllRepairObjectsAsync()
         {
-            return await _context.RepairObjects.ToListAsync();
+            return await _context.RepairObjects
+                .Include(ro => ro.RepairObjectType)
+                .ToListAsync();
         }
 
         public async Task<bool> AddRepairObjectAsync(RepairObject repairObject)
@@ -52,7 +54,8 @@ namespace RepairManagementSystem.Repositories
         public async Task<IEnumerable<RepairObject?>> GetAllRepairObjectsFromCustomerAsync(int customerId)
         {
             return await _context.RepairObjects
-                .Where(ro => ro.CustomerId == customerId)
+                .Where(r => r.CustomerId == customerId)
+                .Include(r => r.RepairObjectType)
                 .ToListAsync();
         }
     }

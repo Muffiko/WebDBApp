@@ -26,6 +26,9 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<bool> AddRepairObjectTypeAsync(RepairObjectType repairObjectType)
         {
+            var existingType = await _context.RepairObjectTypes.FindAsync(repairObjectType.RepairObjectTypeId);
+            if (existingType != null)
+                return false;
             _context.RepairObjectTypes.Add(repairObjectType);
             return await _context.SaveChangesAsync() > 0;
         }

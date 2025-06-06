@@ -42,11 +42,37 @@ namespace RepairManagementSystem.Services
 
         public async Task<bool> UpdateRepairObjectTypeAsync(string repairObjectTypeId, RepairObjectTypeDTO repairObjectTypeDTO)
         {
-            var updated = _mapper.Map<RepairObjectType?>(repairObjectTypeDTO);
-            if (updated == null)
+            if (repairObjectTypeId == repairObjectTypeDTO.RepairObjectTypeId)
+            {
+                var updated = _mapper.Map<RepairObjectType?>(repairObjectTypeDTO);
+                if (updated == null)
+                    return false;
+                updated.RepairObjectTypeId = repairObjectTypeId;
+                return await _repairObjectTypeRepository.UpdateRepairObjectTypeAsync(updated);
+            }
+
+            var oldType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectTypeId);
+            if (oldType == null)
                 return false;
-            updated.RepairObjectTypeId = repairObjectTypeId;
-            return await _repairObjectTypeRepository.UpdateRepairObjectTypeAsync(updated);
+
+            var newType = new RepairObjectType
+            {
+                RepairObjectTypeId = repairObjectTypeDTO.RepairObjectTypeId,
+                Name = repairObjectTypeDTO.Name
+            };
+            var addResult = await _repairObjectTypeRepository.AddRepairObjectTypeAsync(newType);
+            if (!addResult)
+                return false;
+
+            var repairObjects = _context.RepairObjects.Where(ro => ro.RepairObjectTypeId == repairObjectTypeId).ToList();
+            foreach (var obj in repairObjects)
+            {
+                obj.RepairObjectTypeId = newType.RepairObjectTypeId;
+            }
+            await _context.SaveChangesAsync();
+
+            await _repairObjectTypeRepository.DeleteRepairObjectTypeAsync(repairObjectTypeId);
+            return true;
         }
 
         public async Task<bool> DeleteRepairObjectTypeAsync(string repairObjectTypeId)
