@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models.DTOs;
@@ -10,9 +11,11 @@ namespace RepairManagementSystem.Controllers
     public class RepairRequestController : ControllerBase
     {
         private readonly IRepairRequestService _repairRequestService;
-        public RepairRequestController(IRepairRequestService repairRequestService)
+        private readonly IRepairObjectService _repairObjectService;
+        public RepairRequestController(IRepairRequestService repairRequestService, IRepairObjectService repairObjectService)
         {
             _repairRequestService = repairRequestService;
+            _repairObjectService = repairObjectService;
         }
 
         [HttpGet]
@@ -40,10 +43,36 @@ namespace RepairManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAdd request)
         {
+            int? customerId = User.GetUserId();
+            if (customerId == null)
+            {
+                return Unauthorized();
+            }
+            var repairObject = await _repairObjectService.GetRepairObjectByIdAsync(request.RepairObjectId);
+            if (repairObject == null)
+            {
+                return BadRequest();
+            }
+            if (repairObject.CustomerId != customerId.Value)
+            {
+                return Forbid();
+            }
+            var existingRequest = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId.Value);
+            if (existingRequest != null && existingRequest.Any(r => r?.RepairObjectId == request.RepairObjectId))
+            {
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    "Repair request already exists",
+                    400,
+                    new { RepairRequest = new[] { "A pending repair request for this object already exists." } }
+                );
+            }
             var result = await _repairRequestService.AddRepairRequestAsync(request);
             if (!result)
                 return ErrorResponseHelper.CreateProblemDetails(
                     HttpContext,
+                    
                     "https://tools.ietf.org/html/rfc9110#section-15.5.1",
                     "Invalid repair request",
                     400,
@@ -129,5 +158,26 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(activeRepairRequests);
         }
+
+        [HttpGet("customer/my")]
+        public async Task<IActionResult> GetMyRepairRequests()
+        {
+            var customerId = User.GetUserId();
+            if (customerId == null)
+            {
+                return Unauthorized();
+            }
+            var repairRequests = await _repairRequestService.GetAllRepairRequestsForCustomerAsync(customerId.Value);
+            if (repairRequests == null || !repairRequests.Any())
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No repair requests found",
+                    404,
+                    new { RepairRequest = new[] { $"No repair requests found." } }
+                );
+            return Ok(repairRequests);
+        }
+
     }
 }

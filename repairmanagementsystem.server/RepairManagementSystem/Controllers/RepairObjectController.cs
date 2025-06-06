@@ -74,7 +74,7 @@ namespace RepairManagementSystem.Controllers
                 );
             return Ok(new { message = $"Repair object with ID {repairObjectId} updated successfully." });
         }
-        
+
         [HttpDelete("{repairObjectId:int}")]
         public async Task<IActionResult> DeleteRepairObject(int repairObjectId)
         {
@@ -101,6 +101,25 @@ namespace RepairManagementSystem.Controllers
                     "No repair objects found",
                     404,
                     new { RepairObject = new[] { $"No repair objects found for customer with ID {customerId}." } }
+                );
+            return Ok(repairObjects);
+        }
+        
+        [HttpGet("customer/my")]
+        public async Task<IActionResult> GetAllRepairObjectsForCurrentUser()
+        {
+            int? userId = User.GetUserId();
+            if (userId == null)
+                return Unauthorized();
+
+            var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(userId.Value);
+            if (repairObjects == null || !repairObjects.Any())
+                return ErrorResponseHelper.CreateProblemDetails(
+                    HttpContext,
+                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                    "No repair objects found",
+                    404,
+                    new { RepairObject = new[] { $"No repair objects found." } }
                 );
             return Ok(repairObjects);
         }

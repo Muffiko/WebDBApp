@@ -34,7 +34,7 @@ namespace RepairManagementSystem.Services
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
             return _mapper.Map<RepairRequest?>(repairRequest);
         }
- 
+
         public async Task<bool> AddRepairRequestAsync(RepairRequestAdd request)
         {
             var repairRequest = _mapper.Map<RepairRequest>(request);
@@ -79,5 +79,11 @@ namespace RepairManagementSystem.Services
             var repairRequest = await _repairRequestRepository.GetActiveRepairRequestsAsync();
             return _mapper.Map<IEnumerable<RepairRequestResponse?>?>(repairRequest);
         }
+
+        public async Task<IEnumerable<RepairRequestCustomerResponse?>?> GetAllRepairRequestsForCustomerAsync(int customerId)
+        {
+            var repairRequests = await _repairRequestRepository.GetAllRepairRequestsFromCustomerAsync(customerId);
+            return _mapper.Map<IEnumerable<RepairRequestCustomerResponse?>?>(repairRequests);
+        }
     }
-}
+}  
