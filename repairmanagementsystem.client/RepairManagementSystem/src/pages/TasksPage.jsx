@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import RequestCard from "../components/RequestCard";
 import FilterBar from "../components/FilterBar";
-import NewRepairModal from "../components/NewRepairModal";
 import "./styles/TasksPage.css";
 import TaskCard from "../components/TaskCard";
 

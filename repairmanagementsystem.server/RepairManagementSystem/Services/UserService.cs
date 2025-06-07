@@ -54,12 +54,16 @@ namespace RepairManagementSystem.Services
 
             var result = await _userRepository.AddUserAsync(user);
             if (!result)
+            {
                 return Result.Fail(500, "Failed to add user to the database.");
+            }
 
             var customer = new Customer { UserId = user.UserId, PaymentMethod = string.Empty, User = user };
-            await _customerRepository.AddCustomerAsync(customer);
-
-            return Result.Ok("User registered successfully.");
+            if (await _customerRepository.AddCustomerAsync(customer))
+            {
+                return Result.Ok("User registered successfully.");
+            }
+            return Result.Fail(500, "Failed to add customer information.");
         }
         public async Task<User?> GetUserByEmailAsync(string email)
         {
