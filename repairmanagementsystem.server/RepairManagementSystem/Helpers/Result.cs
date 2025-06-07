@@ -5,7 +5,7 @@ namespace RepairManagementSystem.Helpers
 {
     public class Result<T>
     {
-        public T? Data { get; private set; }
+        public T? Data { get; set; }
         public string Message { get; private set; } = string.Empty;
         public bool IsSuccess { get; private set; }
         public int StatusCode { get; private set; }
@@ -52,6 +52,8 @@ namespace RepairManagementSystem.Helpers
                 Detail = string.Empty
             };
 
+            problemDetails.Extensions["message"] = message;
+
             var result = new Result<T>
             {
                 Data = default,
@@ -81,6 +83,7 @@ namespace RepairManagementSystem.Helpers
             return new Result
             {
                 Message = message,
+                IsSuccess = true,
                 StatusCode = StatusCodes.Status200OK
             };
         }
@@ -107,6 +110,8 @@ namespace RepairManagementSystem.Helpers
                 Type = GetLinkByStatusCode(mappedStatusCode),
                 Detail = string.Empty
             };
+
+            problemDetails.Extensions["message"] = message;
             return new Result
             {
                 Message = message,
