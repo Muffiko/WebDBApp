@@ -64,17 +64,23 @@ const MyRepairObjectsPage = () => {
         />
 
         <div className="object-list">
-          {filteredObjects.map((obj) => (
-            <div key={obj.repairObjectId} className="object-card">
-              <div className="object-info">
-                <h3>{obj.name}</h3>
-                <p>Type: {obj.repairObjectType?.name}</p>
-              </div>
-              <button onClick={() => setSelectedObject(obj)}>
-                Create request
-              </button>
+          {filteredObjects.length === 0 ? (
+            <div className="empty-message">
+              No repair objects found.
             </div>
-          ))}
+          ) : (
+            filteredObjects.map((obj) => (
+              <div key={obj.repairObjectId} className="object-card">
+                <div className="object-info">
+                  <h3>{obj.name}</h3>
+                  <p>Type: {obj.repairObjectType?.name}</p>
+                </div>
+                <button onClick={() => setSelectedObject(obj)}>
+                  Create request
+                </button>
+              </div>
+            ))
+          )}
         </div>
 
         {showAddModal && (

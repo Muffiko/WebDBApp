@@ -17,8 +17,12 @@ const NewRequestModal = ({ onClose, onSuccess, defaultRepairObject }) => {
       try {
         const data = await getCustomerRepairObjects();
         setRepairObjects(data);
-      } catch {
-        setError("Failed to load repair objects.");
+      } catch (err){
+        if (err?.errors?.repairObject?.length){
+          setError(err.errors.repairObject[0]);
+        }else {
+          setError("Failed to load repair objects.");
+        }
       }
     };
 
@@ -41,7 +45,10 @@ const NewRequestModal = ({ onClose, onSuccess, defaultRepairObject }) => {
     } catch (err) {
       if (err?.errors?.repairRequest?.length) {
         setError(err.errors.repairRequest[0]);
-      } else {
+      } else if (err?.errors?.repairObject?.length) {
+        setError(err.errors.repairObject[0]);
+      }
+      else {
         setError(err?.message || "Failed to create request.");
       }
     }
@@ -52,7 +59,7 @@ const NewRequestModal = ({ onClose, onSuccess, defaultRepairObject }) => {
       <form className="modal-card" onSubmit={handleSubmit}>
         <div className="modal-header">
           <button type="button" onClick={onClose} className="modal-back">←</button>
-          <h2>New repair</h2>
+          <h2>New request</h2>
         </div>
 
         <label>Repair object:</label>

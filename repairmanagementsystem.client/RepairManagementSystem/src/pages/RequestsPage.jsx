@@ -27,8 +27,8 @@ const RequestsPage = () => {
     try {
       const data = await getCustomerRepairRequests();
       const mapped = data.map((r) => ({
-        id: r.request_Id,
-        name: "Unknown", //TODO: Replace with actual name if available
+        id: r.requestId,
+        name: r.repairObjectName,
         status: r.status,
         manager: r.managerName ?? "Not set",
         dateCreated: new Date(r.createdAt).toLocaleDateString()
@@ -76,10 +76,23 @@ const RequestsPage = () => {
           ]}
         />
 
+        <div className="request-header">
+          <span>Name</span>
+          <span>Status</span>
+          <span>Manager</span>
+          <span>Date</span>
+        </div>
+
         <div className="requests-list">
-          {filtered.map((req) => (
-            <RequestCard key={req.id} {...req} />
-          ))}
+          {filtered.length === 0 ? (
+            <div className="empty-message">
+              No repair requests found.
+            </div>
+          ) : (
+            filtered.map((req) => (
+              <RequestCard key={req.id} {...req} />
+            ))
+          )}
         </div>
 
         {showModal && (
