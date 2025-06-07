@@ -36,7 +36,8 @@ const AddRepairObjectModal = ({ onClose, onSuccess }) => {
         name: formData.name,
         repairObjectTypeId: formData.type
       });
-      //onSuccess(); 
+      setFormData({ name: "", type: "" });
+      onSuccess();
     } catch (err) {
       setError(err?.message || "Failed to add object.");
     }

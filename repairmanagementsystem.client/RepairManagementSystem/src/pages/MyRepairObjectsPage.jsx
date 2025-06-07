@@ -54,7 +54,7 @@ const MyRepairObjectsPage = () => {
           selects={[
             {
               key: "type",
-              label: "Type:",
+              label: "All types",
               options: uniqueTypes
             }
           ]}
