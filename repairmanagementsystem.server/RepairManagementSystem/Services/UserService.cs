@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Identity.Client;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
@@ -42,61 +44,56 @@ namespace RepairManagementSystem.Services
             var user = await _userRepository.GetUserByIdAsync(userId);
             return _mapper.Map<UserDTO?>(user);
         }
-        public async Task<bool> RegisterUserAsync(User user)
+        public async Task<Result> RegisterUserAsync(User user)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
             if (existingUser != null)
             {
-                return false;
+                return Result.Fail(409, "A user with this email already exists.");
             }
 
             var result = await _userRepository.AddUserAsync(user);
             if (!result)
-                return false;
+                return Result.Fail(500, "Failed to add user to the database.");
 
             var customer = new Customer { UserId = user.UserId, PaymentMethod = string.Empty, User = user };
             await _customerRepository.AddCustomerAsync(customer);
 
-            return true;
+            return Result.Ok("User registered successfully.");
         }
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _userRepository.GetUserByEmailAsync(email);
 
         }
-        public async Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request)
+        public async Task<Result> ResetPasswordAsync(int userId, PasswordResetRequest request)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
+                return Result.Fail(404, "User not found.");
             }
-
             if (!_cryptoService.VerifyPassword(request.OldPassword, user.PasswordHash, user.PasswordSalt))
             {
-                return new PasswordResetResponse { Success = false, Message = "Old password is incorrect." };
+                return Result.Fail(400, "Old password is incorrect.");
             }
-
             var (newHash, newSalt) = _cryptoService.HashPassword(request.NewPassword);
             user.PasswordHash = newHash;
             user.PasswordSalt = newSalt;
-
             if (await _userRepository.UpdateUserAsync(user))
             {
-                return new PasswordResetResponse { Success = true, Message = "Password reset successfully." };
+                return Result.Ok("Password reset successfully.");
             }
-
-            return new PasswordResetResponse { Success = false, Message = "Failed to reset password. Please try again." };
+            return Result.Fail(500, "Failed to reset password. Please try again.");
         }
 
-        public async Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request)
+        public async Task<Result<UpdateUserInfoResponse>> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+                return Result<UpdateUserInfoResponse>.Fail(404, "User not found.");
             }
-
             var updatedFields = new List<string>();
             if (request.FirstName != null)
             {
@@ -118,29 +115,25 @@ namespace RepairManagementSystem.Services
                 user.Number = request.PhoneNumber;
                 updatedFields.Add("phone number");
             }
-
             if (updatedFields.Count == 0)
             {
-                return new UpdateUserInfoResponse { Success = false, Message = "No fields were provided to update." };
+                return Result<UpdateUserInfoResponse>.Fail(400, "No fields were provided to update.");
             }
-
             if (await _userRepository.UpdateUserAsync(user))
             {
                 var updatedList = string.Join(", ", updatedFields);
-                return new UpdateUserInfoResponse { Success = true, Message = $"Updated {updatedList}." };
+                return Result<UpdateUserInfoResponse>.Ok(new UpdateUserInfoResponse { Success = true, Message = $"Updated {updatedList}." });
             }
-
-            return new UpdateUserInfoResponse { Success = false, Message = "Failed to update user information. Please try again." };
+            return Result<UpdateUserInfoResponse>.Fail(500, "Failed to update user information. Please try again.");
         }
 
-        public async Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request)
+        public async Task<Result<UpdateAddressResponse>> UpdateAddressAsync(int userId, UpdateAddressRequest request)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
+                return Result<UpdateAddressResponse>.Fail(404, "User not found.");
             }
-
             var updatedFields = new List<string>();
             if (request.Street != null)
             {
@@ -172,19 +165,16 @@ namespace RepairManagementSystem.Services
                 user.Address.HouseNumber = request.HouseNumber;
                 updatedFields.Add("house number");
             }
-
             if (updatedFields.Count == 0)
             {
-                return new UpdateAddressResponse { Success = false, Message = "No address fields were provided to update." };
+                return Result<UpdateAddressResponse>.Fail(400, "No address fields were provided to update.");
             }
-
             if (await _userRepository.UpdateUserAsync(user))
             {
                 var updatedList = string.Join(", ", updatedFields);
-                return new UpdateAddressResponse { Success = true, Message = $"Updated address fields: {updatedList}." };
+                return Result<UpdateAddressResponse>.Ok(new UpdateAddressResponse { Success = true, Message = $"Updated address fields: {updatedList}." });
             }
-
-            return new UpdateAddressResponse { Success = false, Message = "Failed to update address. Please try again." };
+            return Result<UpdateAddressResponse>.Fail(500, "Failed to update address. Please try again.");
         }
 
         public async Task<User?> GetUserEntityByIdAsync(int userId)
@@ -192,9 +182,15 @@ namespace RepairManagementSystem.Services
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<Result> UpdateUserAsync(User user)
         {
-            return await _userRepository.UpdateUserAsync(user);
+            if (user == null)
+            {
+                return Result.Fail();
+            }
+            return await _userRepository.UpdateUserAsync(user)
+                ? Result.Ok("User updated successfully.")
+                : Result.Fail(500, "Failed to update user.");
         }
     }
 }

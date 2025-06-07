@@ -1,5 +1,6 @@
 using AutoMapper;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
@@ -32,28 +33,34 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<RepairObjectType?>(repairObjectType);
         }
 
-        public async Task<bool> AddRepairObjectTypeAsync(RepairObjectTypeDTO repairObjectTypeDTO)
+        public async Task<Result> AddRepairObjectTypeAsync(RepairObjectTypeDTO repairObjectTypeDTO)
         {
             if (repairObjectTypeDTO == null)
-                return false;
+                return Result.Fail(400, "Invalid repair object type data.");
             var repairObjectType = _mapper.Map<RepairObjectType>(repairObjectTypeDTO);
-            return await _repairObjectTypeRepository.AddRepairObjectTypeAsync(repairObjectType);
+            var success = await _repairObjectTypeRepository.AddRepairObjectTypeAsync(repairObjectType);
+            return success
+                ? Result.Ok("Repair object type added successfully.")
+                : Result.Fail(500, "Failed to add repair object type.");
         }
 
-        public async Task<bool> UpdateRepairObjectTypeAsync(string repairObjectTypeId, RepairObjectTypeDTO repairObjectTypeDTO)
+        public async Task<Result> UpdateRepairObjectTypeAsync(string repairObjectTypeId, RepairObjectTypeDTO repairObjectTypeDTO)
         {
             if (repairObjectTypeId == repairObjectTypeDTO.RepairObjectTypeId)
             {
                 var updated = _mapper.Map<RepairObjectType?>(repairObjectTypeDTO);
                 if (updated == null)
-                    return false;
+                    return Result.Fail(400, "Invalid repair object type data.");
                 updated.RepairObjectTypeId = repairObjectTypeId;
-                return await _repairObjectTypeRepository.UpdateRepairObjectTypeAsync(updated);
+                var success = await _repairObjectTypeRepository.UpdateRepairObjectTypeAsync(updated);
+                return success
+                    ? Result.Ok("Repair object type updated successfully.")
+                    : Result.Fail(500, "Failed to update repair object type.");
             }
 
             var oldType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectTypeId);
             if (oldType == null)
-                return false;
+                return Result.Fail(404, "Original repair object type not found.");
 
             var newType = new RepairObjectType
             {
@@ -62,7 +69,7 @@ namespace RepairManagementSystem.Services
             };
             var addResult = await _repairObjectTypeRepository.AddRepairObjectTypeAsync(newType);
             if (!addResult)
-                return false;
+                return Result.Fail(500, "Failed to add new repair object type.");
 
             var repairObjects = _context.RepairObjects.Where(ro => ro.RepairObjectTypeId == repairObjectTypeId).ToList();
             foreach (var obj in repairObjects)
@@ -72,12 +79,15 @@ namespace RepairManagementSystem.Services
             await _context.SaveChangesAsync();
 
             await _repairObjectTypeRepository.DeleteRepairObjectTypeAsync(repairObjectTypeId);
-            return true;
+            return Result.Ok("Repair object type updated and replaced successfully.");
         }
 
-        public async Task<bool> DeleteRepairObjectTypeAsync(string repairObjectTypeId)
+        public async Task<Result> DeleteRepairObjectTypeAsync(string repairObjectTypeId)
         {
-            return await _repairObjectTypeRepository.DeleteRepairObjectTypeAsync(repairObjectTypeId);
+            var success = await _repairObjectTypeRepository.DeleteRepairObjectTypeAsync(repairObjectTypeId);
+            return success
+                ? Result.Ok("Repair object type deleted successfully.")
+                : Result.Fail(404, "Repair object type not found.");
         }
         public async Task<IEnumerable<RepairObjectTypeDTO?>?> GetAllRepairObjectNameAsync()
         {

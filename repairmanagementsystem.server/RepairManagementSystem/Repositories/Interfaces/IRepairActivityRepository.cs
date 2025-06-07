@@ -4,10 +4,10 @@ namespace RepairManagementSystem.Repositories.Interfaces
 {
     public interface IRepairActivityRepository
     {
-        Task<RepairActivity> GetRepairActivityByIdAsync(int repairActivityId);
-        Task<IEnumerable<RepairActivity>> GetAllRepairActivitiesAsync();
-        Task AddRepairActivityAsync(RepairActivity repairActivity);
-        Task UpdateRepairActivityAsync(RepairActivity repairActivity);
-        Task DeleteRepairActivityAsync(int repairActivityId);
+        Task<RepairActivity?> GetRepairActivityByIdAsync(int repairActivityId);
+        Task<IEnumerable<RepairActivity?>?> GetAllRepairActivitiesAsync();
+        Task<bool> AddRepairActivityAsync(RepairActivity repairActivity);
+        Task<bool> UpdateRepairActivityAsync(RepairActivity repairActivity);
+        Task<bool> DeleteRepairActivityAsync(int repairActivityId);
     }
 }

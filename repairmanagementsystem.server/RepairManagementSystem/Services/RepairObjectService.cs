@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories;
@@ -28,43 +29,54 @@ namespace RepairManagementSystem.Services
         public async Task<IEnumerable<RepairObjectResponse?>?> GetAllRepairObjectsAsync()
         {
             var repairObjects = await _repairObjectRepository.GetAllRepairObjectsAsync();
-            if (repairObjects == null || !repairObjects.Any())
-                return null;
             return _mapper.Map<IEnumerable<RepairObjectResponse?>?>(repairObjects);
         }
         public async Task<RepairObjectResponse?> GetRepairObjectByIdAsync(int repairObjectId)
         {
             var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(repairObjectId);
-            if (repairObject == null)
-                return null;
             return _mapper.Map<RepairObjectResponse?>(repairObject);
         }
-        public async Task<bool> AddRepairObjectAsync(int userId, RepairObjectRequest repairObjectAddRequest)
+        public async Task<Result> AddRepairObjectAsync(int userId, RepairObjectRequest repairObjectAddRequest)
         {
-            var repairObject = _mapper.Map<RepairObject>(repairObjectAddRequest);
-            repairObject.CustomerId = userId;
             var customer = await _customerRepository.GetCustomerByIdAsync(userId);
             if (customer == null)
-                return false;
-            repairObject.Customer = customer;
+                return Result.Fail(404, "Customer not found.");
+
             var repairObjectType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectAddRequest.RepairObjectTypeId);
             if (repairObjectType == null)
-                return false;
+                return Result.Fail(404, "Repair object type not found.");
+
+            var repairObject = _mapper.Map<RepairObject>(repairObjectAddRequest);
+            repairObject.CustomerId = userId;
+            repairObject.Customer = customer;
             repairObject.RepairObjectType = repairObjectType;
-            return await _repairObjectRepository.AddRepairObjectAsync(repairObject);
+
+            var success = await _repairObjectRepository.AddRepairObjectAsync(repairObject);
+            return success
+                ? Result.Ok("Repair object added successfully.")
+                : Result.Fail(500, "Failed to add repair object.");
         }
-        public async Task<bool> UpdateRepairObjectAsync(int repairObjectId, RepairObjectRequest repairObjectRequest)
+
+        public async Task<Result> UpdateRepairObjectAsync(int repairObjectId, RepairObjectRequest repairObjectRequest)
         {
             var repairObjectType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectRequest.RepairObjectTypeId);
             if (repairObjectType == null)
-                return false;
+                return Result.Fail(404, "Repair object type not found.");
+
             var updated = _mapper.Map<RepairObject>(repairObjectRequest);
             updated.RepairObjectId = repairObjectId;
-            return await _repairObjectRepository.UpdateRepairObjectAsync(updated);
+            updated.RepairObjectType = repairObjectType;
+
+            var success = await _repairObjectRepository.UpdateRepairObjectAsync(updated);
+            return success
+                ? Result.Ok("Repair object updated successfully.")
+                : Result.Fail(500, "Failed to update repair object.");
         }
-        public async Task<bool> DeleteRepairObjectAsync(int repairObjectId)
+        public async Task<Result> DeleteRepairObjectAsync(int repairObjectId)
         {
-            return await _repairObjectRepository.DeleteRepairObjectAsync(repairObjectId);
+            if (await _repairObjectRepository.DeleteRepairObjectAsync(repairObjectId))
+                return Result.Ok("Repair object deleted successfully.");
+            return Result.Fail(404, "Repair object not found.");
         }
         public async Task<IEnumerable<RepairObject?>?> GetAllRepairObjectsFromCustomerAsync(int customerId)
         {

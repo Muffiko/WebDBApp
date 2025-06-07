@@ -1,3 +1,4 @@
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 
@@ -7,8 +8,8 @@ namespace RepairManagementSystem.Services.Interfaces
     {
         Task<IEnumerable<RepairActivity>> GetAllRepairActivitiesAsync();
         Task<RepairActivity?> GetRepairActivityByIdAsync(int repairActivityId);
-        Task<RepairActivity?> AddRepairActivityAsync(RepairActivityDTO repairActivityDTO);
-        Task<RepairActivity?> UpdateRepairActivityAsync(int repairActivityId, RepairActivityDTO updatedRepairActivityDTO);
-        Task<RepairActivity?> DeleteRepairActivityAsync(int repairActivityId);
+        Task<Result> AddRepairActivityAsync(RepairActivityDTO repairActivityDTO);
+        Task<Result> UpdateRepairActivityAsync(int repairActivityId, RepairActivityDTO updatedRepairActivityDTO);
+        Task<Result> DeleteRepairActivityAsync(int repairActivityId);
     }
 }
