@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import AddRepairObjectModal from "../components/AddRepairObjectModal";
 import NewRepairModal from "../components/NewRepairModal";
+import { useRepairObjectApi } from "../api/repairObjects";
 import "./styles/MyRepairObjectsPage.css";
 
 const menuItems = [
@@ -12,19 +13,32 @@ const menuItems = [
 ];
 
 const MyRepairObjectsPage = () => {
+  const { getCustomerRepairObjects } = useRepairObjectApi();
+
   const [objects, setObjects] = useState([]);
   const [filters, setFilters] = useState({ name: "", type: "" });
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedObject, setSelectedObject] = useState(null);
 
-  const handleAddObject = ({ name, type }) => {
-    setObjects([...objects, { id: Date.now(), name, type }]);
+  const loadObjects = async () => {
+    try {
+      const data = await getCustomerRepairObjects();
+      setObjects(data);
+    } catch (err) {
+      console.error("Failed to load repair objects", err);
+    }
   };
+
+  useEffect(() => {
+    loadObjects();
+  }, []);
 
   const filteredObjects = objects.filter((obj) =>
     obj.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-    (filters.type === "" || obj.type === filters.type)
+    (filters.type === "" || obj.repairObjectType?.name === filters.type)
   );
+
+  const uniqueTypes = [...new Set(objects.map(obj => obj.repairObjectType?.name))];
 
   return (
     <div className="objects-container">
@@ -41,17 +55,17 @@ const MyRepairObjectsPage = () => {
             {
               key: "type",
               label: "Type:",
-              options: ["Laptop", "Phone", "Other"]
+              options: uniqueTypes
             }
           ]}
         />
 
         <div className="object-list">
           {filteredObjects.map((obj) => (
-            <div key={obj.id} className="object-card">
+            <div key={obj.repairObjectId} className="object-card">
               <div className="object-info">
                 <h3>{obj.name}</h3>
-                <p>Type: {obj.type}</p>
+                <p>Type: {obj.repairObjectType?.name}</p>
               </div>
               <button onClick={() => setSelectedObject(obj)}>
                 Create request
@@ -63,9 +77,9 @@ const MyRepairObjectsPage = () => {
         {showAddModal && (
           <AddRepairObjectModal
             onClose={() => setShowAddModal(false)}
-            onSubmit={(data) => {
-              handleAddObject(data);
+            onSuccess={() => {
               setShowAddModal(false);
+              loadObjects();
             }}
           />
         )}
