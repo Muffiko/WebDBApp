@@ -89,10 +89,5 @@ namespace RepairManagementSystem.Services
                 ? Result.Ok("Repair object type deleted successfully.")
                 : Result.Fail(404, "Repair object type not found.");
         }
-        public async Task<IEnumerable<RepairObjectTypeDTO?>?> GetAllRepairObjectNameAsync()
-        {
-            var repairObjectTypes = await _repairObjectTypeRepository.GetAllRepairObjectTypesAsync();
-            return _mapper.Map<IEnumerable<RepairObjectTypeDTO?>?>(repairObjectTypes);
-        }
     }
 }

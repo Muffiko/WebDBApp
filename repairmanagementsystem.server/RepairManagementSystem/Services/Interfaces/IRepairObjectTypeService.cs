@@ -11,6 +11,5 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<Result> AddRepairObjectTypeAsync(RepairObjectTypeDTO repairObjectTypeDTO);
         Task<Result> UpdateRepairObjectTypeAsync(string repairObjectTypeId, RepairObjectTypeDTO repairObjectTypeDTO);
         Task<Result> DeleteRepairObjectTypeAsync(string repairObjectTypeId);
-        Task<IEnumerable<RepairObjectTypeDTO?>?> GetAllRepairObjectNameAsync();
     }
 }
