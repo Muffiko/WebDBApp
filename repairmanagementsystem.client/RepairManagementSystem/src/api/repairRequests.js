@@ -29,8 +29,22 @@ export const useRepairRequestApi = () => {
     return await response.json();
   };
 
+  const getRepairRequestById = async (id) => {
+    const response = await authFetch(`/RepairRequests/${id}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  }
+
   return { 
     addRepairRequest,
-    getCustomerRepairRequests
+    getCustomerRepairRequests,
+    getRepairRequestById
    };
 };
