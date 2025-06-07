@@ -1,50 +1,156 @@
 .activity-card {
+  position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column; 
   background-color: #3b3b45;
   border-radius: 0.8rem;
   overflow: hidden;
-  cursor: default;
-  height: 80px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.15s;
+  padding-left: 60px;
+}
+
+.activity-card.expanded {
+  background-color: #35353d;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  min-height: 80px; 
+  padding: 1rem;
 }
 
 .activity-badge {
-  width: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.activity-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.activity-worker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
 }
 
 .activity-content {
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  padding: 0 1rem;
-  color: #ffffff;
+  gap: 5rem;
 }
 
 .activity-field {
-  font-size: 1.25rem;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .field-label {
-  font-weight: 500;
-  margin-right: 0.4rem;
+  opacity: 0.7;
+}
+
+.field-value {
+  font-size: 1.5rem;
+}
+
+.activity-card:hover {
+  background-color: #35353d;
 }
 
 .activity-status {
-  min-width: 100px;
-  text-align: center;
-  color: #1f1f23;
-  font-size: 0.85rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
   border-radius: 0.6rem;
-  padding: 0.75rem 1rem;
-  margin-right: 1rem;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.activity-details {
+  background-color: #2f2f37;
+  padding: 1rem;
+  border-top: 1px solid #3b3b45;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.details-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.details-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.details-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.details-right p {
+  margin: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.activity-description {
+  background-color: #1e1e24;
+  border-radius: 0.6rem;
+  padding: 1rem;
+  color: #e0e0e6;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.inline-input {
+  font-size: 1rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.4rem;
+  border: none;
+  outline: none;
+}
+
+.inline-textarea {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  border: none;
+  outline: none;
+  resize: vertical;
+}
+
+.edit-icon {
+  margin-left: 0.5rem;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.status-caret {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
 }

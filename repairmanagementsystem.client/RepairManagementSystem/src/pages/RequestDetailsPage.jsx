@@ -37,11 +37,11 @@ const mockActivities = [
     name: "Czyszczenie wnętrza",
     worker: "Mariusz Kowalski",
     status: "Canceled",
-  activityType: "Programowanie",
-  created: "01/01/2025",
-  started: "01/01/2025",
-  finished: "05/01/2025",
-  description: "Lorem Ipsum"
+    description: "Lorem Ipsum",
+    activityType: "Cleaning",
+    createdAt: "01/01/2025",
+    startedAt: "02/01/2025",
+    finishedAt: "03/01/2025",
   },
   {
     id: 3,

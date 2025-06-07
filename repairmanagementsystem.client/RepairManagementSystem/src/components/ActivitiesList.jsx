@@ -20,6 +20,11 @@ const ActivitiesList = ({ activities, onAdd }) => {
             name={act.name}
             worker={act.worker}
             status={act.status}
+            description={act.description}
+            activityType={act.activityType}
+            createdAt={act.createdAt}
+            startedAt={act.startedAt}
+            finishedAt={act.finishedAt}
           />
         ))}
       </div>
