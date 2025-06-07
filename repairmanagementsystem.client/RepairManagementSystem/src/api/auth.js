@@ -26,15 +26,7 @@ export const registerUser = async (formData) => {
       password: formData.password,
       firstName: formData.name,
       lastName: formData.surname,
-      phoneNumber: formData.phoneNumber,
-      address: {
-        country: formData.country,
-        city: formData.city,
-        postalCode: formData.postalCode,
-        street: formData.street,
-        houseNumber: formData.houseNumber,
-        apartNumber: formData.apartment
-      }
+      phoneNumber: formData.phoneNumber
     })
   });
 };
