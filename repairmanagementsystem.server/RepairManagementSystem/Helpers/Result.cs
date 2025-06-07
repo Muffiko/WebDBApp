@@ -49,7 +49,7 @@ namespace RepairManagementSystem.Helpers
                 Status = mappedStatusCode,
                 Title = message,
                 Type = Result.GetLinkByStatusCode(mappedStatusCode),
-                Detail = message
+                Detail = string.Empty
             };
 
             var result = new Result<T>
@@ -105,7 +105,7 @@ namespace RepairManagementSystem.Helpers
                 Status = mappedStatusCode,
                 Title = message,
                 Type = GetLinkByStatusCode(mappedStatusCode),
-                Detail = message
+                Detail = string.Empty
             };
             return new Result
             {
