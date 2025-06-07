@@ -17,12 +17,14 @@ const RequestCard = ({ id, name, status, manager, dateCreated }) => {
 
   return (
     <div className="request-card" onClick={handleClick}>
-      <div className="request-name">{name}</div>
-      <div className={`request-status ${statusColors[status.toLowerCase()]}`}>
-        {status}
+      <div className="request-col request-name">{name}</div>
+      <div className="request-col">
+        <div className={`request-status ${statusColors[status.toLowerCase()]}`}>
+          {status}
+        </div>
       </div>
-      <div className="request-manager">{manager}</div>
-      <div className="request-date">{dateCreated}</div>
+      <div className="request-col request-manager">{manager}</div>
+      <div className="request-col request-date">{dateCreated}</div>
     </div>
   );
 };

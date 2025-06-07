@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import RequestCard from "../components/RequestCard";
 import FilterBar from "../components/FilterBar";
-import NewRepairModal from "../components/NewRepairModal";
+import NewRequestModal from "../components/NewRequestModal";
+import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestsPage.css";
 
 const menuItems = [
@@ -11,54 +12,51 @@ const menuItems = [
   { path: "/profile", label: "Profile", icon: "👤" }
 ];
 
-const mockRequests = [
-  {
-    id: 1,
-    name: "Komputer",
-    status: "Open",
-    manager: "Jan Kowalski",
-    dateCreated: "01/01/2025"
-  },
-  {
-    id: 2,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Marcin Kowalski",
-    dateCreated: "01/01/2025"
-  },
-  {
-    id: 3,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025"
-  }
-];
-
 const RequestsPage = () => {
+  const { getCustomerRepairRequests, createRequest } = useRepairRequestApi();
+
+  const [requests, setRequests] = useState([]);
   const [filters, setFilters] = useState({
     name: "",
     status: "",
     manager: ""
   });
-
   const [showModal, setShowModal] = useState(false);
 
-  const handleCreate = (formData) => {
-    console.log("New repair submitted:", formData);
+  const loadRequests = async () => {
+    try {
+      const data = await getCustomerRepairRequests();
+      const mapped = data.map((r) => ({
+        id: r.requestId,
+        name: r.repairObjectName,
+        status: r.status,
+        manager: r.managerName ?? "Not set",
+        dateCreated: new Date(r.createdAt).toLocaleDateString()
+      }));
+      setRequests(mapped);
+    } catch (err) {
+      console.error("Failed to load requests:", err);
+    }
   };
 
-  const filtered = mockRequests.filter((r) =>
+  useEffect(() => {
+    loadRequests();
+  }, []);
+
+  const filtered = requests.filter((r) =>
     r.name.toLowerCase().includes(filters.name.toLowerCase()) &&
     (filters.status === "" || r.status === filters.status) &&
     (filters.manager === "" || r.manager === filters.manager)
   );
 
+  const uniqueManagers = [...new Set(requests.map((r) => r.manager))];
+  const uniqueStatuses = [...new Set(requests.map((r) => r.status))];
+
   return (
     <div className="requests-container">
       <Sidebar menuItems={menuItems} />
       <div className="requests-page">
-        <h1 className="requests-title">Repairs</h1>
+        <h1 className="requests-title">My requests</h1>
 
         <FilterBar
           filters={filters}
@@ -67,28 +65,43 @@ const RequestsPage = () => {
           selects={[
             {
               key: "status",
-              label: "Status:",
-              options: ["Open", "In progress", "Closed"]
+              label: "All statuses",
+              options: uniqueStatuses
             },
             {
               key: "manager",
-              label: "Manager:",
-              options: ["Jan Kowalski", "Marcin Kowalski", "Kamil Kowalski"]
+              label: "All managers",
+              options: uniqueManagers
             }
           ]}
         />
 
+        <div className="request-header">
+          <span>Name</span>
+          <span>Status</span>
+          <span>Manager</span>
+          <span>Date</span>
+        </div>
 
         <div className="requests-list">
-          {filtered.map((req) => (
-            <RequestCard key={req.id} {...req} />
-          ))}
+          {filtered.length === 0 ? (
+            <div className="empty-message">
+              No repair requests found.
+            </div>
+          ) : (
+            filtered.map((req) => (
+              <RequestCard key={req.id} {...req} />
+            ))
+          )}
         </div>
 
         {showModal && (
-          <NewRepairModal
+          <NewRequestModal
             onClose={() => setShowModal(false)}
-            onSubmit={handleCreate}
+            onSuccess={async () => {
+              await loadRequests();
+              setShowModal(false);
+            }}
           />
         )}
       </div>

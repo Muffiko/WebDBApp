@@ -7,7 +7,7 @@ import LoadingScreen from "./components/LoadingScreen";
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RequestsPage = lazy(() => import("./pages/RequestsPage"));
-const RepairDetailsPage = lazy(() => import("./pages/RepairDetailsPage"));
+const RequestDetailsPage = lazy(() => import("./pages/RequestDetailsPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const ChangePasswordPage = lazy(() => import("./pages/ChangePasswordPage"));
 const EditPersonalInfoPage = lazy(() => import("./pages/EditPersonalInfoPage"));
@@ -32,7 +32,7 @@ function App() {
         {isAuthenticated && (
           <>
             <Route path="/requests" element={<RequestsPage />} />
-            <Route path="/requests/:id" element={<RepairDetailsPage />} />
+            <Route path="/requests/:id" element={<RequestDetailsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/change-password" element={<ChangePasswordPage />} />
             <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
