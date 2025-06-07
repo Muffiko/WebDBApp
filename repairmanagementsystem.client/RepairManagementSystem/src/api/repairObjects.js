@@ -30,7 +30,8 @@ export const useRepairObjectApi = () => {
     return await res.json();
   };
 
-  return { addRepairObject,
+  return { 
+    addRepairObject,
     getCustomerRepairObjects
    };
 };

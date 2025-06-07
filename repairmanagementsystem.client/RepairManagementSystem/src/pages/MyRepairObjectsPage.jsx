@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import AddRepairObjectModal from "../components/AddRepairObjectModal";
-import NewRepairModal from "../components/NewRepairModal";
+import NewRequestModal from "../components/NewRequestModal";
 import { useRepairObjectApi } from "../api/repairObjects";
 import "./styles/MyRepairObjectsPage.css";
 
@@ -85,7 +85,7 @@ const MyRepairObjectsPage = () => {
         )}
 
         {selectedObject && (
-          <NewRepairModal
+          <NewRequestModal
             onClose={() => setSelectedObject(null)}
             onSubmit={(data) => {
               console.log("Created request for:", selectedObject.name, data);
