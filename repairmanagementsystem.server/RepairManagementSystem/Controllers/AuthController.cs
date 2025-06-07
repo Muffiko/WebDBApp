@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Authorization;
 using RepairManagementSystem.Helpers;
+using RepairManagementSystem.Extensions;
 
 namespace RepairManagementSystem.Controllers
 {
@@ -18,93 +19,58 @@ namespace RepairManagementSystem.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        private void SetRefreshTokenCookie(string refreshToken)
         {
-            var result = await _authService.AuthenticateAsync(loginRequest);
-            if (!result.Success || result.Response == null || string.IsNullOrEmpty(result.Response.RefreshToken))
-            {
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.2",
-                    "Authentication failed",
-                    401,
-                    new { Login = new[] { result.ErrorMessage ?? "Login failed" } }
-                );
-            }
-
-            Response.Cookies.Append("refreshToken", result.Response.RefreshToken, new CookieOptions
+            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = false, // Set to true in production (requires HTTPS)
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(30)
             });
+        }
 
-            return Ok(new
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            var result = await _authService.AuthenticateAsync(loginRequest);
+            if (result.IsSuccess && result.Data != null && !string.IsNullOrEmpty(result.Data.RefreshToken))
             {
-                token = result.Response.Token,
-                email = result.Response.Email,
-                role = result.Response.Role,
-                firstName = result.Response.FirstName
-            });
+                SetRefreshTokenCookie(result.Data.RefreshToken);
+                result.Data.RefreshToken = null;
+            }
+            return this.ToApiResponse(result);
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
             var result = await _authService.RegisterAsync(registerRequest);
-            if (!result.Success || result.Response == null || string.IsNullOrEmpty(result.Response.RefreshToken))
+            if (result.IsSuccess && result.Data != null && !string.IsNullOrEmpty(result.Data.RefreshToken))
             {
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                    "Registration failed",
-                    400,
-                    new { Register = new[] { result.ErrorMessage ?? "Registration failed" } }
-                );
+                SetRefreshTokenCookie(result.Data.RefreshToken);
+                result.Data.RefreshToken = null;
             }
-
-            Response.Cookies.Append("refreshToken", result.Response.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // Set to true in production (requires HTTPS)
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(30)
-            });
-
-            return Ok(new
-            {
-                token = result.Response.Token,
-                email = result.Response.Email,
-                role = result.Response.Role,
-                firstName = result.Response.FirstName
-            });
+            return this.ToApiResponse(result);
         }
+
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
             {
-                return Unauthorized();
+                var failResult = Result<AuthResponse>.Fail(401, "Refresh token is missing.");
+                return this.ToApiResponse(failResult);
             }
 
-            var response = await _authService.RefreshTokenAsync(refreshToken);
-            if (response == null)
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+            if (result.IsSuccess && result.Data != null && !string.IsNullOrEmpty(result.Data.RefreshToken))
             {
-                return Unauthorized();
+                SetRefreshTokenCookie(result.Data.RefreshToken);
+                result.Data.RefreshToken = null;
             }
-
-            Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // Set to true in production (requires HTTPS)
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(30)
-            });
-
-            return Ok(new { token = response.Token });
+            return this.ToApiResponse(result);
         }
         [Authorize]
         [HttpPost("logout")]

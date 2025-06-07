@@ -1,5 +1,6 @@
 using AutoMapper;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
@@ -32,26 +33,33 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<RepairActivityType?>(repairActivityType);
         }
 
-        public async Task<bool> AddRepairActivityTypeAsync(RepairActivityTypeDTO repairActivityTypeDTO)
+        public async Task<Result> AddRepairActivityTypeAsync(RepairActivityTypeDTO repairActivityTypeDTO)
         {
-            if (repairActivityTypeDTO == null)
-                return false;
             var repairActivityType = _mapper.Map<RepairActivityType>(repairActivityTypeDTO);
-            return await _repairActivityTypeRepository.AddRepairActivityTypeAsync(repairActivityType);
+            var success = await _repairActivityTypeRepository.AddRepairActivityTypeAsync(repairActivityType);
+            return success
+                ? Result.Ok("Repair activity type added successfully.")
+                : Result.Fail(500, "Failed to add repair activity type.");
         }
 
-        public async Task<bool> UpdateRepairActivityTypeAsync(string repairActivityTypeId, RepairActivityTypeDTO repairActivityTypeDTO)
+        public async Task<Result> UpdateRepairActivityTypeAsync(string repairActivityTypeId, RepairActivityTypeDTO repairActivityTypeDTO)
         {
             var updated = _mapper.Map<RepairActivityType?>(repairActivityTypeDTO);
             if (updated == null)
-                return false;
+                return Result.Fail(400, "Repair activity type cannot be null or invalid.");
             updated.RepairActivityTypeId = repairActivityTypeId;
-            return await _repairActivityTypeRepository.UpdateRepairActivityTypeAsync(updated);
+            var success = await _repairActivityTypeRepository.UpdateRepairActivityTypeAsync(updated);
+            return success
+                ? Result.Ok($"Repair activity type with ID {repairActivityTypeId} updated successfully.")
+                : Result.Fail(404, $"Repair activity type with ID {repairActivityTypeId} not found.");
         }
 
-        public async Task<bool> DeleteRepairActivityTypeAsync(string repairActivityTypeId)
+        public async Task<Result> DeleteRepairActivityTypeAsync(string repairActivityTypeId)
         {
-            return await _repairActivityTypeRepository.DeleteRepairActivityTypeAsync(repairActivityTypeId);
+            var success = await _repairActivityTypeRepository.DeleteRepairActivityTypeAsync(repairActivityTypeId);
+            return success
+                ? Result.Ok($"Repair activity type with ID {repairActivityTypeId} deleted successfully.")
+                : Result.Fail(404, $"Repair activity type with ID {repairActivityTypeId} not found.");
         }
     }
 }

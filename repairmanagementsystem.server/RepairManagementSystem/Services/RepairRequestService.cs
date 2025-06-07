@@ -1,5 +1,6 @@
 using AutoMapper;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories;
@@ -35,7 +36,7 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<RepairRequest?>(repairRequest);
         }
 
-        public async Task<bool> AddRepairRequestAsync(RepairRequestAdd request)
+        public async Task<Result> AddRepairRequestAsync(RepairRequestAdd request)
         {
             var repairRequest = _mapper.Map<RepairRequest>(request);
             repairRequest.CreatedAt = DateTime.UtcNow;
@@ -45,23 +46,29 @@ namespace RepairManagementSystem.Services
             var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(request.RepairObjectId);
             if (repairObject == null)
             {
-                return false;
+                return Result.Fail(404, "Repair object not found.");
             }
             repairRequest.RepairObject = repairObject;
             await _repairRequestRepository.AddRepairRequestAsync(repairRequest);
-            return true;
+            return Result.Ok("Repair request added successfully.");
         }
 
-        public async Task<bool> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequestDTO)
+        public async Task<Result> UpdateRepairRequestAsync(int repairRequestId, RepairRequestDTO repairRequestDTO)
         {
             var updated = _mapper.Map<RepairRequest>(repairRequestDTO);
             updated.RepairRequestId = repairRequestId;
-            return await _repairRequestRepository.UpdateRepairRequestAsync(updated);
+            var success = await _repairRequestRepository.UpdateRepairRequestAsync(updated);
+            if (!success)
+                return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            return Result.Ok($"Repair request with ID {repairRequestId} updated successfully.");
         }
 
-        public async Task<bool> DeleteRepairRequestAsync(int repairRequestId)
+        public async Task<Result> DeleteRepairRequestAsync(int repairRequestId)
         {
-            return await _repairRequestRepository.DeleteRepairRequestAsync(repairRequestId);
+            var success = await _repairRequestRepository.DeleteRepairRequestAsync(repairRequestId);
+            if (!success)
+                return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            return Result.Ok($"Repair request with ID {repairRequestId} deleted successfully.");
         }
 
         public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsFromCustomerAsync(int customerId)
@@ -86,4 +93,4 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<IEnumerable<RepairRequestCustomerResponse?>?>(repairRequests);
         }
     }
-}  
+}

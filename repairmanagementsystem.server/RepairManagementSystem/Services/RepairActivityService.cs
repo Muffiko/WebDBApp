@@ -1,5 +1,6 @@
 using AutoMapper;
 using RepairManagementSystem.Data;
+using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
@@ -32,31 +33,43 @@ namespace RepairManagementSystem.Services
             return _mapper.Map<RepairActivity>(repairActivity);
         }
 
-        public async Task<RepairActivity?> AddRepairActivityAsync(RepairActivityDTO repairActivityDTO)
+        public async Task<Result> AddRepairActivityAsync(RepairActivityDTO repairActivityDTO)
         {
-            if (repairActivityDTO == null)
-                return null;
             var repairActivity = _mapper.Map<RepairActivity>(repairActivityDTO);
-            await _repairActivityRepository.AddRepairActivityAsync(repairActivity);
-            return repairActivity;
+
+            if (await _repairActivityRepository.AddRepairActivityAsync(repairActivity))
+            {
+                return Result.Ok("Repair activity added successfully.");
+            }
+            return Result.Fail(500,"Failed to add repair activity.");
         }
 
-        public async Task<RepairActivity?> UpdateRepairActivityAsync(int repairActivityId, RepairActivityDTO updatedRepairActivityDTO)
+        public async Task<Result> UpdateRepairActivityAsync(int repairActivityId, RepairActivityDTO updatedRepairActivityDTO)
         {
-            var updatedRepairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
-            if (updatedRepairActivity == null)
-                return null;
-            await _repairActivityRepository.UpdateRepairActivityAsync(_mapper.Map(updatedRepairActivityDTO, updatedRepairActivity));
-            return _mapper.Map<RepairActivity>(updatedRepairActivity);
+            var existing = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (existing == null)
+            {
+                return Result.Fail(404, $"Repair activity with ID {repairActivityId} not found.");
+            }
+            if (await _repairActivityRepository.UpdateRepairActivityAsync(_mapper.Map(updatedRepairActivityDTO, existing)))
+            {
+                return Result.Ok($"Repair activity with ID {repairActivityId} updated successfully.");
+            }
+            return Result.Fail(500, $"Failed to update repair activity.");
         }
 
-        public async Task<RepairActivity?> DeleteRepairActivityAsync(int repairActivityId)
+        public async Task<Result> DeleteRepairActivityAsync(int repairActivityId)
         {
-            var existingRepairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
-            if (existingRepairActivity == null)
-                return null;
-            await _repairActivityRepository.DeleteRepairActivityAsync(repairActivityId);
-            return _mapper.Map<RepairActivity>(existingRepairActivity);
+            var existing = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (existing == null)
+            {
+                return Result.Fail(404, $"Repair activity with ID {repairActivityId} not found.");
+            }
+            if (await _repairActivityRepository.DeleteRepairActivityAsync(repairActivityId))
+            {
+                return Result.Ok($"Repair activity with ID {repairActivityId} deleted successfully.");
+            }
+            return Result.Fail(500, $"Failed to delete repair activity.");
         }
     }
 }

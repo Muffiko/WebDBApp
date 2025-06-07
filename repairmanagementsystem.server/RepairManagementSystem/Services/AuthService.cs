@@ -2,8 +2,10 @@ using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Repositories.Interfaces;
 using RepairManagementSystem.Services.Interfaces;
+using RepairManagementSystem.Helpers;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 public class AuthService : IAuthService
 {
@@ -25,44 +27,31 @@ public class AuthService : IAuthService
 
     }
 
-    public async Task<AuthResult> AuthenticateAsync(LoginRequest request)
+    public async Task<Result<AuthResponse>> AuthenticateAsync(LoginRequest request)
     {
         var user = await _userService.GetUserByEmailAsync(request.Email!);
         if (user == null || !_cryptoService.VerifyPassword(request.Password!, user.PasswordHash, user.PasswordSalt!))
         {
             _logger.LogWarning("Failed login attempt for email: {Email}", request.Email);
-            return new AuthResult
-            {
-                Success = false,
-                Response = null,
-                ErrorMessage = "Wrong email or password"
-            };
+            return Result<AuthResponse>.Fail(401, "Wrong email or password");
         }
         user.LastLoginAt = DateTime.UtcNow;
         var updateResult = await _userService.UpdateUserAsync(user);
-        if (!updateResult)
+        if (!updateResult.IsSuccess)
         {
             _logger.LogWarning("Failed to update LastLoginAt for user: {Email}", user.Email);
-            return new AuthResult
-            {
-                Success = false,
-                Response = null,
-                ErrorMessage = "Login failed due to a server error. Please try again."
-            };
+            return Result<AuthResponse>.Fail(updateResult.StatusCode, updateResult.Message);
         }
         var userDTO = _mapper.Map<UserDTO>(user);
-
         var existingUserToken = await _userTokenRepository.GetUserTokenByUserIdAsync(userDTO.UserId);
         if (existingUserToken != null)
         {
             await _userTokenRepository.DeleteUserTokenAsync(existingUserToken.UserTokenId);
             _logger.LogInformation("Deleted existing refresh token for userId: {UserId}", userDTO.UserId);
         }
-
         var token = _tokenService.GenerateToken(userDTO);
         var refreshToken = _tokenService.GenerateRefreshToken();
         var hashedRefreshToken = _tokenService.HashToken(refreshToken);
-
         var userToken = new UserToken
         {
             UserId = userDTO.UserId,
@@ -72,23 +61,17 @@ public class AuthService : IAuthService
         };
         await _userTokenRepository.AddUserTokenAsync(userToken);
         _logger.LogInformation("User {Email} authenticated successfully. Token and refresh token created.", userDTO.Email);
-
-        return new AuthResult
+        return Result<AuthResponse>.Ok(new AuthResponse
         {
-            Success = true,
-            Response = new AuthResponse
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-                Email = userDTO.Email,
-                Role = userDTO.Role,
-                FirstName = userDTO.FirstName,
-            },
-            ErrorMessage = null
-        };
+            Token = token,
+            RefreshToken = refreshToken,
+            Email = userDTO.Email,
+            Role = userDTO.Role,
+            FirstName = userDTO.FirstName,
+        });
     }
 
-    public async Task<AuthResult> RegisterAsync(RegisterRequest request)
+    public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request)
     {
         var (Hash, Salt) = _cryptoService.HashPassword(request.Password!);
         var user = new User
@@ -103,25 +86,16 @@ public class AuthService : IAuthService
             Role = "User",
             CreatedAt = DateTime.UtcNow
         };
-
         var userRegisteredResponse = await _userService.RegisterUserAsync(user);
-        if (userRegisteredResponse == false)
+        if (!userRegisteredResponse.IsSuccess)
         {
             _logger.LogWarning("Registration failed for email: {Email}", request.Email);
-            return new AuthResult
-            {
-                Success = false,
-                Response = null,
-                ErrorMessage = "Registration failed. Please check your input."
-            };
+            return Result<AuthResponse>.Fail(userRegisteredResponse.StatusCode, userRegisteredResponse.Message);
         }
-
         var userDTO = _mapper.Map<UserDTO>(user);
-
         var token = _tokenService.GenerateToken(userDTO);
         var refreshToken = _tokenService.GenerateRefreshToken();
         var hashedRefreshToken = _tokenService.HashToken(refreshToken);
-
         var userToken = new UserToken
         {
             UserId = user.UserId,
@@ -131,49 +105,39 @@ public class AuthService : IAuthService
         };
         await _userTokenRepository.AddUserTokenAsync(userToken);
         _logger.LogInformation("User {Email} registered successfully. Token and refresh token created.", user.Email);
-
-        return new AuthResult
+        return Result<AuthResponse>.Ok(new AuthResponse
         {
-            Success = true,
-            Response = new AuthResponse
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-                Email = user.Email,
-                Role = user.Role,
-                FirstName = user.FirstName
-            },
-            ErrorMessage = null
-        };
+            Token = token,
+            RefreshToken = refreshToken,
+            Email = user.Email,
+            Role = user.Role,
+            FirstName = user.FirstName
+        });
     }
-    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string refreshToken)
+    public async Task<Result<AuthResponse>> RefreshTokenAsync(string refreshToken)
     {
-
         var hashedRefreshToken = _tokenService.HashToken(refreshToken);
         if (!await _tokenService.RefreshTokenExists(hashedRefreshToken))
         {
             _logger.LogWarning("Refresh token does not exist or is invalid.");
-            return null;
+            return Result<AuthResponse>.Fail(401, "Refresh token is invalid or expired.");
         }
         var userId = await _tokenService.GetUserIdByRefreshToken(hashedRefreshToken!);
-        if (userId == -1)
+        if (userId == null)
         {
             _logger.LogWarning("Refresh token does not map to a valid user.");
-            return null;
+            return Result<AuthResponse>.Fail(401, "Refresh token is invalid or expired.");
         }
-        var userDTO = await _userService.GetUserByIdAsync(userId);
-
+        var userDTO = await _userService.GetUserByIdAsync(userId.Value);
         var existingUserToken = await _userTokenRepository.GetUserTokenByUserIdAsync(userDTO!.UserId);
         if (existingUserToken != null)
         {
             await _userTokenRepository.DeleteUserTokenAsync(existingUserToken.UserTokenId);
             _logger.LogInformation("Deleted old refresh token for userId: {UserId}", userDTO.UserId);
         }
-
         var token = _tokenService.GenerateToken(userDTO);
         var newRefreshToken = _tokenService.GenerateRefreshToken();
         var newHashedRefreshToken = _tokenService.HashToken(newRefreshToken);
-
         var newUserToken = new UserToken
         {
             UserId = userDTO.UserId,
@@ -183,12 +147,11 @@ public class AuthService : IAuthService
         };
         await _userTokenRepository.AddUserTokenAsync(newUserToken);
         _logger.LogInformation("Refresh token used for userId: {UserId}. New token and refresh token issued.", userDTO.UserId);
-
-        return new RefreshTokenResponse
+        return Result<AuthResponse>.Ok(new AuthResponse
         {
             Token = token,
             RefreshToken = newRefreshToken
-        };
+        });
     }
     public int? GetUserIdFromToken(string token)
     {

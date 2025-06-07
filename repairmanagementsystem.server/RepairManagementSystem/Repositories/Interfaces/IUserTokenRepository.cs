@@ -10,7 +10,7 @@ namespace RepairManagementSystem.Repositories.Interfaces
         Task UpdateUserTokenAsync(UserToken userToken);
         Task DeleteUserTokenAsync(int userTokenId);
         Task<bool> RefreshTokenExists(string hashedRefreshToken);
-        Task<int> GetUserIdByRefreshToken(string hashedRefreshToken);
+        Task<int?> GetUserIdByRefreshToken(string hashedRefreshToken);
         Task<UserToken?> GetUserTokenByUserIdAsync(int userId);
         Task<UserToken?> GetUserTokenByRefreshToken(string hashedRefreshToken);
     }

@@ -39,12 +39,12 @@ namespace RepairManagementSystem.Repositories
             }
         }
 
-        public async Task<int> GetUserIdByRefreshToken(string hashedRefreshToken)
+        public async Task<int?> GetUserIdByRefreshToken(string hashedRefreshToken)
         {
             var userToken = await _context.UserTokens
                 .FirstOrDefaultAsync(ut => ut.RefreshToken == hashedRefreshToken);
 
-            return userToken?.UserId ?? -1;
+            return userToken?.UserId;
         }
 
         public async Task<bool> RefreshTokenExists(string hashedRefreshToken)

@@ -14,39 +14,41 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<RepairActivity> GetRepairActivityByIdAsync(int repairActivityId)
+        public async Task<RepairActivity?> GetRepairActivityByIdAsync(int repairActivityId)
         {
             return await _context.RepairActivities.FindAsync(repairActivityId);
         }
 
-        public async Task<IEnumerable<RepairActivity>> GetAllRepairActivitiesAsync()
+        public async Task<IEnumerable<RepairActivity?>?> GetAllRepairActivitiesAsync()
         {
             return await _context.RepairActivities.ToListAsync();
         }
 
-        public async Task AddRepairActivityAsync(RepairActivity repairActivity)
+        public async Task<bool> AddRepairActivityAsync(RepairActivity repairActivity)
         {
             _context.RepairActivities.Add(repairActivity);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateRepairActivityAsync(RepairActivity repairActivity)
+        public async Task<bool> UpdateRepairActivityAsync(RepairActivity repairActivity)
         {
             if (repairActivity != null)
             {
                 _context.RepairActivities.Update(repairActivity);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteRepairActivityAsync(int repairActivityId)
+        public async Task<bool> DeleteRepairActivityAsync(int repairActivityId)
         {
             var repairActivity = await GetRepairActivityByIdAsync(repairActivityId);
             if (repairActivity != null)
             {
                 _context.RepairActivities.Remove(repairActivity);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
     }
 }
