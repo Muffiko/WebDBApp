@@ -1,10 +1,10 @@
 .tasks-container {
-    display: flex;
-    background-color: #0d0d12;
-    min-height: 100vh;
-    color: white;
+  display: flex;
+  background-color: #0d0d12;
+  min-height: 100vh;
+  color: white;
 }
-  
+
 .tasks-page {
   flex: 1;
   padding: 3rem 4rem;
@@ -14,31 +14,44 @@
 }
 
 .tasks-title {
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   align-self: flex-start;
-  max-width: 1400px;
+  max-width: 1300px;
   width: 100%;
 }
 
-.tasks-card {
-  background-color: #2a2a33;
-  padding: 3rem;
-  border-radius: 1.5rem;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 300px;
-  font-size: 1.15rem;
+.tasks-top-bar {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1300px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.tasks-description {
-  background-color: #1e1e24;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  line-height: 1.7;
+.filter-left {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.filter-left input,
+.filter-left select {
+  background-color: #2d2d35;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  min-width: 180px;
   font-size: 1.05rem;
 }
+
+.tasks-list {
+  width: 100%;
+  max-width: 1300px;
+}
+  
