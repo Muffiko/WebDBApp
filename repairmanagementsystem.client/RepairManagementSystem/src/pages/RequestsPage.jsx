@@ -56,7 +56,7 @@ const RequestsPage = () => {
     <div className="requests-container">
       <Sidebar menuItems={menuItems} />
       <div className="requests-page">
-        <h1 className="requests-title">Repairs</h1>
+        <h1 className="requests-title">My requests</h1>
 
         <FilterBar
           filters={filters}

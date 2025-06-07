@@ -3,7 +3,7 @@ import "./styles/NewRequestModal.css";
 import { useRepairObjectApi } from "../api/repairObjects";
 import { useRepairRequestApi } from "../api/repairRequests";
 
-const NewRequestModal = ({ onClose, onSuccess }) => {
+const NewRequestModal = ({ onClose, onSuccess, defaultRepairObject }) => {
   const { getCustomerRepairObjects } = useRepairObjectApi();
   const { addRepairRequest } = useRepairRequestApi();
 
@@ -25,6 +25,12 @@ const NewRequestModal = ({ onClose, onSuccess }) => {
     loadObjects();
   }, []);
 
+  useEffect(() => {
+    if (defaultRepairObject) {
+      setRepairObjectId(defaultRepairObject.repairObjectId.toString());
+    }
+  }, [defaultRepairObject]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!repairObjectId || !description) return;
@@ -33,7 +39,11 @@ const NewRequestModal = ({ onClose, onSuccess }) => {
       await addRepairRequest({ repairObjectId: parseInt(repairObjectId), description });
       onSuccess();
     } catch (err) {
-      setError(err?.message || "Failed to create request.");
+      if (err?.errors?.repairRequest?.length) {
+        setError(err.errors.repairRequest[0]);
+      } else {
+        setError(err?.message || "Failed to create request.");
+      }
     }
   };
 

@@ -4,6 +4,7 @@ import FilterBar from "../components/FilterBar";
 import AddRepairObjectModal from "../components/AddRepairObjectModal";
 import NewRequestModal from "../components/NewRequestModal";
 import { useRepairObjectApi } from "../api/repairObjects";
+import { useNavigate } from "react-router-dom";
 import "./styles/MyRepairObjectsPage.css";
 
 const menuItems = [
@@ -19,6 +20,8 @@ const MyRepairObjectsPage = () => {
   const [filters, setFilters] = useState({ name: "", type: "" });
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedObject, setSelectedObject] = useState(null);
+
+  const navigate = useNavigate();
 
   const loadObjects = async () => {
     try {
@@ -87,10 +90,7 @@ const MyRepairObjectsPage = () => {
         {selectedObject && (
           <NewRequestModal
             onClose={() => setSelectedObject(null)}
-            onSubmit={(data) => {
-              console.log("Created request for:", selectedObject.name, data);
-              setSelectedObject(null);
-            }}
+            onSuccess={() => navigate("/requests")}
             defaultRepairObject={selectedObject}
           />
         )}
