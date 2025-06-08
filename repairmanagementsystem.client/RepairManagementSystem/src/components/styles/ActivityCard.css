@@ -13,6 +13,7 @@
 
 .activity-card.expanded {
   background-color: #35353d;
+  cursor: default;
 }
 
 .activity-header {
@@ -127,12 +128,16 @@
 }
 
 .inline-input {
-  font-size: 1rem;
+  font-size: 1.5rem;
   padding: 0.2rem 0.4rem;
   border-radius: 0.4rem;
   border: none;
   outline: none;
+  background-color: #2a2a2f;  
+  color: #e0e0e6;              
 }
+
+
 
 .inline-textarea {
   width: 100%;
@@ -148,9 +153,10 @@
   margin-left: 0.5rem;
   opacity: 0.6;
   cursor: pointer;
+  font-size: 1.5rem;
 }
 
 .status-caret {
   margin-left: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
 }

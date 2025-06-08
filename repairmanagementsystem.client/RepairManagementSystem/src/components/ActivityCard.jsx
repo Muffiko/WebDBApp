@@ -73,7 +73,7 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
                     startEdit("name");
                   }}
                 >
-                  ✏️
+                  ✎
                 </span>
               )}
             </>
@@ -101,7 +101,7 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
                     startEdit("worker");
                   }}
                 >
-                  ✏️
+                  ✎
                 </span>
               )}
             </>
@@ -140,7 +140,7 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
                       startEdit("activityType");
                     }}
                   >
-                    ✏️
+                    ✎
                   </span>
                 </>
               )}
@@ -181,7 +181,7 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
                     startEdit("description");
                   }}
                 >
-                  ✏️
+                  ✎
                 </span>
                 <p className="field-value">{description}</p>
               </>

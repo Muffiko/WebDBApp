@@ -86,12 +86,6 @@ const OpenRequestsPage = () => {
             <RepairCard key={req.id} {...req} /> 
           ))}
         </div>
-        {/* {showModal && (
-          <NewRepairModal
-            onClose={() => setShowModal(false)}
-            onSubmit={handleCreate}
-          />
-        )} */}
       </div>
     </div>
   );
