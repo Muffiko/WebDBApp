@@ -7,12 +7,6 @@ import { useRepairObjectApi } from "../api/repairObjects";
 import { useNavigate } from "react-router-dom";
 import "./styles/MyRepairObjectsPage.css";
 
-const menuItems = [
-  { path: "/objects", label: "My repair objects", icon: "🧰" },
-  { path: "/requests", label: "My requests", icon: "📋" },
-  { path: "/profile", label: "Profile", icon: "👤" }
-];
-
 const MyRepairObjectsPage = () => {
   const { getCustomerRepairObjects } = useRepairObjectApi();
 
@@ -45,7 +39,7 @@ const MyRepairObjectsPage = () => {
 
   return (
     <div className="objects-container">
-      <Sidebar menuItems={menuItems} />
+      <Sidebar />
       <div className="objects-page">
         <h1 className="objects-title">My repair objects</h1>
 

@@ -3,13 +3,6 @@ import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import "./styles/NewRequestsPage.css";
 
-const managerMenuItems = [
-  { path: "/new-requests", label: "New Requests", icon: "🟦" },
-  { path: "/open-requests", label: "Open Requests", icon: "📂" },
-  { path: "/workers", label: "Workers", icon: "🗂️" },
-  { path: "/profile", label: "Profile", icon: "👤" },
-];
-
 const dummyManagers = ["Kamil Kowalski", "Marcin Nowak", "Anna Wiśniewska"];
 const currentUser = "Kamil Kowalski";
 
@@ -81,7 +74,7 @@ const NewRequestsPage = () => {
 
   return (
     <div className="requests-container">
-      <Sidebar menuItems={managerMenuItems} />
+      <Sidebar />
       <div className="requests-page">
         <h1 className="requests-title">New requests</h1>
 

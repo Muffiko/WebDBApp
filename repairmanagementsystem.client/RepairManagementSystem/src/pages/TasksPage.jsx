@@ -4,12 +4,6 @@ import FilterBar from "../components/FilterBar";
 import "./styles/TasksPage.css";
 import TaskCard from "../components/TaskCard";
 
-
-const menuItems = [
-    { path: "/tasks", label: "My Tasks", icon: "🟦" },
-    { path: "/profile", label: "Profile", icon: "👤" }
-];
-
 const mockTasks = [
     {
         id: 1,
@@ -51,7 +45,7 @@ const TasksPage = () => {
 
     return (
         <div className="tasks-container">
-            <Sidebar menuItems={menuItems} />
+            <Sidebar />
             <div className="tasks-page">
                 <h1 className="tasks-title">Tasks</h1>
 

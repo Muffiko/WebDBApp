@@ -5,13 +5,6 @@ import ActivitiesList from "../components/ActivitiesList";
 import NewActivityModal from "../components/NewActivityModal";
 import "./styles/RequestDetailsPage.css";
 
-const managerMenuItems = [
-  { path: "/new-requests", label: "New Requests", icon: "🟦" },
-  { path: "/open-requests", label: "Open Requests", icon: "📂" },
-  { path: "/workers", label: "Workers", icon: "🗂️" },
-  { path: "/profile", label: "Profile", icon: "👤" },
-];
-
 const mockData = {
   id: 1,
   name: "Komputer",
@@ -95,7 +88,7 @@ const RequestDetailsPage = () => {
 
   return (
     <div className="request-container">
-      <Sidebar menuItems={managerMenuItems} />
+      <Sidebar />
       <div className="request-page">
         <h1 className="request-title">Request Details</h1>
 

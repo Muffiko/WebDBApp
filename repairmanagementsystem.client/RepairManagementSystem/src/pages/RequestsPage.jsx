@@ -6,12 +6,6 @@ import NewRequestModal from "../components/NewRequestModal";
 import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestsPage.css";
 
-const menuItems = [
-  { path: "/objects", label: "My repair objects", icon: "🧰" },
-  { path: "/requests", label: "My requests", icon: "📋" },
-  { path: "/profile", label: "Profile", icon: "👤" }
-];
-
 const RequestsPage = () => {
   const { getCustomerRepairRequests, createRequest } = useRepairRequestApi();
 
@@ -54,7 +48,7 @@ const RequestsPage = () => {
 
   return (
     <div className="requests-container">
-      <Sidebar menuItems={menuItems} />
+      <Sidebar />
       <div className="requests-page">
         <h1 className="requests-title">My requests</h1>
 

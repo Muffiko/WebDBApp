@@ -78,8 +78,7 @@ const RegisterForm = () => {
 
       login(data.token);
 
-      if (response.role === "Manager") navigate("/new-requests");
-      else navigate("/profile");
+      navigate("/profile");
 
     } catch (err) {
       setGlobalError("Unexpected error occurred.");

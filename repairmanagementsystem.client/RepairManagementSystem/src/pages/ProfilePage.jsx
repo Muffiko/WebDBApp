@@ -5,12 +5,6 @@ import "./styles/ProfilePage.css";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserApi } from "../api/user";
 
-const menuItems = [
-  { path: "/objects", label: "My repair objects", icon: "🧰" },
-  { path: "/requests", label: "My requests", icon: "📋" },
-  { path: "/profile", label: "Profile", icon: "👤" }
-];
-
 const formatDate = (iso) => {
   const date = new Date(iso);
   return date.toLocaleDateString("en-GB");
@@ -48,7 +42,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <Sidebar menuItems={menuItems} />
+      <Sidebar />
       <div className="profile-page">
         <h1 className="profile-title">Profile</h1>
 

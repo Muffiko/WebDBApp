@@ -4,13 +4,6 @@ import FilterBar from "../components/FilterBar";
 import RepairCard from "../components/RepairCard";
 import "./styles/OpenRequestsPage.css";
 
-const menuItems = [
-  { path: "/new-requests", label: "New Requests", icon: "🟦" },
-  { path: "/open-requests", label: "Open Requests", icon: "📂" },
-  { path: "/workers", label: "Workers", icon: "🗂️" },
-  { path: "/profile", label: "Profile", icon: "👤" },
-];
-
 const mockRequests = [
   {
     id: 1,
@@ -57,7 +50,7 @@ const OpenRequestsPage = () => {
 
   return (
     <div className="open-requests-container">
-      <Sidebar menuItems={menuItems} />
+      <Sidebar />
       <div className="open-requests-page">
         <h1 className="open-requests-title">Open Requests</h1>
         <FilterBar

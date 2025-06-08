@@ -38,6 +38,50 @@ namespace RepairManagementSystem
                 CreatedAt = DateTime.UtcNow
             };
             await userRepo.AddUserAsync(adminUser);
+
+            var managerUser = new User
+            {
+                FirstName = "Manager",
+                LastName = "User",
+                Email = "manager@tab.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Number = "123456789",
+                Address = new Address
+                {
+                    Country = "PL",
+                    City = "TabCity",
+                    PostalCode = "00-001",
+                    Street = "Tab Street",
+                    HouseNumber = "1",
+                    ApartNumber = "1A"
+                },
+                Role = "Manager",
+                CreatedAt = DateTime.UtcNow
+            };
+            await userRepo.AddUserAsync(managerUser);
+
+            var workerUser = new User
+            {
+                FirstName = "Worker",
+                LastName = "User",
+                Email = "worker@tab.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Number = "123456789",
+                Address = new Address
+                {
+                    Country = "PL",
+                    City = "TabCity",
+                    PostalCode = "00-001",
+                    Street = "Tab Street",
+                    HouseNumber = "1",
+                    ApartNumber = "1A"
+                },
+                Role = "Worker",
+                CreatedAt = DateTime.UtcNow
+            };
+            await userRepo.AddUserAsync(workerUser);
         }
     }
 }

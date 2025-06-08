@@ -9,7 +9,7 @@ const RegisterPage = () => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/requests" replace />;
+    return <Navigate to="/profile" replace />;
   }
 
   return (
