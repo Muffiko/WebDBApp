@@ -60,7 +60,6 @@ const mockActivities = [
 ];
 
 const RequestDetailsPage = () => {
-  //const { id } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [activities, setActivities] = useState(mockActivities);

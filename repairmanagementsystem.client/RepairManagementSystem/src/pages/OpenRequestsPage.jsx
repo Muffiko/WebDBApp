@@ -1,9 +1,7 @@
-// OpenRequestsPage.jsx
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import RepairCard from "../components/RepairCard";
-import NewRepairModal from "../components/NewRepairModal";
 import "./styles/OpenRequestsPage.css";
 
 const menuItems = [
@@ -83,7 +81,7 @@ const OpenRequestsPage = () => {
 
         <div className="open-requests-list">
           {filtered.map((req) => (
-            <RepairCard key={req.id} {...req} /> 
+            <RepairCard key={req.id} {...req} />
           ))}
         </div>
       </div>
