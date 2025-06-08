@@ -1,10 +1,10 @@
 .open-requests-container {
-    display: flex;
-    background-color: #0d0d12;
-    min-height: 100vh;
-    color: white;
+  display: flex;
+  background-color: #0d0d12;
+  min-height: 100vh;
+  color: white;
 }
-  
+
 .open-requests-page {
   flex: 1;
   padding: 3rem 4rem;
@@ -22,23 +22,7 @@
   width: 100%;
 }
 
-.open-requests-card {
-  background-color: #2a2a33;
-  padding: 3rem;
-  border-radius: 1.5rem;
+.open-requests-list {
   width: 100%;
-  max-width: 1400px;
-  min-height: 300px;
-  font-size: 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.open-requests-description {
-  background-color: #1e1e24;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  line-height: 1.7;
-  font-size: 1.05rem;
+  max-width: 1300px;
 }

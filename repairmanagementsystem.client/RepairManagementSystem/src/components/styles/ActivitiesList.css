@@ -1,0 +1,37 @@
+.activities-wrapper {
+  margin-top: 24px;
+}
+
+.activities-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.activities-header h3 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.activities-add {
+  background-color: #9ca3af;
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.activities-add:hover {
+  background-color: #8f8f94;
+}
+
+.activities-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}

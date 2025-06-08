@@ -1,0 +1,46 @@
+.repair-card {
+    background-color: #2a2a33;
+    border-radius: 14px;
+    padding: 1.4rem 2rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .repair-card:hover {
+    background-color: #33333d;
+  }
+  
+  .repair-name,
+  .repair-manager,
+  .repair-date {
+    color: #e0e0e0;
+    font-size: 1.05rem;
+  }
+  
+  .repair-status {
+    font-weight: bold;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    width: fit-content;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  
+  .repair-status.blue {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  
+  .repair-status.yellow {
+    background-color: #facc15;
+    color: #000;
+  }
+  
+  .repair-status.gray {
+    background-color: #6b7280;
+    color: #fff;
+  }

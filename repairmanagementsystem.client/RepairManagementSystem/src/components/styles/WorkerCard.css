@@ -1,0 +1,51 @@
+.worker-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #3b3b45;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  cursor: default;
+  margin-bottom: 1rem;
+  transition: background-color 0.15s;
+  padding-left: 60px;
+}
+
+.worker-header {
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+  padding: 1rem;
+}
+
+.worker-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.worker-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.worker-status {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: 500;
+  margin-left: auto;
+  font-size: 1.2rem;
+}

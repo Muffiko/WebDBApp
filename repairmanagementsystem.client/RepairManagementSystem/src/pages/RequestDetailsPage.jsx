@@ -56,7 +56,7 @@ const RequestDetailsPage = () => {
 
   return (
     <div className="repair-container">
-      <Sidebar menuItems={menuItems} />
+      <Sidebar />
       <div className="repair-page">
         <h1 className="repair-title">Repair</h1>
 
