@@ -1,18 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RepairManagementSystem.Models.DTOs
+namespace RepairManagementSystem.Models
 {
-    public class RepairObjectDTO
+    public class RepairObjectResponse
     {
-        [Required]
-        [MaxLength(64)]
+        public int RepairObjectId { get; set; }
+
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        public string RepairObjectTypeId { get; set; }
+        public RepairObjectType RepairObjectType { get; set; } = null!;
 
-        [Required]
         public int CustomerId { get; set; }
     }
 }

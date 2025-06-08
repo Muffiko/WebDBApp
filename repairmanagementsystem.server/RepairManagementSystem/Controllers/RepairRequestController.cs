@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Services.Interfaces;
+using RepairManagementSystem.Extensions;
 
 namespace RepairManagementSystem.Controllers
 {
@@ -10,9 +11,11 @@ namespace RepairManagementSystem.Controllers
     public class RepairRequestController : ControllerBase
     {
         private readonly IRepairRequestService _repairRequestService;
-        public RepairRequestController(IRepairRequestService repairRequestService)
+        private readonly IRepairObjectService _repairObjectService;
+        public RepairRequestController(IRepairRequestService repairRequestService, IRepairObjectService repairObjectService)
         {
             _repairRequestService = repairRequestService;
+            _repairObjectService = repairObjectService;
         }
 
         [HttpGet]
@@ -21,61 +24,93 @@ namespace RepairManagementSystem.Controllers
             var repairRequests = await _repairRequestService.GetAllRepairRequestsAsync();
             return Ok(repairRequests);
         }
+
         [HttpGet("{repairRequestId:int}")]
         public async Task<IActionResult> GetRepairRequest(int repairRequestId)
         {
             var repairRequest = await _repairRequestService.GetRepairRequestByIdAsync(repairRequestId);
-            if (repairRequest == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair request not found",
-                    404,
-                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
-                );
             return Ok(repairRequest);
         }
+
         [HttpPost]
-        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestDTO repairRequestDTO)
+        public async Task<IActionResult> AddRepairRequest([FromBody] RepairRequestAdd request)
         {
-            var result = await _repairRequestService.AddRepairRequestAsync(repairRequestDTO);
-            if (result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                    "Invalid repair request",
-                    400,
-                    new { RepairRequest = new[] { "Repair request cannot be null or invalid." } }
-                );
-            return Ok(result);
+            int? customerId = User.GetUserId();
+            if (customerId == null)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
+
+            var repairObject = await _repairObjectService.GetRepairObjectByIdAsync(request.RepairObjectId);
+            if (repairObject == null)
+            {
+                return this.ToApiResponse(Result.Fail(400, "Repair object not found."));
+            }
+
+            if (repairObject.CustomerId != customerId.Value)
+            {
+                return this.ToApiResponse(Result.Fail(403, "You are not authorized for this repair object."));
+            }
+
+            var existingRequest = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId.Value);
+            if (existingRequest?.Any(r => r?.RepairObjectId == request.RepairObjectId) == true)
+            {
+                return this.ToApiResponse(Result.Fail(400, "You already have a repair request for this object."));
+            }
+
+            var result = await _repairRequestService.AddRepairRequestAsync(request);
+            return this.ToApiResponse(result);
         }
+
         [HttpPut("{repairRequestId:int}")]
         public async Task<IActionResult> UpdateRepairRequest(int repairRequestId, [FromBody] RepairRequestDTO updatedRepairRequest)
         {
             var result = await _repairRequestService.UpdateRepairRequestAsync(repairRequestId, updatedRepairRequest);
-            if (result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair request not found",
-                    404,
-                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
-                );
-            return Ok(new { message = $"Repair request with ID {repairRequestId} updated successfully." });
+            return this.ToApiResponse(result);
         }
         [HttpDelete("{repairRequestId:int}")]
+
         public async Task<IActionResult> DeleteRepairRequest(int repairRequestId)
         {
             var result = await _repairRequestService.DeleteRepairRequestAsync(repairRequestId);
-            if (result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair request not found",
-                    404,
-                    new { RepairRequest = new[] { $"Repair request with ID {repairRequestId} not found." } }
-                );
-            return Ok(new { message = $"Repair request with ID {repairRequestId} deleted successfully." });
+            return this.ToApiResponse(result);
         }
+
+        [HttpGet("customer/{customerId:int}")]
+
+        public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
+        {
+            var repairRequests = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId);
+            return Ok(repairRequests);
+        }
+
+        [HttpGet("unassigned")]
+
+        public async Task<IActionResult> GetUnassignedRepairRequests()
+        {
+            var unassignedRepairRequests = await _repairRequestService.GetUnassignedRepairRequestsAsync();
+            return Ok(unassignedRepairRequests);
+        }
+
+        [HttpGet("active")]
+
+        public async Task<IActionResult> GetActiveRepairRequests()
+        {
+            var activeRepairRequests = await _repairRequestService.GetActiveRepairRequestsAsync();
+            return Ok(activeRepairRequests);
+        }
+
+        [HttpGet("customer/my")]
+        public async Task<IActionResult> GetMyRepairRequests()
+        {
+            var customerId = User.GetUserId();
+            if (customerId == null)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
+            var repairRequests = await _repairRequestService.GetAllRepairRequestsForCustomerAsync(customerId.Value);
+            return Ok(repairRequests);
+        }
+
     }
 }

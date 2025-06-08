@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RepairManagementSystem.Extensions;
 using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
 using RepairManagementSystem.Models.DTOs;
@@ -22,63 +24,63 @@ namespace RepairManagementSystem.Controllers
             var repairObjects = await _repairObjectService.GetAllRepairObjectsAsync();
             return Ok(repairObjects);
         }
+
         [HttpGet("{repairObjectId:int}")]
         public async Task<IActionResult> GetRepairObject(int repairObjectId)
         {
             var repairObject = await _repairObjectService.GetRepairObjectByIdAsync(repairObjectId);
-            if (repairObject == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair object not found",
-                    404,
-                    new { RepairObject = new[] { $"Repair object with ID {repairObjectId} not found." } }
-                );
             return Ok(repairObject);
         }
+
         [HttpPost]
-        public async Task<IActionResult> AddRepairObject([FromBody] RepairObjectDTO repairObjectDTO)
+        public async Task<IActionResult> AddRepairObject([FromBody] RepairObjectRequest repairObjectRequest)
         {
-            var result = await _repairObjectService.AddRepairObjectAsync(repairObjectDTO);
-            if (result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                    "Invalid repair object",
-                    400,
-                    new { RepairObject = new[] { "Repair object cannot be null or invalid." } }
-                );
-            return Ok(result);
+            int? userId = User.GetUserId();
+            if (userId == null)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
+            var result = await _repairObjectService.AddRepairObjectAsync(userId.Value, repairObjectRequest);
+            return this.ToApiResponse(result);
         }
-        [HttpPut]
-        [Route("{repairObjectId:int}")]
-        public async Task<IActionResult> UpdateRepairObject(int repairObjectId, [FromBody] RepairObjectDTO updatedRepairObject)
+
+        [HttpPut("{repairObjectId:int}")]
+        public async Task<IActionResult> UpdateRepairObject(int repairObjectId, [FromBody] RepairObjectRequest updatedRepairObject)
         {
+            int? userId = User.GetUserId();
+            if (userId == null)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
             var result = await _repairObjectService.UpdateRepairObjectAsync(repairObjectId, updatedRepairObject);
-            if (result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair object not found",
-                    404,
-                    new { RepairObject = new[] { $"Repair object with ID {repairObjectId} not found." } }
-                );
-            return Ok(new { message = $"Repair object with ID {repairObjectId} updated successfully." });
+            return this.ToApiResponse(result);
         }
-        [HttpDelete]
-        [Route("{repairObjectId:int}")]
+
+        [HttpDelete("{repairObjectId:int}")]
         public async Task<IActionResult> DeleteRepairObject(int repairObjectId)
         {
             var result = await _repairObjectService.DeleteRepairObjectAsync(repairObjectId);
-            if(result == null)
-                return ErrorResponseHelper.CreateProblemDetails(
-                    HttpContext,
-                    "https://tools.ietf.org/html/rfc9110#section-15.5.5",
-                    "Repair object not found",
-                    404,
-                    new { RepairObject = new[] { $"Repair object with ID {repairObjectId} not found." } }
-                );
-            return Ok(new { message = $"Repair object with ID {repairObjectId} deleted successfully." });
+            return this.ToApiResponse(result);
+        }
+
+        [HttpGet("customer/{customerId:int}")]
+        public async Task<IActionResult> GetAllRepairObjectsFromCustomer(int customerId)
+        {
+            var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(customerId);
+            return Ok(repairObjects);
+        }
+
+        [HttpGet("customer/my")]
+        public async Task<IActionResult> GetAllRepairObjectsForCurrentUser()
+        {
+            int? userId = User.GetUserId();
+            if (userId == null)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
+
+            var repairObjects = await _repairObjectService.GetAllRepairObjectsFromCustomerAsync(userId.Value);
+            return Ok(repairObjects);
         }
     }
 }

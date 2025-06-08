@@ -31,7 +31,7 @@
 }
 
 .modal-back {
-  background: none;
+  background: none !important;
   border: none;
   font-size: 1.4rem;
   color: white;
@@ -74,4 +74,11 @@
 
 .modal-card button[type="submit"]:hover {
   background-color: #2563eb;
+}
+
+.form-message {
+  margin-top: 1rem;
+  color: #3b82f6;
+  font-weight: bold;
+  text-align: center;
 }

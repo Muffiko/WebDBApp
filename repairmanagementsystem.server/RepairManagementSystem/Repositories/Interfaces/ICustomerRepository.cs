@@ -4,10 +4,10 @@ namespace RepairManagementSystem.Repositories.Interfaces
 {
     public interface ICustomerRepository
     {
-        Task<Customer> GetCustomerByIdAsync(int customerId);
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
-        Task AddCustomerAsync(Customer customer);
-        Task UpdateCustomerAsync(Customer customer);
-        Task DeleteCustomerAsync(int customerId);
+        Task<Customer?> GetCustomerByIdAsync(int customerId);
+        Task<IEnumerable<Customer?>?> GetAllCustomersAsync();
+        Task<bool> AddCustomerAsync(Customer customer);
+        Task<bool> UpdateCustomerAsync(Customer customer);
+        Task<bool> DeleteCustomerAsync(int customerId);
     }
 }

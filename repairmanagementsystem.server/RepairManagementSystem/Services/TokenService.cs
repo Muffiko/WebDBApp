@@ -113,7 +113,7 @@ public class TokenService : ITokenService
         return _userTokenRepository.RefreshTokenExists(hashedRefreshToken);
     }
 
-    public Task<int> GetUserIdByRefreshToken(string hashedRefreshToken)
+    public Task<int?> GetUserIdByRefreshToken(string hashedRefreshToken)
     {
         return _userTokenRepository.GetUserIdByRefreshToken(hashedRefreshToken);
     }

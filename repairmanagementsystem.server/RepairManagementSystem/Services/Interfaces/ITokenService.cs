@@ -9,7 +9,7 @@ namespace RepairManagementSystem.Services.Interfaces
         bool ValidateToken(string token);
         string HashToken(string token);
         Task<bool> RefreshTokenExists(string hashedRefreshToken);
-        Task<int> GetUserIdByRefreshToken(string hashedRefreshToken);
+        Task<int?> GetUserIdByRefreshToken(string hashedRefreshToken);
         int? GetUserIdFromToken(string token);
     }
 }

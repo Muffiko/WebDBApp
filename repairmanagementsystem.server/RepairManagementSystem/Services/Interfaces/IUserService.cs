@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using RepairManagementSystem.Models.DTOs;
 using RepairManagementSystem.Models;
+using RepairManagementSystem.Helpers;
 
 namespace RepairManagementSystem.Services.Interfaces
 {
@@ -7,13 +9,13 @@ namespace RepairManagementSystem.Services.Interfaces
     {
         Task<UserDTO?> GetUserAsync(string email, string password);
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
-        Task<bool> RegisterUserAsync(User user);
+        Task<Result> RegisterUserAsync(User user);
         Task<UserDTO?> GetUserByIdAsync(int userId);
         Task<User?> GetUserByEmailAsync(string email);
-        Task<PasswordResetResponse> ResetPasswordAsync(int userId, PasswordResetRequest request);
-        Task<UpdateUserInfoResponse> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request);
-        Task<UpdateAddressResponse> UpdateAddressAsync(int userId, UpdateAddressRequest request);
+        Task<Result> ResetPasswordAsync(int userId, PasswordResetRequest request);
+        Task<Result<UpdateUserInfoResponse>> UpdateUserInfoAsync(int userId, UserInfoUpdateRequest request);
+        Task<Result<UpdateAddressResponse>> UpdateAddressAsync(int userId, UpdateAddressRequest request);
         Task<User?> GetUserEntityByIdAsync(int userId);
-        Task<bool> UpdateUserAsync(User user);
+        Task<Result> UpdateUserAsync(User user);
     }
 }

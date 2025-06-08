@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import AddRepairObjectModal from "../components/AddRepairObjectModal";
-import NewRepairModal from "../components/NewRepairModal";
+import NewRequestModal from "../components/NewRequestModal";
+import { useRepairObjectApi } from "../api/repairObjects";
+import { useNavigate } from "react-router-dom";
 import "./styles/MyRepairObjectsPage.css";
 
 const menuItems = [
@@ -12,19 +14,34 @@ const menuItems = [
 ];
 
 const MyRepairObjectsPage = () => {
+  const { getCustomerRepairObjects } = useRepairObjectApi();
+
   const [objects, setObjects] = useState([]);
   const [filters, setFilters] = useState({ name: "", type: "" });
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedObject, setSelectedObject] = useState(null);
 
-  const handleAddObject = ({ name, type }) => {
-    setObjects([...objects, { id: Date.now(), name, type }]);
+  const navigate = useNavigate();
+
+  const loadObjects = async () => {
+    try {
+      const data = await getCustomerRepairObjects();
+      setObjects(data);
+    } catch (err) {
+      console.error("Failed to load repair objects", err);
+    }
   };
+
+  useEffect(() => {
+    loadObjects();
+  }, []);
 
   const filteredObjects = objects.filter((obj) =>
     obj.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-    (filters.type === "" || obj.type === filters.type)
+    (filters.type === "" || obj.repairObjectType?.name === filters.type)
   );
+
+  const uniqueTypes = [...new Set(objects.map(obj => obj.repairObjectType?.name))];
 
   return (
     <div className="objects-container">
@@ -40,43 +57,46 @@ const MyRepairObjectsPage = () => {
           selects={[
             {
               key: "type",
-              label: "Type:",
-              options: ["Laptop", "Phone", "Other"]
+              label: "All types",
+              options: uniqueTypes
             }
           ]}
         />
 
         <div className="object-list">
-          {filteredObjects.map((obj) => (
-            <div key={obj.id} className="object-card">
-              <div className="object-info">
-                <h3>{obj.name}</h3>
-                <p>Type: {obj.type}</p>
-              </div>
-              <button onClick={() => setSelectedObject(obj)}>
-                Create request
-              </button>
+          {filteredObjects.length === 0 ? (
+            <div className="empty-message">
+              No repair objects found.
             </div>
-          ))}
+          ) : (
+            filteredObjects.map((obj) => (
+              <div key={obj.repairObjectId} className="object-card">
+                <div className="object-info">
+                  <h3>{obj.name}</h3>
+                  <p>Type: {obj.repairObjectType?.name}</p>
+                </div>
+                <button onClick={() => setSelectedObject(obj)}>
+                  Create request
+                </button>
+              </div>
+            ))
+          )}
         </div>
 
         {showAddModal && (
           <AddRepairObjectModal
             onClose={() => setShowAddModal(false)}
-            onSubmit={(data) => {
-              handleAddObject(data);
+            onSuccess={() => {
               setShowAddModal(false);
+              loadObjects();
             }}
           />
         )}
 
         {selectedObject && (
-          <NewRepairModal
+          <NewRequestModal
             onClose={() => setSelectedObject(null)}
-            onSubmit={(data) => {
-              console.log("Created request for:", selectedObject.name, data);
-              setSelectedObject(null);
-            }}
+            onSuccess={() => navigate("/requests")}
             defaultRepairObject={selectedObject}
           />
         )}

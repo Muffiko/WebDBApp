@@ -14,39 +14,42 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<RepairActivityType> GetRepairActivityTypeByIdAsync(int repairActivityTypeId)
+        public async Task<RepairActivityType?> GetRepairActivityTypeByIdAsync(string repairActivityTypeId)
         {
             return await _context.RepairActivityTypes.FindAsync(repairActivityTypeId);
         }
 
-        public async Task<IEnumerable<RepairActivityType>> GetAllRepairActivityTypesAsync()
+        public async Task<IEnumerable<RepairActivityType?>?> GetAllRepairActivityTypesAsync()
         {
             return await _context.RepairActivityTypes.ToListAsync();
         }
 
-        public async Task AddRepairActivityTypeAsync(RepairActivityType repairActivityType)
+        public async Task<bool> AddRepairActivityTypeAsync(RepairActivityType repairActivityType)
         {
             _context.RepairActivityTypes.Add(repairActivityType);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateRepairActivityTypeAsync(RepairActivityType repairActivityType)
+        public async Task<bool> UpdateRepairActivityTypeAsync(RepairActivityType repairActivityType)
         {
             if (repairActivityType != null)
             {
                 _context.RepairActivityTypes.Update(repairActivityType);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteRepairActivityTypeAsync(int repairActivityTypeId)
+        public async Task<bool> DeleteRepairActivityTypeAsync(string repairActivityTypeId)
         {
             var repairActivityType = await GetRepairActivityTypeByIdAsync(repairActivityTypeId);
+
             if (repairActivityType != null)
             {
                 _context.RepairActivityTypes.Remove(repairActivityType);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace RepairManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<Manager> GetManagerByIdAsync(int managerId)
+        public async Task<Manager?> GetManagerByIdAsync(int managerId)
         {
             return await _context.Managers.FindAsync(managerId);
         }

@@ -33,9 +33,10 @@
   .modal-back {
     background: none;
     border: none;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     color: white;
     cursor: pointer;
+    line-height: 1;
   }
   
   .modal-card input,
@@ -65,3 +66,9 @@
     background-color: #2563eb;
   }
   
+.form-message {
+  margin-top: 1rem;
+  color: #3b82f6;
+  font-weight: bold;
+  text-align: center;
+}
