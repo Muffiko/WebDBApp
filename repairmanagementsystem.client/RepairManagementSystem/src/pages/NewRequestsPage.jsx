@@ -12,25 +12,100 @@ const initialRequests = [
     name: "Komputer",
     type: "Elektroniczne",
     created: "01/01/2025",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    manager: null
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
   },
   {
     id: 2,
     name: "Komputer",
     type: "Elektroniczne",
     created: "01/01/2025",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    manager: null
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
   },
   {
     id: 3,
     name: "Komputer",
     type: "Elektroniczne",
     created: "01/01/2025",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    manager: null
-  }
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
 ];
 
 const NewRequestsPage = () => {
@@ -42,7 +117,7 @@ const NewRequestsPage = () => {
   const [requests, setRequests] = useState(initialRequests);
 
   const toggleExpand = (id) => {
-    setExpandedId(prev => (prev === id ? null : id));
+    setExpandedId((prev) => (prev === id ? null : id));
   };
 
   const filtered = requests.filter(
@@ -58,13 +133,13 @@ const NewRequestsPage = () => {
       return;
     }
 
-    setRequests(prev => prev.filter(r => r.id !== id));
+    setRequests((prev) => prev.filter((r) => r.id !== id));
     setEditingId(null);
     setError("");
   };
 
   const handleAssignToMe = (id) => {
-    setRequests(prev => prev.filter(r => r.id !== id));
+    setRequests((prev) => prev.filter((r) => r.id !== id));
     setEditingId(null);
     setError("");
   };
@@ -83,8 +158,8 @@ const NewRequestsPage = () => {
             {
               key: "type",
               label: "Type:",
-              options: ["Elektroniczne", "AGD", "Inne"]
-            }
+              options: ["Elektroniczne", "AGD", "Inne"],
+            },
           ]}
         />
 
@@ -92,32 +167,49 @@ const NewRequestsPage = () => {
           {filtered.map((req) => (
             <div
               key={req.id}
-              className={`request-card-wide ${expandedId === req.id ? "expanded" : ""}`}
+              className={`request-card-wide ${
+                expandedId === req.id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpand(req.id)}
             >
               <div className="req-wide-info">
-                <span className="arrow">{expandedId === req.id ? "▲" : "▼"}</span>
+                <span className="arrow">
+                  {expandedId === req.id ? "▲" : "▼"}
+                </span>
                 <span>{req.name}</span>
                 <span>{req.type}</span>
                 <span>{req.created}</span>
 
                 {editingId === req.id ? (
-                  <div className="assign-edit" onClick={(e) => e.stopPropagation()}>
+                  <div
+                    className="assign-edit"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <div className="assign-edit-top">
                       <input
                         placeholder="Search manager..."
                         value={managerInput}
                         onChange={(e) => setManagerInput(e.target.value)}
                       />
-                      <button className="confirm" onClick={(e) => {
-                        e.stopPropagation();
-                        handleAssign(req.id);
-                      }}>✔</button>
-                      <button className="cancel" onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingId(null);
-                        setError("");
-                      }}>✖</button>
+                      <button
+                        className="confirm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAssign(req.id);
+                        }}
+                      >
+                        ✔
+                      </button>
+                      <button
+                        className="cancel"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingId(null);
+                          setError("");
+                        }}
+                      >
+                        ✖
+                      </button>
                     </div>
                     <button
                       className="assign-to-me"
@@ -128,7 +220,11 @@ const NewRequestsPage = () => {
                     >
                       Assign to me
                     </button>
-                    {error && <div style={{ color: "red", fontSize: "0.85rem" }}>{error}</div>}
+                    {error && (
+                      <div style={{ color: "red", fontSize: "0.85rem" }}>
+                        {error}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <button

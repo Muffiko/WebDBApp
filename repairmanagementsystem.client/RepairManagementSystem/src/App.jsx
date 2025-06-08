@@ -17,6 +17,7 @@ const NewRequestsPage = lazy(() => import("./pages/NewRequestsPage"));
 const OpenRequestsPage = lazy(() => import("./pages/OpenRequestsPage"));
 const WorkersPage = lazy(() => import("./pages/WorkersPage"));
 const TasksPage = lazy(() => import("./pages/TasksPage"));
+const ManageRequestPage = lazy(() => import("./pages/ManageRequestPage"));
 
 function App() {
   const { isAuthenticated, isAuthReady } = useAuth();
@@ -42,6 +43,7 @@ function App() {
             <Route path="/open-requests" element={<OpenRequestsPage />} />
             <Route path="/workers" element={<WorkersPage />} />
             <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/manage-request/:id" element={<ManageRequestPage />} />
           </>
         )}
 
