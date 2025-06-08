@@ -1,3 +1,18 @@
+.requests-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d0d12;
+  color: white;
+}
+
+.requests-page {
+  flex: 1;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+
 .request-list {
     width: 100%;
     max-width: 1400px;

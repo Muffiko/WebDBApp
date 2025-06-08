@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./styles/Sidebar.css";
 import { useAuth } from "../contexts/AuthContext";
 
-const Sidebar = ({ menuItems }) => {
+const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -12,6 +12,32 @@ const Sidebar = ({ menuItems }) => {
     logout();
     navigate("/");
   };
+
+  const getMenuItems = () => {
+    switch (user?.role) {
+      case "Manager":
+        return [
+          { path: "/new-requests", label: "New Requests", icon: "🟦" },
+          { path: "/open-requests", label: "Open Requests", icon: "📂" },
+          { path: "/workers", label: "Workers", icon: "🗂️" },
+          { path: "/profile", label: "Profile", icon: "👤" }
+        ];
+      case "Worker":
+        return [
+          { path: "/tasks", label: "My Tasks", icon: "🟦" },
+          { path: "/profile", label: "Profile", icon: "👤" }
+        ];
+      default:
+        // default to "User"
+        return [
+          { path: "/objects", label: "My repair objects", icon: "🧰" },
+          { path: "/requests", label: "My requests", icon: "📋" },
+          { path: "/profile", label: "Profile", icon: "👤" }
+        ];
+    }
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <div className="sidebar">
@@ -34,7 +60,9 @@ const Sidebar = ({ menuItems }) => {
         {user && (
           <div className="user-info">
             <div className="logged-as">Logged as:</div>
-            <div className="user-email">{user.firstName} ({user.email})</div>
+            <div className="user-email">
+              {user.firstName} ({user.email})
+            </div>
           </div>
         )}
         <button className="logout-button" onClick={handleLogout}>

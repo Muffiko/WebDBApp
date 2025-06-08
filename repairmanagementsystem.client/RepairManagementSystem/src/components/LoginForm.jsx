@@ -20,14 +20,21 @@ const LoginForm = () => {
     setError("");
     try {
       const response = await loginUser(formData);
-      console.log(response);
       login(response.token);
-
-      if (response.role === "Manager") navigate("/new-requests");
-      else navigate("/requests");
-
+      navigate("/profile");
     } catch (err) {
-      setError(err.message || "Login failed");
+      let message = "Login failed";
+
+      if (err?.message && typeof err.message === "string") {
+        try {
+          const parsed = JSON.parse(err.message);
+          message = parsed.message || parsed.title || message;
+        } catch {
+          message = err.message;
+        }
+      }
+
+      setError(message);
     }
   };
 

@@ -4,12 +4,6 @@ import Sidebar from "../components/Sidebar";
 import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestDetailsPage.css";
 
-const menuItems = [
-  { path: "/objects", label: "My repair objects", icon: "🧰" },
-  { path: "/requests", label: "My requests", icon: "📋" },
-  { path: "/profile", label: "Profile", icon: "👤" }
-];
-
 const statusColorMap = {
   Open: "blue",
   "In progress": "yellow",
@@ -46,7 +40,7 @@ const RequestDetailsPage = () => {
   if (loading || !data) {
     return (
       <div className="repair-container">
-        <Sidebar menuItems={menuItems} />
+        <Sidebar />
         <div className="repair-page">
           <h1 className="repair-title">Repair</h1>
           <div className="repair-card">
