@@ -1,7 +1,7 @@
 .activity-card {
   position: relative;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   background-color: #3b3b45;
   border-radius: 0.8rem;
   overflow: hidden;
@@ -19,7 +19,7 @@
 .activity-header {
   display: flex;
   align-items: center;
-  min-height: 80px; 
+  min-height: 80px;
   padding: 1rem;
 }
 
@@ -133,20 +133,20 @@
   border-radius: 0.4rem;
   border: none;
   outline: none;
-  background-color: #2a2a2f;  
-  color: #e0e0e6;              
+  background-color: #2a2a2f;
+  color: #e0e0e6;
 }
-
-
 
 .inline-textarea {
   width: 100%;
-  font-size: 1rem;
-  padding: 0.4rem;
+  font-size: 1.5rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 0.4rem;
   border: none;
   outline: none;
   resize: vertical;
+  background-color: #2a2a2f;
+  color: #e0e0e6;
 }
 
 .edit-icon {

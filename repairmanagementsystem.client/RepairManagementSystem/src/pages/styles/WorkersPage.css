@@ -1,16 +1,14 @@
 .workers-container {
-    display: flex;
-    background-color: #0d0d12;
-    min-height: 100vh;
-    color: white;
+  display: flex;
+  background-color: #0d0d12;
+  min-height: 100vh;
+  color: white;
 }
-  
+
 .workers-page {
   flex: 1;
   padding: 3rem 4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  color: #fff;
 }
 
 .workers-title {
@@ -19,26 +17,5 @@
   margin-bottom: 2.5rem;
   align-self: flex-start;
   max-width: 1400px;
-  width: 100%;
-}
-
-.workers-card {
-  background-color: #2a2a33;
-  padding: 3rem;
-  border-radius: 1.5rem;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 300px;
-  font-size: 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.workers-description {
-  background-color: #1e1e24;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  line-height: 1.7;
-  font-size: 1.05rem;
+  width: 100%
 }

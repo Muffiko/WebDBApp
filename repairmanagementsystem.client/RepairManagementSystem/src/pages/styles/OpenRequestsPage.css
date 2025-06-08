@@ -1,10 +1,10 @@
 .open-requests-container {
-    display: flex;
-    background-color: #0d0d12;
-    min-height: 100vh;
-    color: white;
+  display: flex;
+  background-color: #0d0d12;
+  min-height: 100vh;
+  color: white;
 }
-  
+
 .open-requests-page {
   flex: 1;
   padding: 3rem 4rem;
@@ -22,8 +22,7 @@
   width: 100%;
 }
 
- .open-requests-list {
-    width: 100%;
-    max-width: 1300px;
-  }
-
+.open-requests-list {
+  width: 100%;
+  max-width: 1300px;
+}
