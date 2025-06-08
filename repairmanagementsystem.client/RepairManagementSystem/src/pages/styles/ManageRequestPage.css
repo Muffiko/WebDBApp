@@ -1,11 +1,11 @@
-.repair-container {
+.request-container {
   display: flex;
   background-color: #0d0d12;
   min-height: 100vh;
   color: white;
 }
 
-.repair-page {
+.request-page {
   flex: 1;
   padding: 3rem 4rem;
   display: flex;
@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-.repair-title {
+.request-title {
   font-size: 2.8rem;
   font-weight: bold;
   margin-bottom: 2.5rem;
@@ -22,7 +22,7 @@
   width: 100%;
 }
 
-.repair-card {
+.request-card {
   background-color: #2a2a33;
   padding: 3rem;
   border-radius: 1.5rem;
@@ -34,9 +34,12 @@
   flex-direction: column;
   gap: 2rem;
   font-size: 1.15rem;
+  max-height: calc(100vh - 250px); 
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
-.repair-status-label {
+.request-status-label {
   position: absolute;
   top: 2rem;
   right: 2rem;
@@ -61,22 +64,22 @@
   color: #fff;
 }
 
-.repair-section h3 {
+.request-section h3 {
   font-size: 1.3rem;
   margin-bottom: 0.8rem;
 }
 
-.repair-grid {
+.request-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem 3rem;
 }
 
-.repair-grid p {
+.request-grid p {
   margin: 0.3rem 0;
 }
 
-.repair-description {
+.request-description {
   background-color: #1e1e24;
   border-radius: 1rem;
   padding: 1.5rem;
@@ -84,7 +87,7 @@
   font-size: 1.05rem;
 }
 
-.repair-back {
+.request-back {
   align-self: flex-end;
   background-color: #3b82f6;
   color: white;
@@ -98,6 +101,6 @@
   margin-top: 1rem;
 }
 
-.repair-back:hover {
+.request-back:hover {
   background-color: #2563eb;
 }

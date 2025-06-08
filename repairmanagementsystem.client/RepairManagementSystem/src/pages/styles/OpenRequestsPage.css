@@ -25,4 +25,7 @@
 .open-requests-list {
   width: 100%;
   max-width: 1300px;
+  max-height: calc(100vh - 300px); 
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }

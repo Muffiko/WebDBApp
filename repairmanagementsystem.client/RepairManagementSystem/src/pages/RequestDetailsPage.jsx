@@ -1,151 +1,98 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import ActivitiesList from "../components/ActivitiesList";
-import NewActivityModal from "../components/NewActivityModal";
+import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestDetailsPage.css";
 
-const mockData = {
-  id: 1,
-  name: "Komputer",
-  type: "Elektroniczne",
-  customer: "Przemysław Kowalski",
-  manager: "Kamil Kowalski",
-  created: "01/01/2025",
-  started: "05/01/2025",
-  finished: "",
-  status: "In progress",
-  description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...",
+const statusColorMap = {
+  Open: "blue",
+  "In progress": "yellow",
+  Closed: "gray"
 };
 
-const mockActivities = [
-  {
-    id: 1,
-    name: "Diagnostyka",
-    worker: "Mariusz Kowalski",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    name: "Czyszczenie wnętrza",
-    worker: "Mariusz Kowalski",
-    status: "Canceled",
-    description: "Lorem Ipsum",
-    activityType: "Cleaning",
-    createdAt: "01/01/2025",
-    startedAt: "02/01/2025",
-    finishedAt: "03/01/2025",
-  },
-  {
-    id: 3,
-    name: "Wymiana dysku",
-    worker: "Mariusz Kowalski",
-    status: "In progress",
-  },
-  {
-    id: 4,
-    name: "Aktualizacja BIOS",
-    worker: "Mariusz Kowalski",
-    status: "To do",
-  },
-  { id: 5, name: "Test RAM", worker: "Mariusz Kowalski", status: "To do" },
-];
+const formatDate = (isoString) => {
+  if (!isoString) return "-";
+  return new Date(isoString).toLocaleDateString("en-GB"); // DD/MM/YYYY
+};
 
 const RequestDetailsPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [activities, setActivities] = useState(mockActivities);
+  const { getRepairRequestById } = useRepairRequestApi();
 
-  const handleAddActivity = (formData) => {
-    const nextId = activities.length
-      ? Math.max(...activities.map(a => a.id)) + 1
-      : 1
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const newActivity = {
-      id: nextId,
-      name: formData.activityName,
-      worker: formData.worker ? formData.worker : "To be assigned",
-      status: "To do",
-      activityType: formData.activityType,
-      description: formData.description,
-      createdAt: new Date().toLocaleDateString("en-GB"),
-      startedAt: "",
-      finishedAt: ""
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await getRepairRequestById(id);
+        setData(res);
+      } catch (err) {
+        console.error("Failed to load repair request:", err);
+      } finally {
+        setLoading(false);
+      }
     };
+    loadData();
+  }, [id]);
 
-    setActivities(prev => [...prev, newActivity]);
-    setShowModal(false);
+  if (loading || !data) {
+    return (
+      <div className="repair-container">
+        <Sidebar />
+        <div className="repair-page">
+          <h1 className="repair-title">Repair</h1>
+          <div className="repair-card">
+            <p>Loading repair details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    console.log("New activity added:", newActivity);
-  };
-
-  const statusColor = {
-    Open: "blue",
-    "In progress": "yellow",
-    Closed: "gray",
-  }[mockData.status];
+  const statusColor = statusColorMap[data.status] || "gray";
+  const obj = data.repairObject;
 
   return (
-    <div className="request-container">
+    <div className="repair-container">
       <Sidebar />
-      <div className="request-page">
-        <h1 className="request-title">Request Details</h1>
+      <div className="repair-page">
+        <h1 className="repair-title">Repair</h1>
 
-        <div className="request-card">
-          <div className={`request-status-label status--${statusColor}`}>
-            {mockData.status}
+        <div className="repair-card">
+          <div className={`repair-status-label status--${statusColor}`}>
+            {data.status}
           </div>
 
-          <div className="request-section">
+          <div className="repair-section">
             <h3>Details:</h3>
-            <div className="request-grid">
+            <div className="repair-grid">
               <div>
-                <p>
-                  <strong>Name:</strong> {mockData.name}
-                </p>
-                <p>
-                  <strong>Object type:</strong> {mockData.type}
-                </p>
-                <p>
-                  <strong>Customer:</strong> {mockData.customer}
-                </p>
+                <p><strong>Name:</strong> {obj?.name || "Unknown"}</p>
+                <p><strong>Object type:</strong> {obj?.repairObjectType?.name || "Unknown"}</p>
+                <p><strong>Customer:</strong> ID {obj?.customerId ?? "Unknown"}</p>
               </div>
               <div>
-                <p>
-                  <strong>Manager:</strong> {mockData.manager}
-                </p>
-                <p>
-                  <strong>Created:</strong> {mockData.created}
-                </p>
-                <p>
-                  <strong>Started:</strong> {mockData.started}
-                </p>
-                <p>
-                  <strong>Finished:</strong> {mockData.finished || "N/A"}
-                </p>
+                <p><strong>Manager:</strong> {data.managerName || "Not assigned"}</p>
+                <p><strong>Created:</strong> {formatDate(data.createdAt)}</p>
+                <p><strong>Started:</strong> {formatDate(data.startedAt)}</p>
+                <p><strong>Finished:</strong> {formatDate(data.finishedAt)}</p>
               </div>
             </div>
           </div>
 
-          <div className="request-section">
+          <div className="repair-section">
             <h3>Description:</h3>
-            <p className="request-description">{mockData.description}</p>
+            <p className="repair-description">{data.description || "No description provided."}</p>
           </div>
 
-          <ActivitiesList
-            activities={activities}
-            onAdd={() => setShowModal(true)}
-          />
+          <div className="repair-section">
+            <h3>Result:</h3>
+            <p className="repair-description">{data.result || "Not completed yet."}</p>
+          </div>
 
-          {showModal && (
-            <NewActivityModal
-              onClose={() => setShowModal(false)}
-              onSubmit={handleAddActivity}
-            />
-          )}
-
-          <button className="request-back" onClick={() => navigate(-1)}>
+          <button className="repair-back" onClick={() => navigate(-1)}>
             ← Go back
           </button>
         </div>

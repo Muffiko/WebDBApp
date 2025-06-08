@@ -26,6 +26,55 @@ const mockRequests = [
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    status: "In progress",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
 ];
 
 const OpenRequestsPage = () => {

@@ -12,7 +12,7 @@ const RepairCard = ({ id, name, status, manager, dateCreated }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/repairs/${id}`);
+    navigate(`/manage-request/${id}`);
   };
 
   return (

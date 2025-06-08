@@ -7,6 +7,11 @@ const initialWorkers = [
   { id: 1, name: "Mariusz Kowalski", status: "Available" },
   { id: 2, name: "Jan Nowak", status: "Unavailable" },
   { id: 3, name: "Anna Wiśniewska", status: "Available" },
+  { id: 4, name: "Anna Wiśniewska", status: "Available" },
+  { id: 5, name: "Anna Wiśniewska", status: "Available" },
+  { id: 6, name: "Anna Wiśniewska", status: "Available" },
+  { id: 7, name: "Anna Wiśniewska", status: "Available" },
+  { id: 8, name: "Anna Wiśniewska", status: "Available" },
 ];
 
 const WorkersPage = () => {

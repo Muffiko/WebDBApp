@@ -34,6 +34,78 @@ const initialRequests = [
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     manager: null,
   },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
+  {
+    id: 3,
+    name: "Komputer",
+    type: "Elektroniczne",
+    created: "01/01/2025",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    manager: null,
+  },
 ];
 
 const NewRequestsPage = () => {

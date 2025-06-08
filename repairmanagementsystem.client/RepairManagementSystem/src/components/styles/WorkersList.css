@@ -1,7 +1,9 @@
 .workers-wrapper {
   margin-top: 2rem;
-  background-color: #2a2a33;
   border-radius: 0.8rem;
+  max-height: calc(100vh - 250px); 
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
 .workers-cards {
