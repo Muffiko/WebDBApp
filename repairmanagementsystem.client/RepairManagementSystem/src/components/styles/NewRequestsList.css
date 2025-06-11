@@ -1,0 +1,13 @@
+.request-wrapper {
+    margin-top: 2rem;
+    border-radius: 0.8rem;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.request-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}

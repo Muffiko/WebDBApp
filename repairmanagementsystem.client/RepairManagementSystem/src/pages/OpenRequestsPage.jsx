@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
-import RepairCard from "../components/RepairCard";
+import RepairsList from "../components/RepairsList";
 import "./styles/OpenRequestsPage.css";
 
 const mockRequests = [
@@ -20,56 +20,56 @@ const mockRequests = [
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 4,
+    name: "Komputer",
+    status: "Closed",
+    manager: "Kamil Kowalski",
+    dateCreated: "01/01/2025",
+  },
+  {
+    id: 5,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 6,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 7,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 8,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 9,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
+    id: 10,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
     dateCreated: "01/01/2025",
   },
   {
-    id: 3,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 3,
+    id: 11,
     name: "Komputer",
     status: "In progress",
     manager: "Kamil Kowalski",
@@ -86,11 +86,8 @@ const OpenRequestsPage = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleCreate = (formData) => {
-    console.log("New repair submitted:", formData);
-  };
-
-  const filtered = mockRequests.filter(
+  const [repairs] = useState(mockRequests);
+  const filtered = repairs.filter(
     (r) =>
       r.name.toLowerCase().includes(filters.name.toLowerCase()) &&
       (filters.status === "" || r.status === filters.status) &&
@@ -100,7 +97,7 @@ const OpenRequestsPage = () => {
   return (
     <div className="open-requests-container">
       <Sidebar />
-      <div className="open-requests-page">
+      <main className="open-requests-page">
         <h1 className="open-requests-title">Open Requests</h1>
         <FilterBar
           filters={filters}
@@ -120,13 +117,8 @@ const OpenRequestsPage = () => {
             },
           ]}
         />
-
-        <div className="open-requests-list">
-          {filtered.map((req) => (
-            <RepairCard key={req.id} {...req} />
-          ))}
-        </div>
-      </div>
+        <RepairsList repairs={filtered} />
+      </main>
     </div>
   );
 };
