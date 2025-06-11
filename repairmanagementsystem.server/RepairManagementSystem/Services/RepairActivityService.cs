@@ -52,10 +52,6 @@ namespace RepairManagementSystem.Services
             }
             repairActivity.RepairRequest = repairRequest;
             repairActivity.WorkerId = repairActivityRequest.WorkerId;
-            //var worker = await _workerRepository.GetWorkerByIdAsync(repairActivityRequest.WorkerId);
-            //if (worker == null)
-            //    return Result.Fail(404, "Worker not found.");
-            //repairActivity.Worker = worker;
             repairActivity.RepairActivityTypeId = repairActivityRequest.RepairActivityTypeId;
             var repairActivityType = await _repairActivityTypeRepository.GetRepairActivityTypeByIdAsync(repairActivityRequest.RepairActivityTypeId);
             if (repairActivityType == null)
@@ -95,6 +91,85 @@ namespace RepairManagementSystem.Services
                 return Result.Ok("Repair activity deleted successfully.");
             }
             return Result.Fail(404, "Repair activity not found.");
+        }
+
+        public async Task<Result> PatchRepairActivityAsync(int repairActivityId, RepairActivityPatchRequest patchRequest)
+        {
+            var repairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (repairActivity == null)
+            {
+                return Result.Fail(404, "Repair activity not found.");
+            }
+
+            var updatedFields = new List<string>();
+
+            if (patchRequest.RepairActivityTypeId != null)
+            {
+                var repairActivityType = await _repairActivityTypeRepository.GetRepairActivityTypeByIdAsync(patchRequest.RepairActivityTypeId);
+                if (repairActivityType == null)
+                {
+                    return Result.Fail(404, "Repair activity type not found.");
+                }
+                repairActivity.RepairActivityTypeId = patchRequest.RepairActivityTypeId;
+                repairActivity.RepairActivityType = repairActivityType;
+                updatedFields.Add("RepairActivityTypeId");
+            }
+            if (patchRequest.SequenceNumber != null)
+            {
+                repairActivity.SequenceNumber = patchRequest.SequenceNumber;
+                updatedFields.Add("SequenceNumber");
+            }
+            if (patchRequest.Description != null)
+            {
+                repairActivity.Description = patchRequest.Description;
+                updatedFields.Add("Description");
+            }
+            if (patchRequest.RepairRequestId != null)
+            {
+                var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(patchRequest.RepairRequestId.Value);
+                if (repairRequest == null)
+                {
+                    return Result.Fail(404, "Repair request not found.");
+                }
+                repairActivity.RepairRequestId = patchRequest.RepairRequestId.Value;
+                repairActivity.RepairRequest = repairRequest;
+                updatedFields.Add("RepairRequestId");
+            }
+            if (patchRequest.WorkerId != null)
+            {
+                repairActivity.WorkerId = patchRequest.WorkerId.Value;
+                updatedFields.Add("WorkerId");
+            }
+            if (patchRequest.Result != null)
+            {
+                repairActivity.Result = patchRequest.Result;
+                updatedFields.Add("Result");
+            }
+            if (patchRequest.Status != null)
+            {
+                repairActivity.Status = patchRequest.Status;
+                updatedFields.Add("Status");
+            }
+            if (patchRequest.StartedAt != null)
+            {
+                repairActivity.StartedAt = patchRequest.StartedAt;
+                updatedFields.Add("StartedAt");
+            }
+            if (patchRequest.FinishedAt != null)
+            {
+                repairActivity.FinishedAt = patchRequest.FinishedAt;
+                updatedFields.Add("FinishedAt");
+            }
+
+            if (updatedFields.Count == 0)
+            {
+                return Result.Fail(400, "No fields were provided to update.");
+            }
+
+            var success = await _repairActivityRepository.UpdateRepairActivityAsync(repairActivity);
+            return success
+                ? Result.Ok($"Repair activity patched successfully. Updated fields: {string.Join(", ", updatedFields)}.")
+                : Result.Fail(500, "Failed to patch repair activity.");
         }
     }
 }

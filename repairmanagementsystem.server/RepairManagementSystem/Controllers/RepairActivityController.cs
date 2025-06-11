@@ -54,6 +54,13 @@ namespace RepairManagementSystem.Controllers
             return this.ToApiResponse(result);
         }
 
+        [HttpPatch("{repairActivityId:int}")]
+        public async Task<IActionResult> PatchRepairActivity(int repairActivityId, [FromBody] RepairActivityPatchRequest patchRequest)
+        {
+            var result = await _repairActivityService.PatchRepairActivityAsync(repairActivityId, patchRequest);
+            return this.ToApiResponse(result);
+        }
+
         [HttpDelete("{repairActivityId:int}")]
         public async Task<IActionResult> DeleteRepairActivity(int repairActivityId)
         {

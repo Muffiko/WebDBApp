@@ -11,5 +11,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<Result> AddRepairActivityAsync(RepairActivityRequest repairActivityRequest);
         Task<Result> UpdateRepairActivityAsync(int repairActivityId, RepairActivityRequest repairActivityRequest);
         Task<Result> DeleteRepairActivityAsync(int repairActivityId);
+        Task<Result> PatchRepairActivityAsync(int repairActivityId, RepairActivityPatchRequest patchRequest);
     }
 }
