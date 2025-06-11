@@ -1,46 +1,71 @@
 .repair-card {
-    background-color: #2a2a33;
-    border-radius: 14px;
-    padding: 1.4rem 2rem;
-    margin-bottom: 1.5rem;
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  .repair-card:hover {
-    background-color: #33333d;
-  }
-  
-  .repair-name,
-  .repair-manager,
-  .repair-date {
-    color: #e0e0e0;
-    font-size: 1.05rem;
-  }
-  
-  .repair-status {
-    font-weight: bold;
-    padding: 0.4rem 1.2rem;
-    border-radius: 999px;
-    width: fit-content;
-    font-size: 0.95rem;
-    text-align: center;
-  }
-  
-  .repair-status.blue {
-    background-color: #3b82f6;
-    color: #fff;
-  }
-  
-  .repair-status.yellow {
-    background-color: #facc15;
-    color: #000;
-  }
-  
-  .repair-status.gray {
-    background-color: #6b7280;
-    color: #fff;
-  }
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #3b3b45;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.15s;
+  padding-left: 60px;
+}
+
+.repair-header {
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+  padding: 1rem;
+}
+
+.repair-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.repair-card:hover {
+  background-color: #35353d;
+}
+
+.repair-date {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.repair-manager {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.repair-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.repair-status {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: 500;
+  margin-left: auto;
+  font-size: 1.2rem;
+}
