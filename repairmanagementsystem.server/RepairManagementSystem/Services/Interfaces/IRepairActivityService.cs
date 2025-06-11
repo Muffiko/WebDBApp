@@ -6,10 +6,10 @@ namespace RepairManagementSystem.Services.Interfaces
 {
     public interface IRepairActivityService
     {
-        Task<IEnumerable<RepairActivity>> GetAllRepairActivitiesAsync();
-        Task<RepairActivity?> GetRepairActivityByIdAsync(int repairActivityId);
-        Task<Result> AddRepairActivityAsync(RepairActivityDTO repairActivityDTO);
-        Task<Result> UpdateRepairActivityAsync(int repairActivityId, RepairActivityDTO updatedRepairActivityDTO);
+        Task<IEnumerable<RepairActivityResponse?>?> GetAllRepairActivitiesAsync();
+        Task<RepairActivityResponse?> GetRepairActivityByIdAsync(int repairActivityId);
+        Task<Result> AddRepairActivityAsync(RepairActivityRequest repairActivityRequest);
+        Task<Result> UpdateRepairActivityAsync(int repairActivityId, RepairActivityRequest repairActivityRequest);
         Task<Result> DeleteRepairActivityAsync(int repairActivityId);
     }
 }

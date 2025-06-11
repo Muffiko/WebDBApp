@@ -21,7 +21,9 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<IEnumerable<RepairActivity?>?> GetAllRepairActivitiesAsync()
         {
-            return await _context.RepairActivities.ToListAsync();
+            return await _context.RepairActivities
+                .Include(ra => ra.RepairActivityType)
+                .ToListAsync();
         }
 
         public async Task<bool> AddRepairActivityAsync(RepairActivity repairActivity)
@@ -32,12 +34,11 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<bool> UpdateRepairActivityAsync(RepairActivity repairActivity)
         {
-            if (repairActivity != null)
-            {
-                _context.RepairActivities.Update(repairActivity);
-                return await _context.SaveChangesAsync() > 0;
-            }
-            return false;
+            var existing = await GetRepairActivityByIdAsync(repairActivity.RepairActivityId);
+            if (existing == null)
+                return false;
+            _context.Entry(existing).CurrentValues.SetValues(repairActivity);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteRepairActivityAsync(int repairActivityId)

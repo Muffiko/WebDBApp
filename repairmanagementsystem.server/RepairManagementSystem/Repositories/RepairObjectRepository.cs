@@ -35,7 +35,8 @@ namespace RepairManagementSystem.Repositories
         public async Task<bool> UpdateRepairObjectAsync(RepairObject repairObject)
         {
             var existing = await GetRepairObjectByIdAsync(repairObject.RepairObjectId);
-            if (existing == null) return false;
+            if (existing == null)
+                return false;
             _context.Entry(existing).CurrentValues.SetValues(repairObject);
             return await _context.SaveChangesAsync() > 0;
         }

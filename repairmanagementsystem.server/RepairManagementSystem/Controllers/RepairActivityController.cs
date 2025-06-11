@@ -11,9 +11,11 @@ namespace RepairManagementSystem.Controllers
     public class RepairActivityController : ControllerBase
     {
         private readonly IRepairActivityService _repairActivityService;
-        public RepairActivityController(IRepairActivityService repairActivityService)
+        private readonly IRepairRequestService _repairRequestService;
+        public RepairActivityController(IRepairActivityService repairActivityService, IRepairRequestService repairRequestService)
         {
             _repairActivityService = repairActivityService;
+            _repairRequestService = repairRequestService;
         }
 
         [HttpGet]
@@ -22,24 +24,36 @@ namespace RepairManagementSystem.Controllers
             var repairActivities = await _repairActivityService.GetAllRepairActivitiesAsync();
             return Ok(repairActivities);
         }
+
         [HttpGet("{repairActivityId:int}")]
         public async Task<IActionResult> GetRepairActivity(int repairActivityId)
         {
             var repairActivity = await _repairActivityService.GetRepairActivityByIdAsync(repairActivityId);
             return Ok(repairActivity);
         }
+
         [HttpPost]
-        public async Task<IActionResult> AddRepairActivity([FromBody] RepairActivityDTO repairActivityDTO)
+        public async Task<IActionResult> AddRepairActivity([FromBody] RepairActivityRequest repairActivityRequest)
         {
-            var result = await _repairActivityService.AddRepairActivityAsync(repairActivityDTO);
+            int? userId = User.GetUserId();
+            if (userId == null)
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+
+            var repairRequest = await _repairRequestService.GetRepairRequestByIdAsync(repairActivityRequest.RepairRequestId);
+            if (repairRequest == null)
+                return this.ToApiResponse(Result.Fail(400, "Repair request not found."));
+
+            var result = await _repairActivityService.AddRepairActivityAsync(repairActivityRequest);
             return this.ToApiResponse(result);
         }
+
         [HttpPut("{repairActivityId:int}")]
-        public async Task<IActionResult> UpdateRepairActivity(int repairActivityId, [FromBody] RepairActivityDTO updatedRepairActivity)
+        public async Task<IActionResult> UpdateRepairActivity(int repairActivityId, [FromBody] RepairActivityRequest updatedRepairActivity)
         {
             var result = await _repairActivityService.UpdateRepairActivityAsync(repairActivityId, updatedRepairActivity);
             return this.ToApiResponse(result);
         }
+
         [HttpDelete("{repairActivityId:int}")]
         public async Task<IActionResult> DeleteRepairActivity(int repairActivityId)
         {

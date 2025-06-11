@@ -68,8 +68,8 @@ namespace RepairManagementSystem.Controllers
             var result = await _repairRequestService.UpdateRepairRequestAsync(repairRequestId, updatedRepairRequest);
             return this.ToApiResponse(result);
         }
-        [HttpDelete("{repairRequestId:int}")]
 
+        [HttpDelete("{repairRequestId:int}")]
         public async Task<IActionResult> DeleteRepairRequest(int repairRequestId)
         {
             var result = await _repairRequestService.DeleteRepairRequestAsync(repairRequestId);
@@ -77,7 +77,6 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpGet("customer/{customerId:int}")]
-
         public async Task<IActionResult> GetAllRepairRequestsFromCustomer(int customerId)
         {
             var repairRequests = await _repairRequestService.GetAllRepairRequestsFromCustomerAsync(customerId);
@@ -85,7 +84,6 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpGet("unassigned")]
-
         public async Task<IActionResult> GetUnassignedRepairRequests()
         {
             var unassignedRepairRequests = await _repairRequestService.GetUnassignedRepairRequestsAsync();
@@ -93,7 +91,6 @@ namespace RepairManagementSystem.Controllers
         }
 
         [HttpGet("active")]
-
         public async Task<IActionResult> GetActiveRepairRequests()
         {
             var activeRepairRequests = await _repairRequestService.GetActiveRepairRequestsAsync();

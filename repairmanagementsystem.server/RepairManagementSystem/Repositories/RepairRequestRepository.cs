@@ -19,6 +19,8 @@ namespace RepairManagementSystem.Repositories
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                     .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
                 .FirstOrDefaultAsync(r => r.RepairRequestId == repairRequestId);
         }
 
@@ -27,6 +29,8 @@ namespace RepairManagementSystem.Repositories
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                     .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
                 .ToListAsync();
         }
 
@@ -62,6 +66,8 @@ namespace RepairManagementSystem.Repositories
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                     .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
                 .Where(r => r.RepairObject.CustomerId == customerId)
                 .ToListAsync();
         }
@@ -71,6 +77,8 @@ namespace RepairManagementSystem.Repositories
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                     .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
                 .Where(r => r.ManagerId == null)
                 .ToListAsync();
         }
@@ -80,6 +88,8 @@ namespace RepairManagementSystem.Repositories
             return await _context.RepairRequests
                 .Include(r => r.RepairObject)
                     .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
                 .Where(r => r.ManagerId != null && r.Status == "Active")
                 .ToListAsync();
         }
