@@ -36,7 +36,9 @@ namespace RepairManagementSystem.Services
         public async Task<Result> AddRepairObjectTypeAsync(RepairObjectTypeDTO repairObjectTypeDTO)
         {
             if (repairObjectTypeDTO == null)
+            {
                 return Result.Fail(400, "Invalid repair object type data.");
+            }
             var repairObjectType = _mapper.Map<RepairObjectType>(repairObjectTypeDTO);
             var success = await _repairObjectTypeRepository.AddRepairObjectTypeAsync(repairObjectType);
             return success
@@ -50,7 +52,9 @@ namespace RepairManagementSystem.Services
             {
                 var updated = _mapper.Map<RepairObjectType?>(repairObjectTypeDTO);
                 if (updated == null)
+                {
                     return Result.Fail(400, "Invalid repair object type data.");
+                }
                 updated.RepairObjectTypeId = repairObjectTypeId;
                 var success = await _repairObjectTypeRepository.UpdateRepairObjectTypeAsync(updated);
                 return success
@@ -60,7 +64,9 @@ namespace RepairManagementSystem.Services
 
             var oldType = await _repairObjectTypeRepository.GetRepairObjectTypeByIdAsync(repairObjectTypeId);
             if (oldType == null)
+            {
                 return Result.Fail(404, "Original repair object type not found.");
+            }
 
             var newType = new RepairObjectType
             {
@@ -69,7 +75,9 @@ namespace RepairManagementSystem.Services
             };
             var addResult = await _repairObjectTypeRepository.AddRepairObjectTypeAsync(newType);
             if (!addResult)
+            {
                 return Result.Fail(500, "Failed to add new repair object type.");
+            }
 
             var repairObjects = _context.RepairObjects.Where(ro => ro.RepairObjectTypeId == repairObjectTypeId).ToList();
             foreach (var obj in repairObjects)
