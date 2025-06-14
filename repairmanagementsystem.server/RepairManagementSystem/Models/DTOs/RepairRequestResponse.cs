@@ -1,4 +1,5 @@
 using RepairManagementSystem.Models;
+using RepairManagementSystem.Models.DTOs;
 
 namespace RepairManagementSystem.Models.DTOs
 {
@@ -13,5 +14,7 @@ namespace RepairManagementSystem.Models.DTOs
         public string RepairObjectName { get; set; }  = string.Empty;
 
         public required RepairObjectType RepairObjectType { get; set; }
+
+        public List<RepairActivityResponse> RepairActivities { get; set; } = new();
     }
 }

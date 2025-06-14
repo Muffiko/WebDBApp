@@ -36,7 +36,9 @@ namespace RepairManagementSystem.Services
         public async Task<Result> AddRepairActivityTypeAsync(RepairActivityTypeDTO repairActivityTypeDTO)
         {
             if (repairActivityTypeDTO == null)
+            {
                 return Result.Fail(400, "Invalid repair activity type data.");
+            }
             var repairActivityType = _mapper.Map<RepairActivityType>(repairActivityTypeDTO);
             var success = await _repairActivityTypeRepository.AddRepairActivityTypeAsync(repairActivityType);
             return success
@@ -50,7 +52,9 @@ namespace RepairManagementSystem.Services
             {
                 var updated = _mapper.Map<RepairActivityType?>(repairActivityTypeDTO);
                 if (updated == null)
+                {
                     return Result.Fail(400, "Invalid repair activity type data.");
+                }
                 updated.RepairActivityTypeId = repairActivityTypeId;
                 var success = await _repairActivityTypeRepository.UpdateRepairActivityTypeAsync(updated);
                 return success
@@ -60,7 +64,9 @@ namespace RepairManagementSystem.Services
 
             var oldType = await _repairActivityTypeRepository.GetRepairActivityTypeByIdAsync(repairActivityTypeId);
             if (oldType == null)
+            {
                 return Result.Fail(404, "Original repair activity type not found.");
+            }
 
             var newType = new RepairActivityType
             {
@@ -69,7 +75,9 @@ namespace RepairManagementSystem.Services
             };
             var addResult = await _repairActivityTypeRepository.AddRepairActivityTypeAsync(newType);
             if (!addResult)
+            {
                 return Result.Fail(500, "Failed to add new repair activity type.");
+            }
 
             var repairActivities = _context.RepairActivities.Where(ra => ra.RepairActivityTypeId == repairActivityTypeId).ToList();
             foreach (var obj in repairActivities)

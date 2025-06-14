@@ -59,7 +59,9 @@ namespace RepairManagementSystem.Services
             updated.RepairRequestId = repairRequestId;
             var success = await _repairRequestRepository.UpdateRepairRequestAsync(updated);
             if (!success)
+            {
                 return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            }
             return Result.Ok($"Repair request with ID {repairRequestId} updated successfully.");
         }
 
@@ -67,7 +69,9 @@ namespace RepairManagementSystem.Services
         {
             var success = await _repairRequestRepository.DeleteRepairRequestAsync(repairRequestId);
             if (!success)
+            {
                 return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            }
             return Result.Ok($"Repair request with ID {repairRequestId} deleted successfully.");
         }
 
@@ -81,6 +85,7 @@ namespace RepairManagementSystem.Services
             var repairRequest = await _repairRequestRepository.GetUnassignedRepairRequestsAsync();
             return _mapper.Map<IEnumerable<RepairRequestResponse?>?>(repairRequest);
         }
+
         public async Task<IEnumerable<RepairRequestResponse?>?> GetActiveRepairRequestsAsync()
         {
             var repairRequest = await _repairRequestRepository.GetActiveRepairRequestsAsync();
