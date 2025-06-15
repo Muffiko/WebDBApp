@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import "./styles/ActivityCard.css";
+import { useWorkersApi } from "../api/worker";
+import { useRepairActivityTypesApi } from "../api/repairActivityType";
+
 const statusColors = {
   completed: "#4ade80",
   canceled: "#f87171",
@@ -13,12 +16,56 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
   const badgeColor = statusColors[key] || statusColors.todo;
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
-  const [worker, setWorker] = useState(initialWorker);
-  const [activityType, setActivityType] = useState(initialActivityType);
+  const [worker, setWorker] = useState(initialWorker || "");
+  const [activityType, setActivityType] = useState(initialActivityType || "");
   const [description, setDescription] = useState(initialDescription);
-
   const [editField, setEditField] = useState(null);
   const inputRef = useRef(null);
+  const selectRef = useRef();
+
+  const { getWorkers } = useWorkersApi();
+  const [workers, setWorkers] = useState([]);
+
+  const loadWorkers = async () => {
+    try {
+      const data = await getWorkers();
+      const onlyWorkers = data.filter(w => w.role === "Worker");
+      const mapped = onlyWorkers.map((w, wdx) => ({
+        id: wdx + 1,
+        workerId: w.id,
+        name: `${w.firstName} ${w.lastName}`,
+        email: w.email,
+      }));
+      setWorkers(mapped);
+    } catch (error) {
+      console.error("Error loading workers:", error);
+    }
+  };
+
+  const { getRepairActivityTypes } = useRepairActivityTypesApi();
+  const [activityTypes, setActivityTypes] = useState([]);
+
+  const loadActivityTypes = async () => {
+    try {
+      const data = await getRepairActivityTypes();
+      setActivityTypes(data);
+    } catch (error) {
+      console.error("Error loading activity types:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadWorkers();
+    loadActivityTypes();
+  }, []);
+
+  const workersOptions = initialWorker
+    ? Array.from(new Set([initialWorker, ...workers.map(w => w.name)]))
+    : workers.map(w => w.name);
+
+  const activitiesOptions = initialActivityType
+    ? Array.from(new Set([initialActivityType, ...activityTypes.map(a => a.name)]))
+    : activityTypes.map(a => a.name);
 
   const startEdit = (field) => {
     setEditField(field);
@@ -80,31 +127,24 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
           )}
         </div>
         <div className="activity-worker">
-          <span className="field-label">Worker:</span>
-          {editField === "worker" ? (
-            <input
-              ref={inputRef}
-              className="inline-input"
+          <div className="field-label">Worker:</div>
+          {isExpanded ? (
+            <select
+              ref={selectRef}
+              className="worker-select"
               value={worker}
-              onChange={(e) => setWorker(e.target.value)}
-              onBlur={finishEdit}
-              onKeyDown={onKey}
-            />
+              onChange={e => setWorker(e.target.value)}
+              onClick={e => e.stopPropagation()}
+            >
+              <option value="">Assign worker…</option>
+              {workersOptions.map(w => (
+                <option key={w} value={w}>
+                  {w}
+                </option>
+              ))}
+            </select>
           ) : (
-            <>
-              <span className="field-value">{worker}</span>
-              {isExpanded && (
-                <span
-                  className="edit-icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    startEdit("worker");
-                  }}
-                >
-                  ✎
-                </span>
-              )}
-            </>
+            <span className="field-value">{worker}</span>
           )}
         </div>
         <div
@@ -121,28 +161,23 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
           <div className="details-top">
             <div className="details-left">
               <span className="field-label">Activity type:</span>
-              {editField === "activityType" ? (
-                <input
-                  ref={inputRef}
-                  className="inline-input"
+              {isExpanded ? (
+                <select
+                  ref={selectRef}
+                  className="activity-select"
                   value={activityType}
-                  onChange={(e) => setActivityType(e.target.value)}
-                  onBlur={finishEdit}
-                  onKeyDown={onKey}
-                />
+                  onChange={e => setActivityType(e.target.value)}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <option value="">Assign activity</option>
+                  {activitiesOptions.map(a => (
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
+                  ))}
+                </select>
               ) : (
-                <>
-                  <span className="field-value">{activityType}</span>
-                  <span
-                    className="edit-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      startEdit("activityType");
-                    }}
-                  >
-                    ✎
-                  </span>
-                </>
+                <span className="field-value">{activityType}</span>
               )}
             </div>
             <div className="details-right">

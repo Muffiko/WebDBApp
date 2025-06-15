@@ -8,7 +8,7 @@ const statusColors = {
   closed: "#f87171",
 };
 
-const RepairCard = ({ id, name, status, manager, dateCreated }) => {
+const RepairCard = ({ id, name, status, manager, createdAt }) => {
   const navigate = useNavigate();
   const key = status.toLowerCase();
   const badgeColor = statusColors[key];
@@ -31,7 +31,7 @@ const RepairCard = ({ id, name, status, manager, dateCreated }) => {
         
         <div className="repair-manager">{manager}</div>
         
-        <div className="repair-date">{dateCreated}</div>
+        <div className="repair-date">{createdAt}</div>
         <div
           className="repair-status"
           style={{ backgroundColor: badgeColor }}

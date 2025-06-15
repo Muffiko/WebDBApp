@@ -10,7 +10,7 @@ const NewRequestsList = ({ newRequests, onAssign }) => (
                     key={r.id}
                     id={index + 1}
                     name={r.name}
-                    type={r.type}
+                    repairObjectType={r.type}
                     createdAt={r.createdAt}
                     description={r.description}
                     manager={r.manager}

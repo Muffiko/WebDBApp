@@ -61,9 +61,9 @@ namespace RepairManagementSystem
             };
             await userRepo.AddUserAsync(managerUser);
 
-            var workerUser = new User
+            var workerUser1 = new User
             {
-                FirstName = "Worker",
+                FirstName = "Worker1",
                 LastName = "User",
                 Email = "worker@tab.com",
                 PasswordHash = hash,
@@ -81,7 +81,29 @@ namespace RepairManagementSystem
                 Role = "Worker",
                 CreatedAt = DateTime.UtcNow
             };
-            await userRepo.AddUserAsync(workerUser);
+            await userRepo.AddUserAsync(workerUser1);
+
+            var workerUser2 = new User
+            {
+                FirstName = "Worker2",
+                LastName = "User",
+                Email = "worker@tab.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Number = "123456789",
+                Address = new Address
+                {
+                    Country = "PL",
+                    City = "TabCity",
+                    PostalCode = "00-001",
+                    Street = "Tab Street",
+                    HouseNumber = "1",
+                    ApartNumber = "1A"
+                },
+                Role = "Worker",
+                CreatedAt = DateTime.UtcNow
+            };
+            await userRepo.AddUserAsync(workerUser2);
         }
     }
 }
