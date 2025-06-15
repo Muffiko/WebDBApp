@@ -5,18 +5,17 @@ import { useWorkersApi } from "../api/worker";
 import { useRepairActivityTypesApi } from "../api/repairActivityType";
 
 const statusColors = {
-  completed: "#4ade80",
-  canceled: "#f87171",
-  "in progress": "#fbbf24",
-  todo: "#9ca3af",
+  Open: "#4ade80",
+  Canceled: "#f87171",
+  "In Progress": "#fbbf24",
+  Todo: "#9ca3af",
 };
 
-const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, description: initialDescription, activityType: initialActivityType, createdAt, startedAt, finishedAt }) => {
-  const key = status.toLowerCase();
-  const badgeColor = statusColors[key] || statusColors.todo;
+const ActivityCard = ({ id, name: initialName, activityType: initialActivityType, description: initialDescription, worker: initialWorker, status, createdAt, startedAt, finishedAt }) => {
+  const badgeColor = statusColors[status] || statusColors.Todo;
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
-  const [worker, setWorker] = useState(initialWorker || "");
+  const [worker, setWorker] = useState(initialWorker );
   const [activityType, setActivityType] = useState(initialActivityType || "");
   const [description, setDescription] = useState(initialDescription);
   const [editField, setEditField] = useState(null);
@@ -64,8 +63,8 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
     : workers.map(w => w.name);
 
   const activitiesOptions = initialActivityType
-    ? Array.from(new Set([initialActivityType, ...activityTypes.map(a => a.name)]))
-    : activityTypes.map(a => a.name);
+    ? Array.from(new Set([initialActivityType, ...activityTypes.map(a => a.repairActivityTypeId)]))
+    : activityTypes.map(a => a.repairActivityTypeId);
 
   const startEdit = (field) => {
     setEditField(field);
@@ -170,9 +169,9 @@ const ActivityCard = ({ id, name: initialName, worker: initialWorker, status, de
                   onClick={e => e.stopPropagation()}
                 >
                   <option value="">Assign activity</option>
-                  {activitiesOptions.map(a => (
-                    <option key={a} value={a}>
-                      {a}
+                  {activitiesOptions.map(typeId => (
+                    <option key={typeId} value={typeId}>
+                      {typeId}
                     </option>
                   ))}
                 </select>

@@ -4,55 +4,8 @@ import Sidebar from "../components/Sidebar";
 import ActivitiesList from "../components/ActivitiesList";
 import NewActivityModal from "../components/NewActivityModal";
 import { useRepairRequestApi } from "../api/repairRequests";
-import { useRepairActivityApi } from "../api/repairActivity";
+import { useUserApi } from "../api/user";
 import "./styles/ManageRequestPage.css";
-
-// const mockData = {
-//   id: 1,
-//   name: "Komputer",
-//   type: "Elektroniczne",
-//   customer: "Przemysław Kowalski",
-//   manager: "Kamil Kowalski",
-//   created: "01/01/2025",
-//   started: "05/01/2025",
-//   finished: "",
-//   status: "In progress",
-//   description:
-//     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...",
-// };
-
-// const mockActivities = [
-//   {
-//     id: 1,
-//     name: "Diagnostyka",
-//     worker: "Mariusz Kowalski",
-//     status: "Completed",
-//   },
-//   {
-//     id: 2,
-//     name: "Czyszczenie wnętrza",
-//     worker: "Mariusz Kowalski",
-//     status: "Canceled",
-//     description: "Lorem Ipsum",
-//     activityType: "Cleaning",
-//     createdAt: "01/01/2025",
-//     startedAt: "02/01/2025",
-//     finishedAt: "03/01/2025",
-//   },
-//   {
-//     id: 3,
-//     name: "Wymiana dysku",
-//     worker: "Mariusz Kowalski",
-//     status: "In progress",
-//   },
-//   {
-//     id: 4,
-//     name: "Aktualizacja BIOS",
-//     worker: "Mariusz Kowalski",
-//     status: "To do",
-//   },
-//   { id: 5, name: "Test RAM", worker: "Mariusz Kowalski", status: "To do" },
-// ];
 
 const ManageRequestPage = () => {
   const navigate = useNavigate();
@@ -83,21 +36,35 @@ const ManageRequestPage = () => {
 
   const { id } = useParams();
   const { getRepairRequestById } = useRepairRequestApi();
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState({});
+  const [activities, setActivities] = useState([]);
+  const { getUsers } = useUserApi();
 
   const loadRepairRequests = async () => {
     try {
+      const users = await getUsers();
+      const map = Object.fromEntries(
+        users.map(u => [u.userId, `${u.firstName} ${u.lastName}`])
+      );
+      console.log("All users from API:", users);
       const r = await getRepairRequestById(id);
       console.log("Loaded repair request data:", r);
+
+      const customerName = map[r.repairObject.customerId] || `#${r.repairObject.customerId}`;
+      const managerName = r.managerId
+        ? (map[r.managerId] || `#${r.managerId}`)
+        : "Not assigned";
+
+      // const workerName = r.workerId
+      //   ? (map[r.workerId] || `#${r.workerId}`)
+      //   : "Not assigned";
+
       setRequests({
         id: r.repairRequestId,
         name: r.repairObject.name,
         type: r.repairObject.repairObjectType.name,
-        customer: r.repairObject.customerId,
-        manager:
-          r.manager && r.manager.firstName
-            ? `${r.manager.firstName} ${r.manager.lastName}`
-            : 'Not assigned',
+        customer: customerName,
+        manager: managerName,
         created: new Date(r.createdAt).toLocaleDateString(),
         started: r.startedAt
           ? new Date(r.startedAt).toLocaleDateString()
@@ -108,38 +75,30 @@ const ManageRequestPage = () => {
         status: r.status,
         description: r.description
       })
-    } catch (err) {
-      console.error("Failed to load requests:", err);
-    }
-  };
 
-  const { getRepairActivities } = useRepairActivityApi();
-  const [activities, setActivities] = useState([]);
-
-  const loadRepairActivities = async () => {
-    try {
-      const a = await getRepairActivities(id);
-      console.log("Loaded repair activities data:", a);
-      setActivities({
-        id: a.repairActivityId,
-        name: a.name,
-        type: a.repairActivityType.name,
-        worker: a.workerId,
-        status: a.status,
+      const formattedActivities = (r.repairActivities || []).map(a => ({
+        repairActivityId: a.repairActivityId,
+        name: a.repairActivityType.name,
+        activityType: a.repairActivityType.repairActivityTypeId,
         description: a.description || "",
+        worker: map[a.workerId] || `#${a.workerId}`,
+        status: a.status,
         createdAt: new Date(a.createdAt).toLocaleDateString("en-GB"),
         startedAt: a.startedAt
           ? new Date(a.startedAt).toLocaleDateString("en-GB")
           : "",
-      })
+        finishedAt: a.finishedAt
+          ? new Date(a.finishedAt).toLocaleDateString("en-GB")
+          : "",
+      }));
+      setActivities(formattedActivities);
     } catch (err) {
-      console.error("Failed to load activities:", err);
+      console.error("Failed to load requests or activities:", err);
     }
-  }
+  };
 
   useEffect(() => {
     loadRepairRequests();
-    loadRepairActivities();
   }, [id]);
 
   const statusColor = {
@@ -147,6 +106,7 @@ const ManageRequestPage = () => {
     "In progress": "yellow",
     Closed: "gray",
   }[requests.status];
+
 
   return (
     <div className="request-container">
