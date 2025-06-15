@@ -40,6 +40,14 @@
   font-size: 1.3rem;
 }
 
+.worker-email {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
 .worker-status {
   display: flex;
   align-items: center;

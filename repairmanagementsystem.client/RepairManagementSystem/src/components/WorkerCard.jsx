@@ -6,7 +6,7 @@ const statusColors = {
     unavailable: "#f87171",
 };
 
-const WorkerCard = ({ id, name, status }) => {
+const WorkerCard = ({ id, name, email, status }) => {
     const key = status.toLowerCase();
     const badgeColor = statusColors[key] || "#9ca3af";
 
@@ -21,6 +21,7 @@ const WorkerCard = ({ id, name, status }) => {
 
             <div className="worker-header">
                 <div className="worker-name">{name}</div>
+                <div className="worker-email">{email}</div>
 
                 <div
                     className="worker-status"

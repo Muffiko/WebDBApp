@@ -1,21 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import "./styles/WorkersPage.css";
 import WorkersList from "../components/WorkersList";
-
-const initialWorkers = [
-  { id: 1, name: "Mariusz Kowalski", status: "Available" },
-  { id: 2, name: "Jan Nowak", status: "Unavailable" },
-  { id: 3, name: "Anna Wiśniewska", status: "Available" },
-  { id: 4, name: "Anna Wiśniewska", status: "Available" },
-  { id: 5, name: "Anna Wiśniewska", status: "Available" },
-  { id: 6, name: "Anna Wiśniewska", status: "Available" },
-  { id: 7, name: "Anna Wiśniewska", status: "Available" },
-  { id: 8, name: "Anna Wiśniewska", status: "Available" },
-];
+import { useWorkersApi } from "../api/worker";
 
 const WorkersPage = () => {
-  const [workers] = useState(initialWorkers);
+  const { getWorkers } = useWorkersApi();
+  const [workers, setWorkers] = useState([]);
+
+  const loadWorkers = async () => {
+    try {
+      const data = await getWorkers();
+      const onlyWorkers = data.filter(w => w.role === "Worker");
+      const mapped = onlyWorkers.map((w, wdx) => ({
+        id: wdx + 1,
+        workerId: w.id,
+        name: `${w.firstName} ${w.lastName}`,
+        email: w.email,
+        status: "Available" // TODO: Replace with actual status logic
+      }));
+      setWorkers(mapped);
+    } catch (error) {
+      console.error("Error loading workers:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadWorkers();
+  }, []);
 
   return (
     <div className="workers-container">

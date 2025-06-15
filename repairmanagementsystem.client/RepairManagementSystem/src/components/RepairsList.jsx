@@ -12,7 +12,7 @@ const RepairsList = ({ repairs }) => (
           name={r.name}
           status={r.status}
           manager={r.manager}
-          dateCreated={r.dateCreated}
+          createdAt={r.createdAt}
         />
       ))}
     </div>

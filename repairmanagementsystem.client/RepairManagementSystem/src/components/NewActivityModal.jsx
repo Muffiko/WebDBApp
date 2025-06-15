@@ -1,23 +1,48 @@
-import react, { useState } from "react";
+import react, { useState, useEffect } from "react";
 import "./styles/NewActivityModal.css";
+import { useWorkersApi } from "../api/worker";
+import { useRepairActivityTypesApi } from "../api/repairActivityType";
 
 const NewActivityModal = ({ onClose, onSubmit }) => {
     const [activityName, setActivityName] = useState("");
     const [activityType, setActivityType] = useState("");
     const [worker, setWorker] = useState("");
     const [description, setDescription] = useState("");
+    const { getWorkers } = useWorkersApi();
+    const [workers, setWorkers] = useState([]);
 
-    const activityTypes = [
-        { id: "1", name: "Cleaning" },
-        { id: "2", name: "Repair" },
-        { id: "3", name: "Testing" }
-    ];
+    const loadWorkers = async () => {
+        try {
+            const data = await getWorkers();
+            const onlyWorkers = data.filter(w => w.role === "Worker");
+            const mapped = onlyWorkers.map((w, wdx) => ({
+                id: wdx + 1,
+                workerId: w.id,
+                name: `${w.firstName} ${w.lastName}`,
+                email: w.email,
+            }));
+            setWorkers(mapped);
+        } catch (error) {
+            console.error("Error loading workers:", error);
+        }
+    };
 
-    const workers = [
-        { id: "1", name: "Mariusz Kowalski" },
-        { id: "2", name: "Jan Nowak" },
-        { id: "3", name: "Anna Wiśniewska" }
-    ];
+    const { getRepairActivityTypes } = useRepairActivityTypesApi();
+    const [activityTypes, setActivityTypes] = useState([]);
+
+    const loadActivityTypes = async () => {
+        try {
+            const data = await getRepairActivityTypes();
+            setActivityTypes(data);
+        } catch (error) {
+            console.error("Error loading activity types:", error);
+        }
+    };
+
+    useEffect(() => {
+        loadWorkers();
+        loadActivityTypes();
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();

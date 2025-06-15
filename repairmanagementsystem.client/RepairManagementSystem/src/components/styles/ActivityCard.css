@@ -160,3 +160,24 @@
   margin-left: 0.5rem;
   font-size: 1.2rem;
 }
+
+.worker-select {
+  background-color: #2f2f37;
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  background-image: none;
+}
+
+
+.activity-select {
+  background-color: #2f2f37;
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  background-image: none;
+}

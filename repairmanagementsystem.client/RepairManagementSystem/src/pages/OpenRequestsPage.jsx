@@ -1,81 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import RepairsList from "../components/RepairsList";
 import "./styles/OpenRequestsPage.css";
-
-const mockRequests = [
-  {
-    id: 1,
-    name: "Komputer",
-    status: "Open",
-    manager: "Jan Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 2,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Marcin Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 4,
-    name: "Komputer",
-    status: "Closed",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 5,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 6,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 7,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 8,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 9,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 10,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-  {
-    id: 11,
-    name: "Komputer",
-    status: "In progress",
-    manager: "Kamil Kowalski",
-    dateCreated: "01/01/2025",
-  },
-];
+import { useManagerApi } from "../api/manager";
+import { useRepairRequestApi } from "../api/repairRequests";
 
 const OpenRequestsPage = () => {
   const [filters, setFilters] = useState({
@@ -84,10 +13,61 @@ const OpenRequestsPage = () => {
     manager: "",
   });
 
+  const selectRef = useRef();
+  const [manager, setManager] = useState([]);
+  const { getManagers } = useManagerApi();
+  const [managers, setManagers] = useState([]);
+
+  const loadManagers = async () => {
+    try {
+      const data = await getManagers();
+      const onlyManagers = data.filter(m => m.role === "Manager");
+      const mapped = onlyManagers.map((m, mdx) => ({
+        id: mdx + 1,
+        managerId: m.id,
+        name: `${m.firstName} ${m.lastName}`,
+        email: m.email,
+      }));
+      setManagers(mapped);
+    } catch (error) {
+      console.error("Error loading managers:", error);
+    }
+  };
+
+  const { getRepairRequests } = useRepairRequestApi();
+  const [requests, setRequests] = useState([]);
+
+  const loadRepairRequests = async () => {
+    try {
+      const data = await getRepairRequests();
+      const mapped = data.map((r) => ({
+        repairRequestId: r.repairRequestId,
+        name: r.repairObject.name,
+        createdAt: new Date(r.createdAt).toLocaleDateString(),
+        status: r.status,
+        manager:
+          r.manager && r.manager.firstName
+            ? `${r.manager.firstName} ${r.manager.lastName}`
+            : 'Not assigned'
+      }));
+      setRequests(mapped);
+    } catch (err) {
+      console.error("Failed to load requests:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadManagers();
+    loadRepairRequests();
+  }, []);
+
+  const managersOptions = manager
+    ? Array.from(new Set([manager, ...managers.map(m => m.name)]))
+    : managers.map(m => m.name);
+
   const [showModal, setShowModal] = useState(false);
 
-  const [repairs] = useState(mockRequests);
-  const filtered = repairs.filter(
+  const filtered = requests.filter(
     (r) =>
       r.name.toLowerCase().includes(filters.name.toLowerCase()) &&
       (filters.status === "" || r.status === filters.status) &&
@@ -113,7 +93,7 @@ const OpenRequestsPage = () => {
             {
               key: "manager",
               label: "Manager:",
-              options: ["Jan Kowalski", "Marcin Kowalski", "Kamil Kowalski"],
+              options: [managersOptions],
             },
           ]}
         />
