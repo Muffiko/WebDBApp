@@ -3,8 +3,8 @@ import { useAuthFetch } from "./authFetch";
 export const useRepairActivityApi = () => {
   const authFetch = useAuthFetch();
 
-  const getRepairActivities = async (repairActivityId) => {
-    const response = await authFetch(`/RepairActivities/${repairActivityId}`, {
+  const getRepairActivities = async () => {
+    const response = await authFetch("/RepairActivities", {
       method: "GET",
     });
 

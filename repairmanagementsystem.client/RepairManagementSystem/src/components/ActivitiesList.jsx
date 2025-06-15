@@ -13,19 +13,18 @@ const ActivitiesList = ({ activities, onAdd }) => {
       </div>
 
       <div className="activities-cards">
-        {activities.map((act, index) => (
+        {activities.map(act => (
           <ActivityCard
             key={act.repairActivityId}
-            id={index + 1}
-            //name={act.name}
-            workerId={act.workerId}
-            status={act.status}
+            id={act.repairActivityId}
+            name={act.name}
+            activityType={act.activityType}
             description={act.description}
-            activityType={act.repairActivityType.repairActivityTypeId}
+            worker={act.workerId}
+            status={act.status}
             createdAt={act.createdAt}
-            result={act.result}
-          //startedAt={act.startedAt}
-          //finishedAt={act.finishedAt}
+            startedAt={act.startedAt}
+            finishedAt={act.finishedAt}
           />
         ))}
       </div>

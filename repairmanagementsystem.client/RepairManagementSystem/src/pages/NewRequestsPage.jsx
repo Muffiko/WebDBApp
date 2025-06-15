@@ -8,7 +8,6 @@ import { useRepairRequestApi } from "../api/repairRequests";
 
 const NewRequestsPage = () => {
   const [filters, setFilters] = useState({ name: "", type: "" });
-  const [activityType, setActivityType] = useState();
 
   const { getRepairActivityTypes } = useRepairActivityTypesApi();
   const [activityTypes, setActivityTypes] = useState([]);
@@ -34,10 +33,9 @@ const NewRequestsPage = () => {
         type: r.repairObject.repairObjectType.name,
         createdAt: new Date(r.createdAt).toLocaleDateString(),
         description: r.description,
-        manager:
-          r.manager && r.manager.firstName
-            ? `${r.manager.firstName} ${r.manager.lastName}`
-            : 'Not assigned'
+        manager: r.manager
+          // r.manager && r.manager.firstName
+          //   ? `${r.manager.firstName} ${r.manager.lastName}`
       }));
       setRequests(mapped);
     } catch (err) {
@@ -50,9 +48,9 @@ const NewRequestsPage = () => {
     loadRepairRequests();
   }, []);
 
-  const activitiesOptions = activityTypes
-    ? Array.from(new Set([activityType, ...activityTypes.map(a => a.name)]))
-    : activityTypes.map(a => a.name);
+  const typesOptions = activityTypes
+    .map((a) => a.name)
+    .sort((a, b) => a.localeCompare(b));
 
 
   const filtered = requests.filter(
@@ -80,7 +78,7 @@ const NewRequestsPage = () => {
             {
               key: "type",
               label: "Type:",
-              options: [activitiesOptions],
+              options: typesOptions,
             },
           ]}
         />

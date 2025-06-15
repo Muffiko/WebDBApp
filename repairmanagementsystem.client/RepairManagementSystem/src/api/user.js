@@ -58,10 +58,24 @@ export const useUserApi = () => {
     return await res.json();
   };
 
+  const getUsers = async () => {
+    const res = await authFetch("/Users", {
+      method: "GET"
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw err;
+    }
+  
+    return await res.json();
+  };
+
   return {
     changePassword,
     updateUserInfo,
     updateUserAddress,
     getUserProfile,
+    getUsers
   };
 };
