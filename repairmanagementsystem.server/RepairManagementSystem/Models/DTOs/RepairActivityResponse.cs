@@ -4,9 +4,11 @@ namespace RepairManagementSystem.Models.DTOs
     {
         public int RepairActivityId { get; set; }
 
+        public string Name { get; set; } = string.Empty;
+
         public RepairActivityType RepairActivityType { get; set; } = null!;
 
-        public string SequenceNumber { get; set; } = string.Empty;
+        public int SequenceNumber { get; set; }
 
         public string Description { get; set; } = string.Empty;
 

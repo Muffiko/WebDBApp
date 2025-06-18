@@ -7,9 +7,12 @@ namespace RepairManagementSystem.Models.DTOs
         [Required(ErrorMessage = "Repair Activity Type ID is required.")]
         public string RepairActivityTypeId { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Name is required.")]
+        [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        public string Name { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Sequence Number is required.")]
-        [MaxLength(16, ErrorMessage = "Sequence Number cannot exceed 16 characters.")]
-        public string SequenceNumber { get; set; } = string.Empty;
+        public int SequenceNumber { get; set; }
 
         [Required(ErrorMessage = "Description is required.")]
         [MaxLength(256, ErrorMessage = "Description cannot exceed 256 characters.")]

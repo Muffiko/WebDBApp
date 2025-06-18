@@ -16,11 +16,12 @@ const ActivitiesList = ({ activities, onAdd }) => {
         {activities.map(act => (
           <ActivityCard
             key={act.repairActivityId}
-            id={act.repairActivityId}
+            id={act.sequenceNumber}
+            sequenceNumber={act.sequenceNumber}
             name={act.name}
             activityType={act.activityType}
             description={act.description}
-            worker={act.workerId}
+            worker={act.worker}
             status={act.status}
             createdAt={act.createdAt}
             startedAt={act.startedAt}

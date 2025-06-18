@@ -11,6 +11,9 @@ namespace RepairManagementSystem.Models
         public int RepairActivityId { get; set; }
 
         [Required]
+        public string name { get; set; } = string.Empty;
+
+        [Required]
         [JsonIgnore]
         public string RepairActivityTypeId { get; set; } = string.Empty;
 
@@ -18,8 +21,7 @@ namespace RepairManagementSystem.Models
         public RepairActivityType RepairActivityType { get; set; } = null!;
 
         [Required]
-        [MaxLength(16)]
-        public string SequenceNumber { get; set; } = string.Empty;
+        public int SequenceNumber { get; set; }
 
         [Required]
         [MaxLength(256)]

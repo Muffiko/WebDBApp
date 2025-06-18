@@ -15,7 +15,7 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
   const badgeColor = statusColors[status] || statusColors.Todo;
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
-  const [worker, setWorker] = useState(initialWorker );
+  const [worker, setWorker] = useState(initialWorker);
   const [activityType, setActivityType] = useState(initialActivityType || "");
   const [description, setDescription] = useState(initialDescription);
   const [editField, setEditField] = useState(null);
@@ -82,7 +82,6 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
   const onKey = (e) => {
     if (e.key === "Enter") finishEdit();
   };
-
   return (
 
     <div
