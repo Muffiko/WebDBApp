@@ -114,7 +114,12 @@ namespace RepairManagementSystem.Services
                 repairActivity.RepairActivityType = repairActivityType;
                 updatedFields.Add("RepairActivityTypeId");
             }
-            if (patchRequest.SequenceNumber != null)
+            if (patchRequest.Name != null)
+            {
+                repairActivity.name = patchRequest.Name;
+                updatedFields.Add("Name");
+            }
+            if (patchRequest.SequenceNumber != 0)
             {
                 repairActivity.SequenceNumber = patchRequest.SequenceNumber;
                 updatedFields.Add("SequenceNumber");

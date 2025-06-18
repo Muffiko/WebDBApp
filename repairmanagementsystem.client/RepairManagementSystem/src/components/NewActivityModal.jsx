@@ -3,10 +3,10 @@ import "./styles/NewActivityModal.css";
 import { useWorkersApi } from "../api/worker";
 import { useRepairActivityTypesApi } from "../api/repairActivityType";
 
-const NewActivityModal = ({ onClose, onSubmit }) => {
+const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
     const [activityName, setActivityName] = useState("");
     const [activityType, setActivityType] = useState("");
-    const [worker, setWorker] = useState("");
+    const [workerId, setWorkerId] = useState();
     const [description, setDescription] = useState("");
     const { getWorkers } = useWorkersApi();
     const [workers, setWorkers] = useState([]);
@@ -17,11 +17,12 @@ const NewActivityModal = ({ onClose, onSubmit }) => {
             const onlyWorkers = data.filter(w => w.role === "Worker");
             const mapped = onlyWorkers.map((w, wdx) => ({
                 id: wdx + 1,
-                workerId: w.id,
+                workerId: w.userId,
                 name: `${w.firstName} ${w.lastName}`,
                 email: w.email,
             }));
             setWorkers(mapped);
+
         } catch (error) {
             console.error("Error loading workers:", error);
         }
@@ -47,10 +48,11 @@ const NewActivityModal = ({ onClose, onSubmit }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit({
-            activityName,
-            activityType,
-            worker,
-            description
+            repairActivityTypeId: activityType,
+            name: activityName,
+            sequenceNumber: nextSeq,
+            description,
+            workerId: workerId
         });
         onClose();
     };
@@ -75,18 +77,19 @@ const NewActivityModal = ({ onClose, onSubmit }) => {
                 <select value={activityType} onChange={(e) => setActivityType(e.target.value)} required>
                     <option value="">Select...</option>
                     {activityTypes.map((type) => (
-                        <option key={type.id} value={type.name}>
+                        <option key={type.repairActivityTypeId} value={type.repairActivityTypeId}>
                             {type.name}
                         </option>
                     ))}
                 </select>
 
                 <label>Worker:</label>
-                <select value={worker} onChange={(e) => setWorker(e.target.value)}>
+                <select value={workerId} onChange={(e) => setWorkerId(Number(e.target.value))}
+                >
                     <option value="">Select...</option>
-                    {workers.map((worker) => (
-                        <option key={worker.id} value={worker.name}>
-                            {worker.name}
+                    {workers.map((w) => (
+                        <option key={w.workerId} value={w.workerId}>
+                            {w.name}
                         </option>
                     ))}
                 </select>

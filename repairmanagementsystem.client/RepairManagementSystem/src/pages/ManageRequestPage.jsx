@@ -4,41 +4,66 @@ import Sidebar from "../components/Sidebar";
 import ActivitiesList from "../components/ActivitiesList";
 import NewActivityModal from "../components/NewActivityModal";
 import { useRepairRequestApi } from "../api/repairRequests";
+import { useRepairActivityApi } from "../api/repairActivity";
 import { useUserApi } from "../api/user";
 import "./styles/ManageRequestPage.css";
 
 const ManageRequestPage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-
-  const handleAddActivity = (formData) => {
-    const nextId = activities.length
-      ? Math.max(...activities.map(a => a.id)) + 1
-      : 1
-
-    const newActivity = {
-      id: nextId,
-      name: formData.activityName,
-      worker: formData.worker ? formData.worker : "To be assigned",
-      status: "To do",
-      activityType: formData.activityType,
-      description: formData.description,
-      createdAt: new Date().toLocaleDateString("en-GB"),
-      startedAt: "",
-      finishedAt: ""
-    };
-
-    setActivities(prev => [...prev, newActivity]);
-    setShowModal(false);
-
-    console.log("New activity added:", newActivity);
-  };
-
+  const { addRepairActivity } = useRepairActivityApi();
   const { id } = useParams();
   const { getRepairRequestById } = useRepairRequestApi();
   const [requests, setRequests] = useState({});
   const [activities, setActivities] = useState([]);
   const { getUsers } = useUserApi();
+
+  const nextSeq = activities.reduce(
+    (max, act) => Math.max(max, Number(act.sequenceNumber) || 0),
+    0
+  ) + 1;
+
+  const handleAddActivity = async (formData) => {
+    try {
+      const payload = {
+        repairActivityTypeId: formData.repairActivityTypeId,
+        name: formData.name,
+        sequenceNumber: nextSeq,
+        description: formData.description,
+        repairRequestId: id,
+        workerId: formData.workerId
+      };
+
+      const created = await addRepairActivity(payload);
+
+      const newActivity = {
+        repairRequestId: created.repairRequestId,
+        sequenceNumber: created.sequenceNumber,
+        repairActivityId: created.repairActivityId,
+        repairActivityTypeId: created.repairActivityTypeId,
+        name: created.name,
+        activityType: created.repairActivityTypeId,
+        description: created.description,
+        worker: created.workerId,
+        status: created.status,
+
+        createdAt: new Date(created.createdAt).toLocaleDateString("en-GB"),
+        startedAt: created.startedAt
+          ? new Date(created.startedAt).toLocaleDateString("en-GB")
+          : "",
+        finishedAt: created.finishedAt
+          ? new Date(created.finishedAt).toLocaleDateString("en-GB")
+          : "",
+      };
+
+      setActivities(prev => [...prev, newActivity]);
+      await loadRepairRequests();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error adding new activity:", error);
+    }
+  };
+
 
   const loadRepairRequests = async () => {
     try {
@@ -46,18 +71,13 @@ const ManageRequestPage = () => {
       const map = Object.fromEntries(
         users.map(u => [u.userId, `${u.firstName} ${u.lastName}`])
       );
-      console.log("All users from API:", users);
+
       const r = await getRepairRequestById(id);
-      console.log("Loaded repair request data:", r);
 
       const customerName = map[r.repairObject.customerId] || `#${r.repairObject.customerId}`;
       const managerName = r.managerId
         ? (map[r.managerId] || `#${r.managerId}`)
         : "Not assigned";
-
-      // const workerName = r.workerId
-      //   ? (map[r.workerId] || `#${r.workerId}`)
-      //   : "Not assigned";
 
       setRequests({
         id: r.repairRequestId,
@@ -78,7 +98,8 @@ const ManageRequestPage = () => {
 
       const formattedActivities = (r.repairActivities || []).map(a => ({
         repairActivityId: a.repairActivityId,
-        name: a.repairActivityType.name,
+        sequenceNumber: a.sequenceNumber,
+        name: a.name,
         activityType: a.repairActivityType.repairActivityTypeId,
         description: a.description || "",
         worker: map[a.workerId] || `#${a.workerId}`,
@@ -164,6 +185,7 @@ const ManageRequestPage = () => {
             <NewActivityModal
               onClose={() => setShowModal(false)}
               onSubmit={handleAddActivity}
+              nextSeq={nextSeq}
             />
           )}
 
