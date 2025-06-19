@@ -11,7 +11,7 @@ import "./styles/ManageRequestPage.css";
 const ManageRequestPage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const { addRepairActivity } = useRepairActivityApi();
+  const { addRepairActivity, updateRepairActivity } = useRepairActivityApi();
   const { id } = useParams();
   const { getRepairRequestById } = useRepairRequestApi();
   const [requests, setRequests] = useState({});
@@ -31,7 +31,9 @@ const ManageRequestPage = () => {
         sequenceNumber: nextSeq,
         description: formData.description,
         repairRequestId: id,
-        workerId: formData.workerId
+        workerId: formData.workerId,
+        status: formData.status,
+        startedAt: formData.startedAt
       };
 
       const created = await addRepairActivity(payload);
@@ -44,12 +46,12 @@ const ManageRequestPage = () => {
         name: created.name,
         activityType: created.repairActivityTypeId,
         description: created.description,
-        worker: created.workerId,
-        status: created.status,
+        workerId: created.workerId,
+        status: formData.status,
 
         createdAt: new Date(created.createdAt).toLocaleDateString("en-GB"),
-        startedAt: created.startedAt
-          ? new Date(created.startedAt).toLocaleDateString("en-GB")
+        startedAt: formData.startedAt
+          ? new Date(formData.startedAt).toLocaleDateString("en-GB")
           : "",
         finishedAt: created.finishedAt
           ? new Date(created.finishedAt).toLocaleDateString("en-GB")
@@ -64,6 +66,50 @@ const ManageRequestPage = () => {
     }
   };
 
+  const handleUpdateActivity = async (repairActivityId, changes) => {
+    try {
+      const current = activities.find(a => a.repairActivityId === repairActivityId);
+      const payload = {
+        repairActivityTypeId: changes.repairActivityTypeId,
+        name: changes.name,
+        sequenceNumber: current.sequenceNumber,
+        description: changes.description,
+        repairRequestId: id,
+        workerId: changes.workerId,
+        result: changes.result,
+        status: changes.status,
+        startedAt: changes.startedAt,
+        finishedAt: changes.finishedAt,
+      };
+      const updated = await updateRepairActivity(repairActivityId, payload);
+
+      setActivities(prev =>
+        prev.map(a =>
+          a.repairActivityId === repairActivityId
+            ? {
+              ...a,
+              name: updated.name,
+              sequenceNumber: updated.sequenceNumber,
+              description: updated.description,
+              repairRequestId: updated.repairRequestId,
+              workerId: updated.workerId,
+              status: updated.status,
+              result: updated.result,
+              startedAt: updated.startedAt
+                ? new Date(updated.startedAt).toLocaleDateString("en-GB")
+                : "",
+              finishedAt: updated.finishedAt
+                ? new Date(updated.finishedAt).toLocaleDateString("en-GB")
+                : "",
+            }
+            : a
+        )
+      );
+      await loadRepairRequests();
+    } catch (error) {
+      console.error("Error updating activity:", error);
+    }
+  };
 
   const loadRepairRequests = async () => {
     try {
@@ -102,7 +148,7 @@ const ManageRequestPage = () => {
         name: a.name,
         activityType: a.repairActivityType.repairActivityTypeId,
         description: a.description || "",
-        worker: map[a.workerId] || `#${a.workerId}`,
+        workerId: a.workerId,
         status: a.status,
         createdAt: new Date(a.createdAt).toLocaleDateString("en-GB"),
         startedAt: a.startedAt
@@ -179,6 +225,7 @@ const ManageRequestPage = () => {
           <ActivitiesList
             activities={activities}
             onAdd={() => setShowModal(true)}
+            onUpdate={handleUpdateActivity}
           />
 
           {showModal && (

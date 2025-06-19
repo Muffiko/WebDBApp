@@ -47,13 +47,25 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({
+
+        const payload = {
             repairActivityTypeId: activityType,
             name: activityName,
             sequenceNumber: nextSeq,
             description,
-            workerId: workerId
-        });
+            workerId: workerId,
+            status: "",
+            startedAt: null,
+        };
+
+        if (payload.workerId) {
+            payload.status = "In progress";
+            payload.startedAt = new Date().toISOString();
+        } else {
+            payload.status = "Open";
+        }
+
+        onSubmit(payload);
         onClose();
     };
 

@@ -11,11 +11,12 @@ const statusColors = {
   Todo: "#9ca3af",
 };
 
-const ActivityCard = ({ id, name: initialName, activityType: initialActivityType, description: initialDescription, worker: initialWorker, status, createdAt, startedAt, finishedAt }) => {
-  const badgeColor = statusColors[status] || statusColors.Todo;
+const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate }) => {
+  const [statusState, setStatusState] = useState(status);
+  const badgeColor = statusColors[statusState] || statusColors.Todo;
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
-  const [worker, setWorker] = useState(initialWorker);
+  const [workerId, setWorkerId] = useState(initialWorkerId);
   const [activityType, setActivityType] = useState(initialActivityType || "");
   const [description, setDescription] = useState(initialDescription);
   const [editField, setEditField] = useState(null);
@@ -29,13 +30,7 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
     try {
       const data = await getWorkers();
       const onlyWorkers = data.filter(w => w.role === "Worker");
-      const mapped = onlyWorkers.map((w, wdx) => ({
-        id: wdx + 1,
-        workerId: w.id,
-        name: `${w.firstName} ${w.lastName}`,
-        email: w.email,
-      }));
-      setWorkers(mapped);
+      setWorkers(onlyWorkers);
     } catch (error) {
       console.error("Error loading workers:", error);
     }
@@ -58,14 +53,6 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
     loadActivityTypes();
   }, []);
 
-  const workersOptions = initialWorker
-    ? Array.from(new Set([initialWorker, ...workers.map(w => w.name)]))
-    : workers.map(w => w.name);
-
-  const activitiesOptions = initialActivityType
-    ? Array.from(new Set([initialActivityType, ...activityTypes.map(a => a.repairActivityTypeId)]))
-    : activityTypes.map(a => a.repairActivityTypeId);
-
   const startEdit = (field) => {
     setEditField(field);
     setIsExpanded(true);
@@ -77,11 +64,38 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
     setIsExpanded(x => !x);
   };
 
-  const finishEdit = () => setEditField(null);
+  const finishEdit = () => {
+    if (editField === "name") {
+      onUpdate(id, { name });
+    }
+    if (editField === "description") {
+      onUpdate(id, { description });
+    }
+    setEditField(null);
+  };
 
   const onKey = (e) => {
     if (e.key === "Enter") finishEdit();
   };
+
+  const handleWorkerChange = e => {
+    const newId = Number(e.target.value);
+    setWorkerId(newId);
+    setStatusState("In Progress");
+    onUpdate(id, { workerId: newId, status: "In Progress", startedAt: new Date().toISOString() });
+  };
+
+  const displayWorker = () => {
+    const w = workers.find(w => w.userId === workerId);
+    return w ? `${w.firstName} ${w.lastName}` : workerId || "Unassigned";
+  };
+
+  const handleTypeChange = e => {
+    const newType = e.target.value;
+    setActivityType(newType);
+    onUpdate(id, { repairActivityTypeId: newType });
+  };
+
   return (
 
     <div
@@ -92,7 +106,7 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
         className="activity-badge"
         style={{ backgroundColor: badgeColor }}
       >
-        {id}
+        {sequenceNumber}
       </div>
       <div className="activity-header">
 
@@ -130,19 +144,19 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
             <select
               ref={selectRef}
               className="worker-select"
-              value={worker}
-              onChange={e => setWorker(e.target.value)}
+              value={workerId}
+              onChange={handleWorkerChange}
               onClick={e => e.stopPropagation()}
             >
               <option value="">Assign worker…</option>
-              {workersOptions.map(w => (
-                <option key={w} value={w}>
-                  {w}
+              {workers.map(w => (
+                <option key={w.userId} value={w.userId}>
+                  {w.firstName} {w.lastName}
                 </option>
               ))}
             </select>
           ) : (
-            <span className="field-value">{worker}</span>
+            <span className="field-value">{displayWorker()}</span>
           )}
         </div>
         <div
@@ -164,18 +178,22 @@ const ActivityCard = ({ id, name: initialName, activityType: initialActivityType
                   ref={selectRef}
                   className="activity-select"
                   value={activityType}
-                  onChange={e => setActivityType(e.target.value)}
+                  onChange={handleTypeChange}
                   onClick={e => e.stopPropagation()}
                 >
-                  <option value="">Assign activity</option>
-                  {activitiesOptions.map(typeId => (
-                    <option key={typeId} value={typeId}>
-                      {typeId}
+                  {activityTypes.map(t => (
+                    <option
+                      key={t.repairActivityTypeId}
+                      value={t.repairActivityTypeId}
+                    >
+                      {t.name}
                     </option>
                   ))}
                 </select>
               ) : (
-                <span className="field-value">{activityType}</span>
+                <span className="field-value">{(activityTypes.find(t => t.repairActivityTypeId === activityType)
+                  || {}
+                ).name || activityType}</span>
               )}
             </div>
             <div className="details-right">
