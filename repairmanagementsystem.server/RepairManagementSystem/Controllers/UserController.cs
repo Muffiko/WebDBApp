@@ -97,5 +97,13 @@ namespace RepairManagementSystem.Controllers
             var response = _mapper.Map<UserMyInfoResponse>(user);
             return Ok(response);
         }
+
+        [HttpPatch("{userId:int}/role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeUserRole(int userId, [FromBody] ChangeUserRoleRequest request)
+        {
+            var result = await _userService.ChangeUserRoleAsync(userId, request);
+            return this.ToApiResponse(result);
+        }
     }
 }
