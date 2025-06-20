@@ -17,14 +17,18 @@ namespace RepairManagementSystem.Services
         private readonly IUserRepository _userRepository;
         private readonly ICryptoService _cryptoService;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IWorkerRepository _workerRepository;
+        private readonly IManagerRepository _managerRepository;
 
-        public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository, ICryptoService cryptoService, ICustomerRepository customerRepository)
+        public UserService(ApplicationDbContext context, IMapper mapper, IUserRepository userRepository, ICryptoService cryptoService, ICustomerRepository customerRepository, IWorkerRepository workerRepository, IManagerRepository managerRepository)
         {
             _context = context;
             _mapper = mapper;
             _userRepository = userRepository;
             _cryptoService = cryptoService;
             _customerRepository = customerRepository;
+            _workerRepository = workerRepository;
+            _managerRepository = managerRepository;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
@@ -196,5 +200,64 @@ namespace RepairManagementSystem.Services
                 ? Result.Ok("User updated successfully.")
                 : Result.Fail(500, "Failed to update user.");
         }
+
+        private enum UserRole { Admin, Customer, Worker, Manager }
+
+        private static readonly Dictionary<UserRole, Func<UserService, int, User, Task>> RemoveRoleActions = new()
+        {
+            [UserRole.Customer] = (svc, userId, user) => svc._customerRepository.DeleteCustomerAsync(userId),
+            [UserRole.Worker] = (svc, userId, user) => svc._workerRepository.DeleteWorkerAsync(userId),
+            [UserRole.Manager] = (svc, userId, user) => svc._managerRepository.DeleteManagerAsync(userId)
+        };
+        private static readonly Dictionary<UserRole, Func<UserService, int, User, Task>> AddRoleActions = new()
+        {
+            [UserRole.Customer] = (svc, userId, user) => svc._customerRepository.AddCustomerAsync(new Customer { UserId = userId, PaymentMethod = string.Empty, User = user }),
+            [UserRole.Worker] = (svc, userId, user) => svc._workerRepository.AddWorkerAsync(new Worker { UserId = userId, User = user, Expertise = string.Empty, IsAvailable = true }),
+            [UserRole.Manager] = (svc, userId, user) => svc._managerRepository.AddManagerAsync(new Manager { UserId = userId, User = user, Expertise = string.Empty, ActiveRepairsCount = 0 })
+        };
+
+        private static bool TryParseRole(string? role, out UserRole parsed)
+        {
+            parsed = default;
+            return Enum.TryParse(typeof(UserRole), role, true, out var result) && Enum.IsDefined(typeof(UserRole), result) && (parsed = (UserRole)result) >= 0;
+        }
+
+        public async Task<Result> ChangeUserRoleAsync(int userId, ChangeUserRoleRequest request)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return Result.Fail(404, "User with given id does not exist.");
+            }
+
+            if (!TryParseRole(request.role, out var newRole))
+            {
+                return Result.Fail(403, "Provided role does not exist");
+            }
+            if (!TryParseRole(user.Role, out var oldRole))
+            {
+                return Result.Fail(500, "User's current role is invalid");
+            }
+            if (oldRole == newRole)
+            {
+                return Result.Fail(400, "Role update failed.");
+            }
+
+            if (RemoveRoleActions.TryGetValue(oldRole, out var removeAction))
+            {
+                await removeAction(this, user.UserId, user);
+            }
+            if (AddRoleActions.TryGetValue(newRole, out var addAction))
+            {
+                await addAction(this, user.UserId, user);
+            }
+
+            user.Role = newRole.ToString();
+            
+            return await _userRepository.UpdateUserAsync(user)
+                ? Result.Ok("User role updated successfully.")
+                : Result.Fail(500, "Failed to update user role.");
+        }
+
     }
 }
