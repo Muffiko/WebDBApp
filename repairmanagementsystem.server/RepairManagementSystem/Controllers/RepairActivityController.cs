@@ -76,7 +76,7 @@ namespace RepairManagementSystem.Controllers
             {
                 return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
             }
-            
+
             var repairActivity = await _repairActivityService.GetRepairActivityByIdAsync(repairActivityId);
             if (repairActivity == null || repairActivity.WorkerId != userId)
             {
@@ -85,6 +85,17 @@ namespace RepairManagementSystem.Controllers
 
             var result = await _repairActivityService.ChangeRepairActivityStatusAsync(repairActivityId, request);
             return this.ToApiResponse(result);
+        }
+
+        [HttpGet("workers/my")]
+        public async Task<IActionResult> GetMyRepairActivities()
+        {
+            int? userId = User.GetUserId();
+            if (userId == null)
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+
+            var repairActivities = await _repairActivityService.GetRepairActivitiesByWorkerIdAsync(userId.Value);
+            return Ok(repairActivities);
         }
     }
 }

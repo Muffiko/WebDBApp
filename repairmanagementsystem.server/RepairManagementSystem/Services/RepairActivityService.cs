@@ -233,5 +233,15 @@ namespace RepairManagementSystem.Services
                 ? Result.Ok("Repair activity status changed successfully.")
                 : Result.Fail(500, "Failed to change repair activity status.");
         }
+        public async Task<IEnumerable<RepairActivityResponse?>> GetRepairActivitiesByWorkerIdAsync(int workerId)
+        {
+            var repairActivities = await _repairActivityRepository.GetAllRepairActivitiesAsync();
+            if (repairActivities == null || !repairActivities.Any())
+            {
+                return Enumerable.Empty<RepairActivityResponse?>();
+            }
+            repairActivities = repairActivities?.Where(ra => ra?.WorkerId == workerId);
+            return _mapper.Map<IEnumerable<RepairActivityResponse?>>(repairActivities);
+        }
     }
 }
