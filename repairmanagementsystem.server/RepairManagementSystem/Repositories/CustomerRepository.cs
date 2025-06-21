@@ -21,7 +21,9 @@ namespace RepairManagementSystem.Repositories
 
         public async Task<IEnumerable<Customer?>?> GetAllCustomersAsync()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Customers
+                .Include(c => c.User)
+                .ToListAsync();
         }
 
         public async Task<bool> AddCustomerAsync(Customer customer)

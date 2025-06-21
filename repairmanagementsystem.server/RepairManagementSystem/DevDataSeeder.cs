@@ -91,6 +91,22 @@ namespace RepairManagementSystem
             };
             await userRepo.AddUserAsync(customer3);
 
+            // Add Customer objects
+            var customerEntity1 = new Customer
+            {
+                UserId = customer.UserId,
+                User = customer,
+                PaymentMethod = "CreditCard"
+            };
+            var customerEntity2 = new Customer
+            {
+                UserId = customer3.UserId,
+                User = customer3,
+                PaymentMethod = "Cash"
+            };
+            await customerRepo.AddCustomerAsync(customerEntity1);
+            await customerRepo.AddCustomerAsync(customerEntity2);
+
             var managerUser = new User
             {
                 FirstName = "Manager",
@@ -156,6 +172,25 @@ namespace RepairManagementSystem
                 CreatedAt = DateTime.UtcNow
             };
             await userRepo.AddUserAsync(workerUser2);
+
+            // Add Worker objects
+            var workerEntity1 = new Worker
+            {
+                UserId = workerUser1.UserId,
+                User = workerUser1,
+                Expertise = "Electronics",
+                IsAvailable = true
+            };
+            var workerEntity2 = new Worker
+            {
+                UserId = workerUser2.UserId,
+                User = workerUser2,
+                Expertise = "Mechanics",
+                IsAvailable = true
+            };
+            var workerRepo = services.GetRequiredService<IWorkerRepository>();
+            await workerRepo.AddWorkerAsync(workerEntity1);
+            await workerRepo.AddWorkerAsync(workerEntity2);
 
             // Add RepairObjectTypes
             var type1 = new RepairObjectType { RepairObjectTypeId = "ELE", Name = "Elektryczny" };

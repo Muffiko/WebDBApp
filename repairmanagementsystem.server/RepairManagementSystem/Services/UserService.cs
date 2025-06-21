@@ -253,11 +253,43 @@ namespace RepairManagementSystem.Services
             }
 
             user.Role = newRole.ToString();
-            
+
             return await _userRepository.UpdateUserAsync(user)
                 ? Result.Ok("User role updated successfully.")
                 : Result.Fail(500, "Failed to update user role.");
         }
+
+        public async Task<Result> UpdateWorkerAvailabilityAsync(int userId, UpdateWorkerAvailabilityRequest request)
+        {
+            var worker = await _workerRepository.GetWorkerByIdAsync(userId);
+            if (worker == null)
+            {
+                return Result.Fail(404, "Worker not found.");
+            }
+            worker.IsAvailable = request.IsAvailable;
+            return await _workerRepository.UpdateWorkerAsync(worker)
+                ? Result.Ok("Worker availability updated successfully.")
+                : Result.Fail(500, "Failed to update worker availability. Please try again.");
+        }
+
+        public async Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync()
+        {
+            var workers = await _workerRepository.GetAllWorkersAsync();
+            return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
+        }
+
+        public async Task<IEnumerable<ManagerDTO>> GetAllManagersAsync()
+        {
+            var managers = await _managerRepository.GetAllManagersAsync();
+            return _mapper.Map<IEnumerable<ManagerDTO>>(managers);
+        }
+
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
+        {
+            var customers = await _customerRepository.GetAllCustomersAsync();
+            return _mapper.Map<IEnumerable<CustomerDTO>>(customers);
+        }
+
 
     }
 }

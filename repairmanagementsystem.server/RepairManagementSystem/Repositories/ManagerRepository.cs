@@ -19,33 +19,37 @@ namespace RepairManagementSystem.Repositories
             return await _context.Managers.FindAsync(managerId);
         }
 
-        public async Task<IEnumerable<Manager>> GetAllManagersAsync()
+        public async Task<IEnumerable<Manager?>?> GetAllManagersAsync()
         {
-            return await _context.Managers.ToListAsync();
+            return await _context.Managers
+                .Include(m => m.User)
+                .ToListAsync();
         }
 
-        public async Task AddManagerAsync(Manager manager)
+        public async Task<bool> AddManagerAsync(Manager manager)
         {
             _context.Managers.Add(manager);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
-        public async Task UpdateManagerAsync(Manager manager)
+        public async Task<bool> UpdateManagerAsync(Manager manager)
         {
             if (manager != null)
             {
                 _context.Managers.Update(manager);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteManagerAsync(int managerId)
+        public async Task<bool> DeleteManagerAsync(int managerId)
         {
             var manager = await GetManagerByIdAsync(managerId);
             if (manager != null)
             {
                 _context.Managers.Remove(manager);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
     }
 }

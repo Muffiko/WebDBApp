@@ -18,5 +18,9 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<User?> GetUserEntityByIdAsync(int userId);
         Task<Result> UpdateUserAsync(User user);
         Task<Result> ChangeUserRoleAsync(int userId, ChangeUserRoleRequest request);
+        Task<Result> UpdateWorkerAvailabilityAsync(int userId, UpdateWorkerAvailabilityRequest request);
+        Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync();
+        Task<IEnumerable<ManagerDTO>> GetAllManagersAsync();
+        Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync();
     }
 }

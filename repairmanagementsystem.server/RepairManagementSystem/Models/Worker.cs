@@ -12,7 +12,7 @@ namespace RepairManagementSystem.Models
         public User User { get; set; } = null!;
 
         [Required]
-        [MaxLength(8)]
+        [MaxLength(128)]
         public string Expertise { get; set; } = string.Empty;
 
         [Required]

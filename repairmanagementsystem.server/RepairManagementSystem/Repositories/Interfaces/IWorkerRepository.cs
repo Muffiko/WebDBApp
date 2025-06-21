@@ -5,9 +5,9 @@ namespace RepairManagementSystem.Repositories.Interfaces
     public interface IWorkerRepository
     {
         Task<Worker?> GetWorkerByIdAsync(int workerId);
-        Task<IEnumerable<Worker>> GetAllWorkersAsync();
-        Task AddWorkerAsync(Worker worker);
-        Task UpdateWorkerAsync(Worker worker);
-        Task DeleteWorkerAsync(int workerId);
+        Task<IEnumerable<Worker?>?> GetAllWorkersAsync();
+        Task<bool> AddWorkerAsync(Worker worker);
+        Task<bool> UpdateWorkerAsync(Worker worker);
+        Task<bool> DeleteWorkerAsync(int workerId);
     }
 }
