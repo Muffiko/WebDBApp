@@ -55,10 +55,34 @@ export const useRepairRequestApi = () => {
     return await response.json();
   };
 
+  const getUnassignedRepairRequests = async () => {
+    const response = await authFetch("/RepairRequests/unassigned", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+    return await response.json();
+  };
+
+  const getActiveRepairRequests = async () => {
+    const response = await authFetch("/RepairRequests/active", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+    return await response.json();
+  };
+
   return { 
     addRepairRequest,
     getCustomerRepairRequests,
     getRepairRequestById,
-    getRepairRequests
+    getRepairRequests,
+    getUnassignedRepairRequests,
+    getActiveRepairRequests
   };
 };

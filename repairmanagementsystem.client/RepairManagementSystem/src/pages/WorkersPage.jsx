@@ -11,13 +11,12 @@ const WorkersPage = () => {
   const loadWorkers = async () => {
     try {
       const data = await getWorkers();
-      const onlyWorkers = data.filter(w => w.role === "Worker");
-      const mapped = onlyWorkers.map((w, wdx) => ({
+      const mapped = data.map((w, wdx) => ({
         id: wdx + 1,
-        workerId: w.id,
-        name: `${w.firstName} ${w.lastName}`,
-        email: w.email,
-        status: "Available" // TODO: Replace with actual status logic
+        workerId: w.workerId,
+        name: `${w.user.firstName} ${w.user.lastName}`,
+        email: w.user.email,
+        status: w.isAvailable ? "Available" : "Unavailable"
       }));
       setWorkers(mapped);
     } catch (error) {

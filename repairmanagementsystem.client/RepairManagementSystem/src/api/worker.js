@@ -4,7 +4,7 @@ export const useWorkersApi = () => {
   const authFetch = useAuthFetch();
 
   const getWorkers = async () => {
-    const response = await authFetch("/Users", {
+    const response = await authFetch("/Users/workers", {
         method: "GET",
     });
     if (!response.ok) {

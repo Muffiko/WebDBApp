@@ -34,21 +34,20 @@ const OpenRequestsPage = () => {
     }
   };
 
-  const { getRepairRequests } = useRepairRequestApi();
+  const { getActiveRepairRequests } = useRepairRequestApi();
   const [requests, setRequests] = useState([]);
 
   const loadRepairRequests = async () => {
     try {
-      const data = await getRepairRequests();
+      const data = await getActiveRepairRequests();
       const mapped = data.map((r) => ({
         repairRequestId: r.repairRequestId,
-        name: r.repairObject.name,
-        createdAt: new Date(r.createdAt).toLocaleDateString(),
-        status: r.status,
-        manager:
-          r.manager && r.manager.firstName
-            ? `${r.manager.firstName} ${r.manager.lastName}`
-            : 'Not assigned'
+        name: r.repairObjectName || "(no name)",
+        createdAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '',
+        status: r.status || '',
+        manager: r.manager && r.manager.firstName
+          ? `${r.manager.firstName} ${r.manager.lastName}`
+          : 'Not assigned'
       }));
       setRequests(mapped);
     } catch (err) {

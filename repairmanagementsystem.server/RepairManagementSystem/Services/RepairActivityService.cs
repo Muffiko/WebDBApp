@@ -180,7 +180,7 @@ namespace RepairManagementSystem.Services
 
         public async Task<Result> ChangeRepairActivityStatusAsync(int repairActivityId, ChangeRepairActivityStatusRequest request)
         {
-            var allowedStatuses = new[] { "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            var allowedStatuses = new[] { "TO_DO", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
             string newStatus = request.Status?.Trim().ToUpperInvariant() ?? string.Empty;
 
             var repairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
@@ -206,9 +206,9 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(400, "Cannot change status of a repair activity that is already 'CANCELLED' or 'COMPLETED'.");
             }
 
-            if (newStatus == "IN_PROGRESS" && currentStatus != "OPEN")
+            if (newStatus == "IN_PROGRESS" && currentStatus != "TO_DO")
             {
-                return Result.Fail(400, "Repair activity must be in 'OPEN' status to change to 'IN_PROGRESS'.");
+                return Result.Fail(400, "Repair activity must be in 'TO_DO' status to change to 'IN_PROGRESS'.");
             }
 
             if ((newStatus == "CANCELLED" || newStatus == "COMPLETED") && string.IsNullOrWhiteSpace(request.Result))

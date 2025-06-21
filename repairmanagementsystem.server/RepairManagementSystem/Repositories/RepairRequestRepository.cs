@@ -90,7 +90,7 @@ namespace RepairManagementSystem.Repositories
                     .ThenInclude(ro => ro.RepairObjectType)
                 .Include(r => r.RepairActivities)
                     .ThenInclude(ra => ra.RepairActivityType)
-                .Where(r => r.ManagerId != null && r.Status == "Active")
+                .Where(r => r.ManagerId != null && r.Status == "OPEN")
                 .ToListAsync();
         }
     }
