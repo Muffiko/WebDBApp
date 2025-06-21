@@ -212,7 +212,7 @@ namespace RepairManagementSystem
             await repairObjectRepo.AddRepairObjectAsync(obj2);
 
             // Add Manager entity for the manager user
-            var managerEntity = new Manager { UserId = managerUser.UserId, User = managerUser, Expertise = "General", ActiveRepairsCount = 0 };
+            var managerEntity = new Manager { UserId = managerUser.UserId, User = managerUser, Expertise = "General", ActiveRepairsCount = 1 };
             await managerRepo.AddManagerAsync(managerEntity);
 
             Manager? trackedManager = null;

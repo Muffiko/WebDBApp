@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Core;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
@@ -175,6 +176,62 @@ namespace RepairManagementSystem.Services
             return success
                 ? Result.Ok($"Repair activity patched successfully. Updated fields: {string.Join(", ", updatedFields)}.")
                 : Result.Fail(500, "Failed to patch repair activity.");
+        }
+
+        public async Task<Result> ChangeRepairActivityStatusAsync(int repairActivityId, ChangeRepairActivityStatusRequest request)
+        {
+            var allowedStatuses = new[] { "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            string newStatus = request.Status?.Trim().ToUpperInvariant() ?? string.Empty;
+
+            var repairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (repairActivity == null)
+            {
+                return Result.Fail(404, "Repair activity not found.");
+            }
+
+            string currentStatus = repairActivity.Status?.Trim().ToUpperInvariant() ?? string.Empty;
+
+            if (!allowedStatuses.Contains(newStatus))
+            {
+                return Result.Fail(400, $"Invalid status provided. Valid statuses are: {string.Join(", ", allowedStatuses)}.");
+            }
+
+            if (newStatus == currentStatus)
+            {
+                return Result.Fail(400, "The status is already set to the requested value.");
+            }
+
+            if (currentStatus == "CANCELLED" || currentStatus == "COMPLETED")
+            {
+                return Result.Fail(400, "Cannot change status of a repair activity that is already 'CANCELLED' or 'COMPLETED'.");
+            }
+
+            if (newStatus == "IN_PROGRESS" && currentStatus != "OPEN")
+            {
+                return Result.Fail(400, "Repair activity must be in 'OPEN' status to change to 'IN_PROGRESS'.");
+            }
+
+            if ((newStatus == "CANCELLED" || newStatus == "COMPLETED") && string.IsNullOrWhiteSpace(request.Result))
+            {
+                return Result.Fail(400, "Result must be provided when changing status to 'CANCELLED' or 'COMPLETED'.");
+            }
+
+            if (newStatus == "CANCELLED" || newStatus == "COMPLETED")
+            {
+                repairActivity.FinishedAt = DateTime.UtcNow;
+                repairActivity.Result = request.Result!;
+                repairActivity.Status = newStatus;
+            }
+            else if (newStatus == "IN_PROGRESS")
+            {
+                repairActivity.StartedAt = DateTime.UtcNow;
+                repairActivity.Status = newStatus;
+            }
+
+            var success = await _repairActivityRepository.UpdateRepairActivityAsync(repairActivity);
+            return success
+                ? Result.Ok("Repair activity status changed successfully.")
+                : Result.Fail(500, "Failed to change repair activity status.");
         }
     }
 }

@@ -15,13 +15,15 @@ namespace RepairManagementSystem.Services
         private readonly IMapper _mapper;
         private readonly IRepairRequestRepository _repairRequestRepository;
         private readonly IRepairObjectRepository _repairObjectRepository;
+        private readonly IManagerRepository _managerRepository;
 
-        public RepairRequestService(ApplicationDbContext context, IMapper mapper, IRepairRequestRepository repairRequestRepository, IRepairObjectRepository repairObjectRepository)
+        public RepairRequestService(ApplicationDbContext context, IMapper mapper, IRepairRequestRepository repairRequestRepository, IRepairObjectRepository repairObjectRepository, IManagerRepository managerRepository)
         {
             _context = context;
             _mapper = mapper;
             _repairRequestRepository = repairRequestRepository;
             _repairObjectRepository = repairObjectRepository;
+            _managerRepository = managerRepository;
         }
 
         public async Task<IEnumerable<RepairRequest?>?> GetAllRepairRequestsAsync()
@@ -101,6 +103,12 @@ namespace RepairManagementSystem.Services
         public async Task<Result> AssignRepairRequestToManagerAsync(int repairRequestId, RepairRequestAssign request)
         {
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
+            var manager = await _managerRepository.GetManagerByIdAsync(request.ManagerId);
+            if (manager == null)
+            {
+                return Result.Fail(404, $"Manager with ID {request.ManagerId} not found.");
+            }
+
             if (repairRequest == null)
             {
                 return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
@@ -113,9 +121,17 @@ namespace RepairManagementSystem.Services
 
             repairRequest.ManagerId = request.ManagerId;
 
-            return await _repairRequestRepository.UpdateRepairRequestAsync(repairRequest)
-                ? Result.Ok($"Repair request with ID {repairRequestId} assigned to manager with ID {request.ManagerId} successfully.")
-                : Result.Fail(500, "Failed to assign repair request to manager.");
+            manager.ActiveRepairsCount++;
+            manager.RepairRequests.Add(repairRequest);
+            if (await _managerRepository.UpdateManagerAsync(manager))
+            {
+                return await _repairRequestRepository.UpdateRepairRequestAsync(repairRequest)
+                    ? Result.Ok($"Repair request with ID {repairRequestId} assigned to manager with ID {request.ManagerId} successfully.")
+                    : Result.Fail(500, "Failed to assign repair request to manager.");
+            }
+
+            return Result.Fail(500, "Failed to update manager.");
         }
+        
     }
 }

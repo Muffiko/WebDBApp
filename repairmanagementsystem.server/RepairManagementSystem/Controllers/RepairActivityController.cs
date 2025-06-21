@@ -67,5 +67,24 @@ namespace RepairManagementSystem.Controllers
             var result = await _repairActivityService.DeleteRepairActivityAsync(repairActivityId);
             return this.ToApiResponse(result);
         }
+
+        [HttpPatch("{repairActivityId:int}/change-status")]
+        public async Task<IActionResult> ChangeRepairActivityStatus(int repairActivityId, [FromBody] ChangeRepairActivityStatusRequest request)
+        {
+            int userId = User.GetUserId() ?? 0;
+            if (userId == 0)
+            {
+                return this.ToApiResponse(Result.Fail(401, "User is not authenticated."));
+            }
+            
+            var repairActivity = await _repairActivityService.GetRepairActivityByIdAsync(repairActivityId);
+            if (repairActivity == null || repairActivity.WorkerId != userId)
+            {
+                return this.ToApiResponse(Result.Fail(403, "You do not have permission to change the status of this repair activity."));
+            }
+
+            var result = await _repairActivityService.ChangeRepairActivityStatusAsync(repairActivityId, request);
+            return this.ToApiResponse(result);
+        }
     }
 }
