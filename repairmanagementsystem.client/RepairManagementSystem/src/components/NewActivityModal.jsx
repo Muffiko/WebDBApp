@@ -14,15 +14,13 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
     const loadWorkers = async () => {
         try {
             const data = await getWorkers();
-            const onlyWorkers = data.filter(w => w.role === "Worker");
-            const mapped = onlyWorkers.map((w, wdx) => ({
+            const mapped = data.map((w, wdx) => ({
                 id: wdx + 1,
-                workerId: w.userId,
-                name: `${w.firstName} ${w.lastName}`,
-                email: w.email,
+                workerId: w.workerId,
+                name: `${w.user.firstName} ${w.user.lastName}`,
+                email: w.user.email,
             }));
             setWorkers(mapped);
-
         } catch (error) {
             console.error("Error loading workers:", error);
         }

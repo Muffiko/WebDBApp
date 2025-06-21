@@ -29,8 +29,14 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   const loadWorkers = async () => {
     try {
       const data = await getWorkers();
-      const onlyWorkers = data.filter(w => w.role === "Worker");
-      setWorkers(onlyWorkers);
+      const mapped = data.map(w => ({
+        workerId: w.workerId,
+        firstName: w.user.firstName,
+        lastName: w.user.lastName,
+        email: w.user.email,
+        isAvailable: w.isAvailable
+      }));
+      setWorkers(mapped);
     } catch (error) {
       console.error("Error loading workers:", error);
     }
@@ -86,7 +92,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   };
 
   const displayWorker = () => {
-    const w = workers.find(w => w.userId === workerId);
+    const w = workers.find(w => w.workerId === workerId);
     return w ? `${w.firstName} ${w.lastName}` : workerId || "Unassigned";
   };
 
@@ -150,7 +156,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
             >
               <option value="">Assign worker…</option>
               {workers.map(w => (
-                <option key={w.userId} value={w.userId}>
+                <option key={w.workerId} value={w.workerId}>
                   {w.firstName} {w.lastName}
                 </option>
               ))}

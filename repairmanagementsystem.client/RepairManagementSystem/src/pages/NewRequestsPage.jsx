@@ -21,22 +21,21 @@ const NewRequestsPage = () => {
     }
   };
 
-  const { getRepairRequests } = useRepairRequestApi();
+  const { getUnassignedRepairRequests } = useRepairRequestApi();
   const [requests, setRequests] = useState([]);
 
   const loadRepairRequests = async () => {
     try {
-      const data = await getRepairRequests();
-      const mapped = data.map((r) => ({
-        repairRequestId: r.repairRequestId,
-        name: r.repairObject.name,
-        type: r.repairObject.repairObjectType.name,
-        createdAt: new Date(r.createdAt).toLocaleDateString(),
-        description: r.description,
-        manager: r.manager
-          // r.manager && r.manager.firstName
-          //   ? `${r.manager.firstName} ${r.manager.lastName}`
-      }));
+      const data = await getUnassignedRepairRequests();
+      const mapped = data
+        .filter(r => r.repairObjectName)
+        .map((r) => ({
+          repairRequestId: r.repairRequestId,
+          name: r.repairObjectName || "(no name)",
+          type: r.repairObjectType?.name || "",
+          createdAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '',
+          description: r.description,
+        }));
       setRequests(mapped);
     } catch (err) {
       console.error("Failed to load requests:", err);
