@@ -97,5 +97,25 @@ namespace RepairManagementSystem.Services
             var repairRequests = await _repairRequestRepository.GetAllRepairRequestsFromCustomerAsync(customerId);
             return _mapper.Map<IEnumerable<RepairRequestCustomerResponse?>?>(repairRequests);
         }
+
+        public async Task<Result> AssignRepairRequestToManagerAsync(int repairRequestId, RepairRequestAssign request)
+        {
+            var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
+            if (repairRequest == null)
+            {
+                return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            }
+
+            if (repairRequest.ManagerId.HasValue)
+            {
+                return Result.Fail(400, "Repair request is already assigned to a manager.");
+            }
+
+            repairRequest.ManagerId = request.ManagerId;
+
+            return await _repairRequestRepository.UpdateRepairRequestAsync(repairRequest)
+                ? Result.Ok($"Repair request with ID {repairRequestId} assigned to manager with ID {request.ManagerId} successfully.")
+                : Result.Fail(500, "Failed to assign repair request to manager.");
+        }
     }
 }

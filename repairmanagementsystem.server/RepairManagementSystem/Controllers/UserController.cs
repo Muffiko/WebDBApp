@@ -105,5 +105,33 @@ namespace RepairManagementSystem.Controllers
             var result = await _userService.ChangeUserRoleAsync(userId, request);
             return this.ToApiResponse(result);
         }
+
+        [HttpPatch("workers/{workerId:int}/availability")]
+        public async Task<IActionResult> UpdateWorkerAvailability(int workerId, [FromBody] UpdateWorkerAvailabilityRequest request)
+        {
+            var result = await _userService.UpdateWorkerAvailabilityAsync(workerId, request);
+            return this.ToApiResponse(result);
+        }
+
+        [HttpGet("workers")]
+        public async Task<IActionResult> GetWorkers()
+        {
+            var result = await _userService.GetAllWorkersAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("managers")]
+        public async Task<IActionResult> GetManagers()
+        {
+            var result = await _userService.GetAllManagersAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("customers")]
+        public async Task<IActionResult> GetCustomers()
+        {
+            var result = await _userService.GetAllCustomersAsync();
+            return Ok(result);
+        }
     }
 }

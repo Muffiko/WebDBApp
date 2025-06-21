@@ -109,5 +109,12 @@ namespace RepairManagementSystem.Controllers
             return Ok(repairRequests);
         }
 
+        [HttpPatch("{repairRequestId:int}/assign")]
+        public async Task<IActionResult> AssignRepairRequest(int repairRequestId, [FromBody] RepairRequestAssign request)
+        {
+            var result = await _repairRequestService.AssignRepairRequestToManagerAsync(repairRequestId, request);
+            return this.ToApiResponse(result);
+        }
+
     }
 }

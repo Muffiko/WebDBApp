@@ -19,34 +19,38 @@ namespace RepairManagementSystem.Repositories
             return await _context.Workers.FindAsync(workerId);
         }
 
-        public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
+        public async Task<IEnumerable<Worker?>?> GetAllWorkersAsync()
         {
-            return await _context.Workers.ToListAsync();
+            return await _context.Workers
+                .Include(w => w.User)
+                .ToListAsync();
         }
 
-        public async Task AddWorkerAsync(Worker worker)
+        public async Task<bool> AddWorkerAsync(Worker worker)
         {
             _context.Workers.Add(worker);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task UpdateWorkerAsync(Worker worker)
+        public async Task<bool> UpdateWorkerAsync(Worker worker)
         {
             if (worker != null)
             {
                 _context.Workers.Update(worker);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
 
-        public async Task DeleteWorkerAsync(int workerId)
+        public async Task<bool> DeleteWorkerAsync(int workerId)
         {
             var worker = await GetWorkerByIdAsync(workerId);
             if (worker != null)
             {
                 _context.Workers.Remove(worker);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
+            return false;
         }
     }
 }

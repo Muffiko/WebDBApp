@@ -15,5 +15,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<IEnumerable<RepairRequestResponse?>?> GetUnassignedRepairRequestsAsync();
         Task<IEnumerable<RepairRequestResponse?>?> GetActiveRepairRequestsAsync();
         Task<IEnumerable<RepairRequestCustomerResponse?>?> GetAllRepairRequestsForCustomerAsync(int customerId);
+        Task<Result> AssignRepairRequestToManagerAsync(int repairRequestId, RepairRequestAssign request);
     }
 }
