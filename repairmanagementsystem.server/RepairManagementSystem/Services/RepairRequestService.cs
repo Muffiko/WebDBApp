@@ -132,6 +132,96 @@ namespace RepairManagementSystem.Services
 
             return Result.Fail(500, "Failed to update manager.");
         }
-        
+
+        public async Task<Result> ChangeRepairRequestStatusAsync(int repairRequestId, RepairRequestChangeStatusRequest request)
+        {
+            var allowedStatuses = new[] { "NEW", "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            string newStatus = request.NewStatus?.Trim().ToUpperInvariant() ?? string.Empty;
+
+            var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
+            if (repairRequest == null)
+            {
+                return Result.Fail(404, "Repair request not found.");
+            }
+
+            string currentStatus = repairRequest.Status?.Trim().ToUpperInvariant() ?? string.Empty;
+
+            if (!allowedStatuses.Contains(newStatus))
+            {
+                return Result.Fail(400, $"Invalid status provided. Valid statuses are: {string.Join(", ", allowedStatuses)}.");
+            }
+
+            if (newStatus == currentStatus)
+            {
+                return Result.Fail(400, "The status is already set to the requested value.");
+            }
+
+            int currentIndex = Array.IndexOf(allowedStatuses, currentStatus);
+            int newIndex = Array.IndexOf(allowedStatuses, newStatus);
+            if (newIndex < currentIndex)
+            {
+                return Result.Fail(400, "Cannot revert to a previous status.");
+            }
+
+            if (currentStatus == "NEW" && newStatus != "OPEN")
+            {
+                return Result.Fail(400, "Can only change status from 'NEW' to 'OPEN'.");
+            }
+
+            if (newStatus == "CANCELLED" || newStatus == "COMPLETED")
+            {
+                repairRequest.FinishedAt = DateTime.UtcNow;
+                repairRequest.Result = request.Result!;
+                repairRequest.Status = newStatus;
+            }
+            else if (newStatus == "IN_PROGRESS")
+            {
+                repairRequest.StartedAt = DateTime.UtcNow;
+                repairRequest.Status = newStatus;
+            }
+            else if (newStatus == "OPEN")
+            {
+                repairRequest.Status = newStatus;
+            }
+
+            var updateSuccess = await _repairRequestRepository.UpdateRepairRequestAsync(repairRequest);
+            if (!updateSuccess)
+            {
+                return Result.Fail(500, "Failed to update repair request status.");
+            }
+
+            return Result.Ok($"Repair request status updated to '{newStatus}'.");
+        }
+
+        public async Task<Result> UnassignRepairRequestManagerAsync(int repairRequestId)
+        {
+            var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
+            if (repairRequest == null)
+            {
+                return Result.Fail(404, $"Repair request with ID {repairRequestId} not found.");
+            }
+
+            if (!repairRequest.ManagerId.HasValue)
+            {
+                return Result.Fail(400, "Repair request is not assigned to any manager.");
+            }
+
+            var manager = await _managerRepository.GetManagerByIdAsync(repairRequest.ManagerId.Value);
+            if (manager != null)
+            {
+                manager.ActiveRepairsCount = Math.Max(0, manager.ActiveRepairsCount - 1);
+                manager.RepairRequests.Remove(repairRequest);
+                await _managerRepository.UpdateManagerAsync(manager);
+            }
+
+            repairRequest.ManagerId = null;
+            var updateSuccess = await _repairRequestRepository.UpdateRepairRequestAsync(repairRequest);
+            if (!updateSuccess)
+            {
+                return Result.Fail(500, "Failed to unassign manager from repair request.");
+            }
+
+            return Result.Ok($"Manager unassigned from repair request with ID {repairRequestId}.");
+        }
     }
 }

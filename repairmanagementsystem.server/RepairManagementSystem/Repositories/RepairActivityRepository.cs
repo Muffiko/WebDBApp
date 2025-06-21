@@ -38,7 +38,8 @@ namespace RepairManagementSystem.Repositories
             if (existing == null)
                 return false;
             _context.Entry(existing).CurrentValues.SetValues(repairActivity);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteRepairActivityAsync(int repairActivityId)

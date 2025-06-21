@@ -243,5 +243,69 @@ namespace RepairManagementSystem.Services
             repairActivities = repairActivities?.Where(ra => ra?.WorkerId == workerId);
             return _mapper.Map<IEnumerable<RepairActivityResponse?>>(repairActivities);
         }
+
+        public async Task<Result> AssignRepairActivityToWorkerAsync(int repairActivityId, RepairActivityAssignRequest request)
+        {
+            var activity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (activity == null)
+            {
+                return Result.Fail(404, $"Repair activity with ID {repairActivityId} not found.");
+            }
+
+            var worker = await _workerRepository.GetWorkerByIdAsync(request.WorkerId);
+            if (worker == null)
+            {
+                return Result.Fail(404, $"Worker with ID {request.WorkerId} not found.");
+            }
+            if (!worker.IsAvailable)
+            {
+                return Result.Fail(400, "Worker is not available.");
+            }
+            if (activity.WorkerId == request.WorkerId)
+            {
+                return Result.Fail(400, "This worker is already assigned to the activity.");
+            }
+
+            if (activity.WorkerId != null)
+            {
+                var prevWorker = await _workerRepository.GetWorkerByIdAsync(activity.WorkerId.Value);
+                if (prevWorker != null)
+                {
+                    prevWorker.RepairActivities.Remove(activity);
+                    await _workerRepository.UpdateWorkerAsync(prevWorker);
+                }
+            }
+
+            activity.WorkerId = request.WorkerId;
+            worker.RepairActivities.Add(activity);
+            await _workerRepository.UpdateWorkerAsync(worker);
+            var success = await _repairActivityRepository.UpdateRepairActivityAsync(activity);
+            return success
+                ? Result.Ok($"Worker with ID {request.WorkerId} assigned to activity {repairActivityId}.")
+                : Result.Fail(500, "Failed to assign worker to activity.");
+        }
+
+        public async Task<Result> UnassignRepairActivityWorkerAsync(int repairActivityId)
+        {
+            var activity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
+            if (activity == null)
+                return Result.Fail(404, $"Repair activity with ID {repairActivityId} not found.");
+
+            if (activity.WorkerId == null)
+                return Result.Fail(400, "No worker is currently assigned to this activity.");
+
+            var worker = await _workerRepository.GetWorkerByIdAsync(activity.WorkerId.Value);
+            if (worker != null)
+            {
+                worker.RepairActivities.Remove(activity);
+                await _workerRepository.UpdateWorkerAsync(worker);
+            }
+
+            activity.WorkerId = null;
+            var success = await _repairActivityRepository.UpdateRepairActivityAsync(activity);
+            return success
+                ? Result.Ok($"Worker unassigned from activity {repairActivityId}.")
+                : Result.Fail(500, "Failed to unassign worker from activity.");
+        }
     }
 }

@@ -116,5 +116,18 @@ namespace RepairManagementSystem.Controllers
             return this.ToApiResponse(result);
         }
 
+        [HttpPatch("{repairRequestId:int}/change-status")]
+        public async Task<IActionResult> ChangeRepairRequestStatus(int repairRequestId, [FromBody] RepairRequestChangeStatusRequest request)
+        {
+            var result = await _repairRequestService.ChangeRepairRequestStatusAsync(repairRequestId, request);
+            return this.ToApiResponse(result);
+        }
+
+        [HttpPatch("{repairRequestId:int}/unassign")]
+        public async Task<IActionResult> UnassignRepairRequestManager(int repairRequestId)
+        {
+            var result = await _repairRequestService.UnassignRepairRequestManagerAsync(repairRequestId);
+            return this.ToApiResponse(result);
+        }
     }
 }

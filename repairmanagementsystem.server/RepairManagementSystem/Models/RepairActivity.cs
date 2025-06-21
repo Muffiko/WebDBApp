@@ -43,12 +43,11 @@ namespace RepairManagementSystem.Models
         [JsonIgnore]
         public RepairRequest RepairRequest { get; set; } = null!;
 
-        [Required]
-        public int WorkerId { get; set; }
+        public int? WorkerId { get; set; }
 
         [ForeignKey(nameof(WorkerId))]
         [JsonIgnore]
-        public Worker Worker { get; set; } = null!;
+        public Worker? Worker { get; set; } = null!;
 
         [Required]
         public DateTime CreatedAt { get; set; }

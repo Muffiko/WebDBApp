@@ -97,5 +97,19 @@ namespace RepairManagementSystem.Controllers
             var repairActivities = await _repairActivityService.GetRepairActivitiesByWorkerIdAsync(userId.Value);
             return Ok(repairActivities);
         }
+
+        [HttpPatch("{repairActivityId:int}/assign")]
+        public async Task<IActionResult> AssignRepairActivityToWorker(int repairActivityId, [FromBody] RepairActivityAssignRequest request)
+        {
+            var result = await _repairActivityService.AssignRepairActivityToWorkerAsync(repairActivityId, request);
+            return this.ToApiResponse(result);
+        }
+
+        [HttpPatch("{repairActivityId:int}/unassign")]
+        public async Task<IActionResult> UnassignRepairActivityWorker(int repairActivityId)
+        {
+            var result = await _repairActivityService.UnassignRepairActivityWorkerAsync(repairActivityId);
+            return this.ToApiResponse(result);
+        }
     }
 }
