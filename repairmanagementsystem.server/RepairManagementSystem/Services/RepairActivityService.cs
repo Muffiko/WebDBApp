@@ -1,5 +1,4 @@
 using AutoMapper;
-using Azure.Core;
 using RepairManagementSystem.Data;
 using RepairManagementSystem.Helpers;
 using RepairManagementSystem.Models;
@@ -44,7 +43,7 @@ namespace RepairManagementSystem.Services
         {
             var repairActivity = _mapper.Map<RepairActivity>(repairActivityRequest);
             repairActivity.CreatedAt = DateTime.UtcNow;
-            repairActivity.Status = "Open";
+            repairActivity.Status = !string.IsNullOrWhiteSpace(repairActivityRequest.Status) ? repairActivityRequest.Status : "OPEN";
             repairActivity.RepairRequestId = repairActivityRequest.RepairRequestId;
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairActivityRequest.RepairRequestId);
             if (repairRequest == null)

@@ -2,12 +2,12 @@ import React from "react";
 import "./styles/WorkerCard.css";
 
 const statusColors = {
-    available: "#4ade80",
-    unavailable: "#f87171",
+    Available: "#4ade80",
+    Unavailable: "#f87171",
 };
 
-const WorkerCard = ({ id, name, email, status }) => {
-    const key = status.toLowerCase();
+const WorkerCard = ({ id, name, email, status, expertise }) => {
+    const key = status;
     const badgeColor = statusColors[key] || "#9ca3af";
 
     return (
@@ -22,6 +22,7 @@ const WorkerCard = ({ id, name, email, status }) => {
             <div className="worker-header">
                 <div className="worker-name">{name}</div>
                 <div className="worker-email">{email}</div>
+                <div className="worker-expertise">{expertise}</div>
 
                 <div
                     className="worker-status"

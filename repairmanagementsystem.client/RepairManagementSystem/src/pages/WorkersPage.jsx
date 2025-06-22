@@ -11,14 +11,16 @@ const WorkersPage = () => {
   const loadWorkers = async () => {
     try {
       const data = await getWorkers();
-      const mapped = data.map((w, wdx) => ({
-        id: wdx + 1,
+      const mapped = data.map(w => ({
         workerId: w.workerId,
-        name: `${w.user.firstName} ${w.user.lastName}`,
+        firstName: w.user.firstName,
+        lastName: w.user.lastName,
         email: w.user.email,
-        status: w.isAvailable ? "Available" : "Unavailable"
+        isAvailable: w.isAvailable,
+        expertise: w.expertise,
       }));
       setWorkers(mapped);
+      console.log("Workers loaded:", mapped);
     } catch (error) {
       console.error("Error loading workers:", error);
     }

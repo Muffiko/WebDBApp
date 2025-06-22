@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "./styles/TaskCard.css";
 
 const statusColors = {
-    open: "blue",
-    "in progress": "yellow",
-    closed: "gray"
+    OPEN: "blue",
+    IN_PROGRESS: "yellow",
+    CLOSED: "gray"
 };
 
 const TaskCard = ({ id, name, status, dateCreated }) => {

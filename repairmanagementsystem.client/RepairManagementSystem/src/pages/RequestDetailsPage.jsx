@@ -5,14 +5,14 @@ import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestDetailsPage.css";
 
 const statusColorMap = {
-  Open: "blue",
-  "In progress": "yellow",
-  Closed: "gray"
+  OPEN: "blue",
+  IN_PROGRESS: "yellow",
+  CLOSED: "gray"
 };
 
 const formatDate = (isoString) => {
   if (!isoString) return "-";
-  return new Date(isoString).toLocaleDateString("en-GB"); // DD/MM/YYYY
+  return new Date(isoString).toLocaleDateString("en-GB");
 };
 
 const RequestDetailsPage = () => {

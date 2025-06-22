@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import "./styles/NewRequestCard.css";
 import { useManagerApi } from "../api/manager";
 
-const NewRequestCard = ({ id, name, repairObjectType, createdAt, description, manager: initialManager, onAssign }) => {
+const NewRequestCard = ({ repairRequestId, name, repairObjectType, createdAt, description, managerId: initialManagerId, onAssign }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [manager, setManager] = useState(initialManager || "");
+    const [managerId, setManagerId] = useState(initialManagerId);
     const selectRef = useRef();
 
     const { getManagers } = useManagerApi();
@@ -13,12 +13,10 @@ const NewRequestCard = ({ id, name, repairObjectType, createdAt, description, ma
     const loadManagers = async () => {
         try {
             const data = await getManagers();
-            const onlyManagers = data.filter(m => m.role === "Manager");
-            const mapped = onlyManagers.map((m, mdx) => ({
-                id: mdx + 1,
-                managerId: m.id,
-                name: `${m.firstName} ${m.lastName}`,
-                email: m.email,
+            const mapped = data.map(m => ({
+                managerId: m.managerId,
+                firstName: m.user.firstName,
+                lastName: m.user.lastName,
             }));
             setManagers(mapped);
         } catch (error) {
@@ -30,22 +28,24 @@ const NewRequestCard = ({ id, name, repairObjectType, createdAt, description, ma
         loadManagers();
     }, []);
 
-    const managersOptions = initialManager
-        ? Array.from(new Set([initialManager, ...managers.map(m => m.name)]))
-        : managers.map(m => m.name);
-
-    const handleAssign = (e) => {
+    const handleSelectChange = e => {
         e.stopPropagation();
-        onAssign(id, manager);
-        setIsExpanded(false);
+        const newId = Number(e.target.value);
+        setManagerId(newId);
     };
+
+    const displayManager = () => {
+        const m = managers.find(m => m.managerId === managerId);
+        return m ? `${m.firstName} ${m.lastName}` : managerId || "Unassigned";
+    };
+
 
     return (
         <div
             className={`new-request-card ${isExpanded ? "expanded" : ""}`}
             onClick={() => setIsExpanded((v) => !v)}
         >
-            <div className="new-request-badge"> {id} </div>
+            <div className="new-request-badge"> {repairRequestId} </div>
             <span className="new-expand-icon">
                 {isExpanded ? "▾" : "▸"}
             </span>
@@ -58,20 +58,20 @@ const NewRequestCard = ({ id, name, repairObjectType, createdAt, description, ma
                         <select
                             ref={selectRef}
                             className="new-manager-select"
-                            value={manager}
-                            onChange={e => setManager(e.target.value)}
+                            value={managerId}
+                            onChange={handleSelectChange}
                             onClick={e => e.stopPropagation()}
                         >
                             <option value="">Assign manager…</option>
-                            {managersOptions.map(m => (
-                                <option key={m} value={m}>
-                                    {m}
+                            {managers.map(m => (
+                                <option key={m.managerId} value={m.managerId}>
+                                    {m.firstName} {m.lastName}
                                 </option>
                             ))}
                         </select>
                     ) : (
                         <span className="new-manager-label">
-                            {manager || "—"}
+                            {displayManager()}
                         </span>
                     )}
                 </div>
@@ -83,10 +83,15 @@ const NewRequestCard = ({ id, name, repairObjectType, createdAt, description, ma
                 </div>
             )}
 
-            {manager && isExpanded && (
+            {managerId && isExpanded && (
                 <button
                     className="new-assign-button"
-                    onClick={handleAssign}
+                    onClick={e => {
+                        e.stopPropagation();
+                        onAssign(repairRequestId, managerId);
+
+                        setIsExpanded(false);
+                    }}
                 >
                     Assign
                 </button>

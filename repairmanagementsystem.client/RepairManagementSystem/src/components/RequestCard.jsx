@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "./styles/RequestCard.css";
 
 const statusColors = {
+  OPEN: "blue",
+  IN_PROGRESS: "yellow",
+  CLOSED: "gray",
   open: "blue",
-  "in progress": "yellow",
+  in_progress: "yellow",
   closed: "gray"
 };
 
-const RequestCard = ({ id, name, status, manager, dateCreated }) => {
+const RequestCard = ({ id, name, status, managerId, dateCreated }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -23,7 +26,7 @@ const RequestCard = ({ id, name, status, manager, dateCreated }) => {
           {status}
         </div>
       </div>
-      <div className="request-col request-manager">{manager}</div>
+      <div className="request-col request-manager">{managerId}</div>
       <div className="request-col request-date">{dateCreated}</div>
     </div>
   );

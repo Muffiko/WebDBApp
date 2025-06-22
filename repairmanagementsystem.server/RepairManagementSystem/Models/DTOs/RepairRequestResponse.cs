@@ -13,6 +13,10 @@ namespace RepairManagementSystem.Models.DTOs
 
         public string RepairObjectName { get; set; }  = string.Empty;
 
+        public int ManagerId { get; set; }
+
+        public string Status { get; set; } = string.Empty;
+
         public required RepairObjectType RepairObjectType { get; set; }
 
         public List<RepairActivityResponse> RepairActivities { get; set; } = new();

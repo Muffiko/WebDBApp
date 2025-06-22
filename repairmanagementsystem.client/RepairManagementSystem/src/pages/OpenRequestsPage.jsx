@@ -13,20 +13,16 @@ const OpenRequestsPage = () => {
     manager: "",
   });
 
-  const selectRef = useRef();
-  const [manager, setManager] = useState([]);
   const { getManagers } = useManagerApi();
   const [managers, setManagers] = useState([]);
 
   const loadManagers = async () => {
     try {
       const data = await getManagers();
-      const onlyManagers = data.filter(m => m.role === "Manager");
-      const mapped = onlyManagers.map((m, mdx) => ({
-        id: mdx + 1,
-        managerId: m.id,
-        name: `${m.firstName} ${m.lastName}`,
-        email: m.email,
+      const mapped = data.map(m => ({
+        managerId: m.managerId,
+        firstName: m.user.firstName,
+        lastName: m.user.lastName,
       }));
       setManagers(mapped);
     } catch (error) {
@@ -40,14 +36,19 @@ const OpenRequestsPage = () => {
   const loadRepairRequests = async () => {
     try {
       const data = await getActiveRepairRequests();
+      const mgrMap = managers.reduce((acc, m) => {
+        acc[m.managerId] = `${m.firstName} ${m.lastName}`;
+        return acc;
+      }, {});
+
       const mapped = data.map((r) => ({
         repairRequestId: r.repairRequestId,
-        name: r.repairObjectName || "(no name)",
-        createdAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '',
-        status: r.status || '',
-        manager: r.manager && r.manager.firstName
-          ? `${r.manager.firstName} ${r.manager.lastName}`
-          : 'Not assigned'
+        name: r.repairObjectName,
+        createdAt: new Date(r.createdAt).toLocaleDateString(),
+        status: r.status,
+        manager: r.managerId && mgrMap[r.managerId]
+          ? mgrMap[r.managerId]
+          : "Not assigned"
       }));
       setRequests(mapped);
     } catch (err) {
@@ -57,12 +58,17 @@ const OpenRequestsPage = () => {
 
   useEffect(() => {
     loadManagers();
-    loadRepairRequests();
   }, []);
 
-  const managersOptions = manager
-    ? Array.from(new Set([manager, ...managers.map(m => m.name)]))
-    : managers.map(m => m.name);
+  useEffect(() => {
+    if (managers.length > 0) {
+      loadRepairRequests();
+    }
+  }, [managers]);
+
+  const managersOptions = managers.map(
+    (m) => `${m.firstName} ${m.lastName}`
+  );
 
   const [showModal, setShowModal] = useState(false);
 
@@ -87,7 +93,7 @@ const OpenRequestsPage = () => {
             {
               key: "status",
               label: "Status:",
-              options: ["Open", "In progress", "Closed"],
+              options: ["OPEN", "IN_PROGRESS", "CLOSED"],
             },
             {
               key: "manager",

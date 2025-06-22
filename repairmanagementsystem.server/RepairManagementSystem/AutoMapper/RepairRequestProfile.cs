@@ -15,7 +15,8 @@ namespace RepairManagementSystem.AutoMapper
             CreateMap<RepairRequest, RepairRequestResponse>()
                 .ForMember(dest => dest.RepairObjectName, opt => opt.MapFrom(src => src.RepairObject.Name))
                 .ForMember(dest => dest.RepairObjectType, opt => opt.MapFrom(src => src.RepairObject.RepairObjectType))
-                .ForMember(dest => dest.RepairActivities, opt => opt.MapFrom(src => src.RepairActivities));
+                .ForMember(dest => dest.RepairActivities, opt => opt.MapFrom(src => src.RepairActivities))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
             CreateMap<RepairRequestResponse, RepairRequest>();
             CreateMap<RepairRequest, RepairRequestCustomerResponse>()
                 .ForMember(dest => dest.RequestId, opt => opt.MapFrom(src => src.RepairRequestId))

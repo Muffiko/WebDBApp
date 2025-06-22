@@ -5,15 +5,14 @@ import { useWorkersApi } from "../api/worker";
 import { useRepairActivityTypesApi } from "../api/repairActivityType";
 
 const statusColors = {
-  Open: "#4ade80",
-  Canceled: "#f87171",
-  "In Progress": "#fbbf24",
-  Todo: "#9ca3af",
+  OPEN: "#4ade80",
+  CANCELED: "#f87171",
+  IN_PROGRESS: "#fbbf24",
+  TODO: "#9ca3af",
 };
 
 const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate }) => {
-  const [statusState, setStatusState] = useState(status);
-  const badgeColor = statusColors[statusState] || statusColors.Todo;
+  const badgeColor = statusColors[status];
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
   const [workerId, setWorkerId] = useState(initialWorkerId);
@@ -87,8 +86,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   const handleWorkerChange = e => {
     const newId = Number(e.target.value);
     setWorkerId(newId);
-    setStatusState("In Progress");
-    onUpdate(id, { workerId: newId, status: "In Progress", startedAt: new Date().toISOString() });
+    onUpdate(id, { workerId: newId, status: "IN_PROGRESS", startedAt: new Date().toISOString() });
   };
 
   const displayWorker = () => {
@@ -154,7 +152,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
               onChange={handleWorkerChange}
               onClick={e => e.stopPropagation()}
             >
-              <option value="">Assign worker…</option>
+              <option value="">Unassigned</option>
               {workers.map(w => (
                 <option key={w.workerId} value={w.workerId}>
                   {w.firstName} {w.lastName}
