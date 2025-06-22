@@ -42,7 +42,7 @@ namespace RepairManagementSystem.Services
         {
             var repairRequest = _mapper.Map<RepairRequest>(request);
             repairRequest.CreatedAt = DateTime.UtcNow;
-            repairRequest.Status = "Open";
+            repairRequest.Status = !string.IsNullOrWhiteSpace(request.Status) ? request.Status : "OPEN";
             repairRequest.IsPaid = false;
             repairRequest.RepairObjectId = request.RepairObjectId;
             var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(request.RepairObjectId);

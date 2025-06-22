@@ -68,7 +68,7 @@ const TasksPage = () => {
                         <TaskCard key={req.id} {...req} />
                     ))}
                 </div>
-                
+
             </div>
         </div>
     );

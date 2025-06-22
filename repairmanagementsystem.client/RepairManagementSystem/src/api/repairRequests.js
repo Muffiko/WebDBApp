@@ -77,12 +77,43 @@ export const useRepairRequestApi = () => {
     return await response.json();
   };
 
+  const updateManagerRepairRequest = async (repairRequestId, managerId) => {
+    const response = await authFetch(`/RepairRequests/${repairRequestId}/assign`, {
+      method: "PATCH",
+      body: JSON.stringify({ managerId }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  };
+
+  const changeRepairRequestStatus = async (repairRequestId, newStatus, result) => {
+    const response = await authFetch(`/RepairRequests/${repairRequestId}/change-status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newStatus, result }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  };
+
   return { 
     addRepairRequest,
     getCustomerRepairRequests,
     getRepairRequestById,
     getRepairRequests,
     getUnassignedRepairRequests,
-    getActiveRepairRequests
+    getActiveRepairRequests,
+    updateManagerRepairRequest,
+    changeRepairRequestStatus
   };
 };

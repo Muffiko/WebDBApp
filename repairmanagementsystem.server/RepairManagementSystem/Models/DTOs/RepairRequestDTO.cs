@@ -14,7 +14,7 @@ namespace RepairManagementSystem.Models.DTOs
         public string Result { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(3)]
+        [MaxLength(32)]
         public string Status { get; set; } = string.Empty;
 
         [Required]

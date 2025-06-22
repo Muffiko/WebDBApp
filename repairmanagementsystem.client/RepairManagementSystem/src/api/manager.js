@@ -4,7 +4,7 @@ export const useManagerApi = () => {
   const authFetch = useAuthFetch();
 
   const getManagers = async () => {
-    const response = await authFetch("/Users", {
+    const response = await authFetch("/Users/managers", {
         method: "GET",
     });
     if (!response.ok) {

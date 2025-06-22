@@ -52,16 +52,9 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
             sequenceNumber: nextSeq,
             description,
             workerId: workerId,
-            status: "",
-            startedAt: null,
+            status: workerId ? "IN_PROGRESS" : "OPEN",
+            startedAt: workerId ? new Date().toISOString() : null,
         };
-
-        if (payload.workerId) {
-            payload.status = "In progress";
-            payload.startedAt = new Date().toISOString();
-        } else {
-            payload.status = "Open";
-        }
 
         onSubmit(payload);
         onClose();

@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "./styles/RepairCard.css";
 
 const statusColors = {
-  open: "#4ade80",
-  "in progress": "#facc15",
-  closed: "#f87171",
+  OPEN: "#4ade80",
+  IN_PROGRESS: "#facc15",
+  CLOSED: "#f87171",
 };
 
 const RepairCard = ({ id, name, status, manager, createdAt }) => {
   const navigate = useNavigate();
-  const key = status.toLowerCase();
+  const key = status.toUpperCase();
   const badgeColor = statusColors[key];
   const handleClick = () => {
     navigate(`/manage-request/${id}`);
@@ -28,9 +28,9 @@ const RepairCard = ({ id, name, status, manager, createdAt }) => {
 
       <div className="repair-header">
         <div className="repair-name">{name}</div>
-        
+
         <div className="repair-manager">{manager}</div>
-        
+
         <div className="repair-date">{createdAt}</div>
         <div
           className="repair-status"

@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import FilterBar from "../components/FilterBar";
 import NewRequestsList from "../components/NewRequestsList";
 import "./styles/NewRequestsPage.css";
-import { useRepairActivityTypesApi } from "../api/repairActivityType";
+import { useRepairObjectTypesApi } from "../api/repairObjectTypes";
 import { useRepairRequestApi } from "../api/repairRequests";
 
 const NewRequestsPage = () => {
   const [filters, setFilters] = useState({ name: "", type: "" });
 
-  const { getRepairActivityTypes } = useRepairActivityTypesApi();
-  const [activityTypes, setActivityTypes] = useState([]);
+  const { getRepairObjectTypes } = useRepairObjectTypesApi();
+  const [objectTypes, setObjectTypes] = useState([]);
 
-  const loadActivityTypes = async () => {
+  const loadObjectTypes = async () => {
     try {
-      const data = await getRepairActivityTypes();
-      setActivityTypes(data);
+      const data = await getRepairObjectTypes();
+      setObjectTypes(data);
     } catch (error) {
-      console.error("Error loading activity types:", error);
+      console.error("Error loading object types:", error);
     }
   };
 
@@ -43,11 +44,35 @@ const NewRequestsPage = () => {
   };
 
   useEffect(() => {
-    loadActivityTypes();
+    loadObjectTypes();
     loadRepairRequests();
   }, []);
 
-  const typesOptions = activityTypes
+  const { updateManagerRepairRequest } = useRepairRequestApi();
+  const { changeRepairRequestStatus } = useRepairRequestApi();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const handleManagerAssign = async (repairRequestId, managerId) => {
+    try {
+      await updateManagerRepairRequest(repairRequestId, managerId);
+      await changeRepairRequestStatus(repairRequestId, "IN_PROGRESS", "");
+      setRequests(prev =>
+        prev.map(r =>
+          r.repairRequestId === repairRequestId
+            ? { ...r, managerId: managerId, status: "IN_PROGRESS" }
+            : r
+        )
+      );
+      navigate(`/manage-request/${repairRequestId}`);
+    } catch (error) {
+      console.error("Failed to assign manager or update status:", error);
+    }
+  };
+
+
+
+  const typesOptions = objectTypes
     .map((a) => a.name)
     .sort((a, b) => a.localeCompare(b));
 
@@ -57,11 +82,6 @@ const NewRequestsPage = () => {
       r.name.toLowerCase().includes(filters.name.toLowerCase()) &&
       (filters.type === "" || r.type === filters.type)
   );
-
-  const handleAssign = (id, manager) => {
-    console.log("Assigned", manager, "to request", id);
-    setRequests(prev => prev.filter(r => r.id !== id));
-  };
 
   return (
     <div className="requests-container">
@@ -81,7 +101,7 @@ const NewRequestsPage = () => {
             },
           ]}
         />
-        <NewRequestsList newRequests={filtered} onAssign={handleAssign} />
+        <NewRequestsList newRequests={filtered} onAssign={handleManagerAssign} />
       </main>
     </div>
   );

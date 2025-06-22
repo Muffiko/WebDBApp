@@ -6,6 +6,7 @@ import NewActivityModal from "../components/NewActivityModal";
 import { useRepairRequestApi } from "../api/repairRequests";
 import { useRepairActivityApi } from "../api/repairActivity";
 import { useUserApi } from "../api/user";
+import { useWorkersApi } from "../api/worker";
 import "./styles/ManageRequestPage.css";
 
 const ManageRequestPage = () => {
@@ -17,11 +18,13 @@ const ManageRequestPage = () => {
   const [requests, setRequests] = useState({});
   const [activities, setActivities] = useState([]);
   const { getUsers } = useUserApi();
+  const { updateWorkerAvailability } = useWorkersApi();
 
   const nextSeq = activities.reduce(
     (max, act) => Math.max(max, Number(act.sequenceNumber) || 0),
     0
   ) + 1;
+
 
   const handleAddActivity = async (formData) => {
     try {
@@ -47,7 +50,7 @@ const ManageRequestPage = () => {
         activityType: created.repairActivityTypeId,
         description: created.description,
         workerId: created.workerId,
-        status: formData.status,
+        status: created.status,
 
         createdAt: new Date(created.createdAt).toLocaleDateString("en-GB"),
         startedAt: formData.startedAt
@@ -57,6 +60,10 @@ const ManageRequestPage = () => {
           ? new Date(created.finishedAt).toLocaleDateString("en-GB")
           : "",
       };
+
+      if (formData.workerId) {
+        await updateWorkerAvailability(formData.workerId, false);
+      }
 
       setActivities(prev => [...prev, newActivity]);
       await loadRepairRequests();
@@ -82,6 +89,23 @@ const ManageRequestPage = () => {
         finishedAt: changes.finishedAt,
       };
       const updated = await updateRepairActivity(repairActivityId, payload);
+
+      const oldWorkerId = current.workerId;
+      const newWorkerId = changes.workerId ?? oldWorkerId;
+
+      await updateRepairActivity(repairActivityId, {
+        workerId: newWorkerId,
+        status: newWorkerId ? "IN_PROGRESS" : "OPEN",
+        startedAt: newWorkerId ? changes.startedAt ?? new Date().toISOString() : null,
+        finishedAt: changes.finishedAt,
+      });
+
+      if (oldWorkerId && oldWorkerId !== newWorkerId) {
+        await updateWorkerAvailability(oldWorkerId, true);
+      }
+      if (newWorkerId && oldWorkerId !== newWorkerId) {
+        await updateWorkerAvailability(newWorkerId, false);
+      }
 
       setActivities(prev =>
         prev.map(a =>
@@ -149,7 +173,8 @@ const ManageRequestPage = () => {
         activityType: a.repairActivityType.repairActivityTypeId,
         description: a.description || "",
         workerId: a.workerId,
-        status: a.status,
+        status: a.status
+          .toUpperCase(),
         createdAt: new Date(a.createdAt).toLocaleDateString("en-GB"),
         startedAt: a.startedAt
           ? new Date(a.startedAt).toLocaleDateString("en-GB")
@@ -169,9 +194,9 @@ const ManageRequestPage = () => {
   }, [id]);
 
   const statusColor = {
-    Open: "blue",
-    "In progress": "yellow",
-    Closed: "gray",
+    OPEN: "blue",
+    IN_PROGRESS: "yellow",
+    CLOSED: "gray",
   }[requests.status];
 
 
