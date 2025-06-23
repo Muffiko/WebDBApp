@@ -2,7 +2,7 @@ import React from "react";
 import ActivityCard from "./ActivityCard";
 import "./styles/ActivitiesList.css";
 
-const ActivitiesList = ({ activities, onAdd, onUpdate }) => {
+const ActivitiesList = ({ activities, onAdd, onUpdate, isReadOnly }) => {
   const sortedActivities = [...activities].sort(
     (a, b) => Number(b.sequenceNumber) - Number(a.sequenceNumber)
   );
@@ -11,9 +11,11 @@ const ActivitiesList = ({ activities, onAdd, onUpdate }) => {
     <div className="activities-wrapper">
       <div className="activities-header">
         <h3>Activities:</h3>
-        <button className="activities-add" onClick={onAdd}>
-          Add
-        </button>
+        {!isReadOnly && (
+          <button className="activities-add" onClick={onAdd}>
+            Add
+          </button>
+        )}
       </div>
 
       <div className="activities-cards">
@@ -31,6 +33,7 @@ const ActivitiesList = ({ activities, onAdd, onUpdate }) => {
             startedAt={act.startedAt}
             finishedAt={act.finishedAt}
             onUpdate={onUpdate}
+            readOnly={isReadOnly}
           />
         ))}
       </div>

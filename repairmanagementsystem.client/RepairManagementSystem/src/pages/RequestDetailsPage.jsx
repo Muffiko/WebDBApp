@@ -7,7 +7,9 @@ import "./styles/RequestDetailsPage.css";
 const statusColorMap = {
   OPEN: "blue",
   IN_PROGRESS: "yellow",
-  CLOSED: "gray"
+  CLOSED: "gray",
+  CANCELLED: "red",
+  COMPLETED: "green",
 };
 
 const formatDate = (isoString) => {

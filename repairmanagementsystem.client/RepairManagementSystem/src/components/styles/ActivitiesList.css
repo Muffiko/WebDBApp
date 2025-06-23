@@ -16,7 +16,7 @@
 }
 
 .activities-add {
-  background-color: #9ca3af;
+  background-color: #3b82f6;
   color: #fff;
   border: none;
   border-radius: 0.8rem;
@@ -27,7 +27,7 @@
 }
 
 .activities-add:hover {
-  background-color: #8f8f94;
+  background-color: #2563eb;
 }
 
 .activities-cards {

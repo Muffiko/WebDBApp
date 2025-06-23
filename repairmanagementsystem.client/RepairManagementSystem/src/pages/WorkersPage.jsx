@@ -20,7 +20,6 @@ const WorkersPage = () => {
         expertise: w.expertise,
       }));
       setWorkers(mapped);
-      console.log("Workers loaded:", mapped);
     } catch (error) {
       console.error("Error loading workers:", error);
     }
