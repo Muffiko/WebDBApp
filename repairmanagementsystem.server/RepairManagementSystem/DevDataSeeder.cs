@@ -236,10 +236,10 @@ namespace RepairManagementSystem
             await repairActivityTypeRepo.AddRepairActivityTypeAsync(activityType);
 
             // Add RepairActivities (tasks)
-            var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO_DO", RepairRequestId = req1.RepairRequestId };
-            //var act2 = new RepairActivity { name = "Check damages in CPU", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "IN_PROGRESS", RepairRequestId = req2.RepairRequestId, Worker = workerEntity2, WorkerId = workerEntity2.UserId };
-            await repairActivityRepo.AddRepairActivityAsync(act1);
-            //await repairActivityRepo.AddRepairActivityAsync(act2);
+            //var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO_DO", RepairRequestId = req1.RepairRequestId };
+            var act2 = new RepairActivity { name = "Check damages in CPU", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "IN_PROGRESS", RepairRequestId = req2.RepairRequestId, Worker = workerEntity2, WorkerId = workerEntity2.UserId };
+            //await repairActivityRepo.AddRepairActivityAsync(act1);
+            await repairActivityRepo.AddRepairActivityAsync(act2);
         }
     }
 }
