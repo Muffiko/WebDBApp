@@ -6,6 +6,8 @@ const statusColors = {
   OPEN: "#4ade80",
   IN_PROGRESS: "#facc15",
   CLOSED: "#f87171",
+  COMPLETED: "#22c55e",
+  CANCELLED: "#f87171",
 };
 
 const RepairCard = ({ id, name, status, manager, createdAt }) => {

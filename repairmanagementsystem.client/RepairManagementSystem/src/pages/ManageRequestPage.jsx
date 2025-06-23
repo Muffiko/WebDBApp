@@ -7,6 +7,7 @@ import { useRepairRequestApi } from "../api/repairRequests";
 import { useRepairActivityApi } from "../api/repairActivity";
 import { useUserApi } from "../api/user";
 import { useWorkersApi } from "../api/worker";
+import RequestStatusModal from "../components/RequestStatusModal";
 import "./styles/ManageRequestPage.css";
 
 const ManageRequestPage = () => {
@@ -14,12 +15,12 @@ const ManageRequestPage = () => {
   const [showModal, setShowModal] = useState(false);
   const { addRepairActivity, updateRepairActivity } = useRepairActivityApi();
   const { id } = useParams();
-  const { getRepairRequestById } = useRepairRequestApi();
+  const { getRepairRequestById, changeRepairRequestStatus } = useRepairRequestApi();
   const [requests, setRequests] = useState({});
   const [activities, setActivities] = useState([]);
   const { getUsers } = useUserApi();
   const { updateWorkerAvailability } = useWorkersApi();
-
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const nextSeq = activities.reduce(
     (max, act) => Math.max(max, Number(act.sequenceNumber) || 0),
     0
@@ -163,7 +164,8 @@ const ManageRequestPage = () => {
           ? new Date(r.finishedAt).toLocaleDateString()
           : "Not finished",
         status: r.status,
-        description: r.description
+        description: r.description,
+        result: r.result || "Not finished"
       })
 
       const formattedActivities = (r.repairActivities || []).map(a => ({
@@ -197,8 +199,20 @@ const ManageRequestPage = () => {
     OPEN: "blue",
     IN_PROGRESS: "yellow",
     CLOSED: "gray",
+    CANCELLED: "red",
+    COMPLETED: "green",
   }[requests.status];
 
+  const isReadOnly = ["COMPLETED", "CANCELLED"].includes(requests.status);
+
+  const handleChangeRequestResult = async (repairRequestId, newStatus, result) => {
+    try {
+      await changeRepairRequestStatus(repairRequestId, newStatus, result);
+      await loadRepairRequests();
+    } catch (err) {
+      console.error("Error updating request result:", err);
+    }
+  };
 
   return (
     <div className="request-container">
@@ -238,19 +252,33 @@ const ManageRequestPage = () => {
                 <p>
                   <strong>Finished:</strong> {requests.finished || "N/A"}
                 </p>
+                <p>
+                  <strong>Result:</strong> {requests.result || "N/A"}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="request-section">
-            <h3>Description:</h3>
+            <h3>
+              Description:
+              {requests.status !== "COMPLETED" && requests.status !== "CANCELLED" && (
+                <button
+                  className="btn-status"
+                  onClick={() => setShowStatusModal(true)}
+                >
+                  Change Status/Result
+                </button>
+              )}
+            </h3>
             <p className="request-description">{requests.description}</p>
           </div>
 
           <ActivitiesList
             activities={activities}
-            onAdd={() => setShowModal(true)}
+            onAdd={!isReadOnly ? () => setShowModal(true) : undefined}
             onUpdate={handleUpdateActivity}
+            isReadOnly={isReadOnly}
           />
 
           {showModal && (
@@ -258,6 +286,17 @@ const ManageRequestPage = () => {
               onClose={() => setShowModal(false)}
               onSubmit={handleAddActivity}
               nextSeq={nextSeq}
+            />
+          )}
+
+          {showStatusModal && (
+            <RequestStatusModal
+              currentStatus={requests.status}
+              currentResult={requests.result}
+              onClose={() => setShowStatusModal(false)}
+              onSubmit={(newStatus, newResult) =>
+                handleChangeRequestResult(requests.id, newStatus, newResult)
+              }
             />
           )}
 

@@ -70,12 +70,9 @@ const NewRequestsPage = () => {
     }
   };
 
-
-
   const typesOptions = objectTypes
     .map((a) => a.name)
     .sort((a, b) => a.localeCompare(b));
-
 
   const filtered = requests.filter(
     (r) =>

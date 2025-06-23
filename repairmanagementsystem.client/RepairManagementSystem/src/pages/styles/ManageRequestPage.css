@@ -64,9 +64,20 @@
   color: #fff;
 }
 
+.status--red {
+  background-color: #ef4444;
+  color: white;
+}
+
+.status--green {
+  background-color: #10b981;
+  color: white;
+}
+
 .request-section h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .request-grid {
@@ -98,9 +109,23 @@
   cursor: pointer;
   transition: background 0.2s ease;
   font-size: 1rem;
-  margin-top: 1rem;
 }
 
 .request-back:hover {
+  background-color: #2563eb;
+}
+
+.btn-status {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 0.8rem;
+  padding: 0.8rem 1.6rem; 
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.btn-status:hover {
   background-color: #2563eb;
 }

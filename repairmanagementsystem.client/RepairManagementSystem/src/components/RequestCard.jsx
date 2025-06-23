@@ -6,9 +6,8 @@ const statusColors = {
   OPEN: "blue",
   IN_PROGRESS: "yellow",
   CLOSED: "gray",
-  open: "blue",
-  in_progress: "yellow",
-  closed: "gray"
+  COMPLETED: "green",
+  CANCELLED: "red",
 };
 
 const RequestCard = ({ id, name, status, managerId, dateCreated }) => {
@@ -22,7 +21,7 @@ const RequestCard = ({ id, name, status, managerId, dateCreated }) => {
     <div className="request-card" onClick={handleClick}>
       <div className="request-col request-name">{name}</div>
       <div className="request-col">
-        <div className={`request-status ${statusColors[status.toLowerCase()]}`}>
+        <div className={`request-status ${statusColors[status]}`}>
           {status}
         </div>
       </div>

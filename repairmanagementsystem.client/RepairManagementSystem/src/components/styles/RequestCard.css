@@ -51,3 +51,13 @@
   background-color: #6b7280;
   color: #fff;
 }
+
+.request-status.red {
+  background-color: #ef4444;
+  color: white;
+}
+
+.request-status.green {
+  background-color: #10b981;
+  color: white;
+}

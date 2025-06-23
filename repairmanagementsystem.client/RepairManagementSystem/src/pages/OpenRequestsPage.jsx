@@ -93,7 +93,7 @@ const OpenRequestsPage = () => {
             {
               key: "status",
               label: "Status:",
-              options: ["OPEN", "IN_PROGRESS", "CLOSED"],
+              options: ["OPEN", "IN_PROGRESS", "CLOSED", "CANCELLED", "COMPLETED"]
             },
             {
               key: "manager",

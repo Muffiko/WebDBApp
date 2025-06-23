@@ -9,9 +9,11 @@ const statusColors = {
   CANCELED: "#f87171",
   IN_PROGRESS: "#fbbf24",
   TODO: "#9ca3af",
+  COMPLETED: "#22c55e",
+  CLOSED: "#f87171",
 };
 
-const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate }) => {
+const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate, readOnly = false }) => {
   const badgeColor = statusColors[status];
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
@@ -65,11 +67,12 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   };
 
   const handleToggle = () => {
-    if (editField) return;
+    if (editField) return
     setIsExpanded(x => !x);
   };
 
   const finishEdit = () => {
+    if (readOnly) return;
     if (editField === "name") {
       onUpdate(id, { name });
     }
@@ -84,6 +87,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   };
 
   const handleWorkerChange = e => {
+    if (readOnly) return;
     const newId = Number(e.target.value);
     setWorkerId(newId);
     onUpdate(id, { workerId: newId, status: "IN_PROGRESS", startedAt: new Date().toISOString() });
@@ -95,6 +99,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
   };
 
   const handleTypeChange = e => {
+    if (readOnly) return;
     const newType = e.target.value;
     setActivityType(newType);
     onUpdate(id, { repairActivityTypeId: newType });
@@ -105,6 +110,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
     <div
       className={`activity-card ${isExpanded ? "expanded" : ""}`}
       onClick={handleToggle}
+      style={{ cursor: readOnly ? "default" : "pointer" }}
     >
       <div
         className="activity-badge"
@@ -124,11 +130,12 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
               onChange={(e) => setName(e.target.value)}
               onBlur={finishEdit}
               onKeyDown={onKey}
+              disabled={readOnly}
             />
           ) : (
             <>
               <span className="field-value">{name}</span>
-              {isExpanded && (
+              {isExpanded && !readOnly && (
                 <span
                   className="edit-icon"
                   onClick={(e) => {
@@ -151,6 +158,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
               value={workerId}
               onChange={handleWorkerChange}
               onClick={e => e.stopPropagation()}
+              disabled={readOnly}
             >
               <option value="">Unassigned</option>
               {workers.map(w => (
@@ -184,6 +192,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
                   value={activityType}
                   onChange={handleTypeChange}
                   onClick={e => e.stopPropagation()}
+                  disabled={readOnly}
                 >
                   {activityTypes.map(t => (
                     <option
@@ -226,18 +235,21 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
                 onBlur={finishEdit}
                 onKeyDown={onKey}
                 rows={4}
+                disabled={readOnly}
               />
             ) : (
               <>
-                <span
-                  className="edit-icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    startEdit("description");
-                  }}
-                >
-                  ✎
-                </span>
+                {!readOnly && (
+                  <span
+                    className="edit-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEdit("description");
+                    }}
+                  >
+                    ✎
+                  </span>
+                )}
                 <p className="field-value">{description}</p>
               </>
             )}
