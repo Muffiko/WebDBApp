@@ -22,7 +22,5 @@ namespace RepairManagementSystem.Models.DTOs
         public int RepairRequestId { get; set; }
 
         public int WorkerId { get; set; }
-
-        public string Status { get; set; } = string.Empty;
     }
 }

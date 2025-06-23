@@ -42,8 +42,8 @@ namespace RepairManagementSystem.Services
         {
             var repairRequest = _mapper.Map<RepairRequest>(request);
             repairRequest.CreatedAt = DateTime.UtcNow;
-            repairRequest.Status = !string.IsNullOrWhiteSpace(request.Status) ? request.Status : "OPEN";
             repairRequest.IsPaid = false;
+            repairRequest.Status = "OPEN";
             repairRequest.RepairObjectId = request.RepairObjectId;
             var repairObject = await _repairObjectRepository.GetRepairObjectByIdAsync(request.RepairObjectId);
             if (repairObject == null)
@@ -135,7 +135,7 @@ namespace RepairManagementSystem.Services
 
         public async Task<Result> ChangeRepairRequestStatusAsync(int repairRequestId, RepairRequestChangeStatusRequest request)
         {
-            var allowedStatuses = new[] { "NEW", "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            var allowedStatuses = new[] { "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
             string newStatus = request.NewStatus?.Trim().ToUpperInvariant() ?? string.Empty;
 
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
@@ -151,6 +151,11 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(400, $"Invalid status provided. Valid statuses are: {string.Join(", ", allowedStatuses)}.");
             }
 
+            if (repairRequest.RepairActivities.Any(ra => ra.Status != "COMPLETED" && ra.Status != "CANCELLED"))
+            {
+                return Result.Fail(400, "Cannot change status while there are active repair activities.");
+            }
+
             if (newStatus == currentStatus)
             {
                 return Result.Fail(400, "The status is already set to the requested value.");
@@ -163,9 +168,9 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(400, "Cannot revert to a previous status.");
             }
 
-            if (currentStatus == "NEW" && newStatus != "OPEN")
+            if (currentStatus == "OPEN" && newStatus != "IN_PROGRESS")
             {
-                return Result.Fail(400, "Can only change status from 'NEW' to 'OPEN'.");
+                return Result.Fail(400, "Can only change status from 'OPEN' to 'IN_PROGRESS'.");
             }
 
             if (newStatus == "CANCELLED" || newStatus == "COMPLETED")

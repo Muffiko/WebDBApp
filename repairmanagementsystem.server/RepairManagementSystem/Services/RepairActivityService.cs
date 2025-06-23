@@ -43,7 +43,7 @@ namespace RepairManagementSystem.Services
         {
             var repairActivity = _mapper.Map<RepairActivity>(repairActivityRequest);
             repairActivity.CreatedAt = DateTime.UtcNow;
-            repairActivity.Status = !string.IsNullOrWhiteSpace(repairActivityRequest.Status) ? repairActivityRequest.Status : "OPEN";
+            repairActivity.Status = "TO_DO";
             repairActivity.RepairRequestId = repairActivityRequest.RepairRequestId;
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairActivityRequest.RepairRequestId);
             if (repairRequest == null)
@@ -194,7 +194,10 @@ namespace RepairManagementSystem.Services
             {
                 return Result.Fail(400, $"Invalid status provided. Valid statuses are: {string.Join(", ", allowedStatuses)}.");
             }
-
+            if (repairActivity.RepairRequest?.Status == "CLOSED" || repairActivity.RepairRequest?.Status == "COMPLETED")
+            {
+                return Result.Fail(400, "Cannot change status of a repair activity for a closed or completed repair request.");
+            }
             if (newStatus == currentStatus)
             {
                 return Result.Fail(400, "The status is already set to the requested value.");
