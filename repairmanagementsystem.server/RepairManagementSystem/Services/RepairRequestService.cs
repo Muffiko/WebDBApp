@@ -120,7 +120,7 @@ namespace RepairManagementSystem.Services
             }
 
             repairRequest.ManagerId = request.ManagerId;
-
+            repairRequest.Status = "IN_PROGRESS";
             manager.ActiveRepairsCount++;
             manager.RepairRequests.Add(repairRequest);
             if (await _managerRepository.UpdateManagerAsync(manager))
@@ -227,6 +227,12 @@ namespace RepairManagementSystem.Services
             }
 
             return Result.Ok($"Manager unassigned from repair request with ID {repairRequestId}.");
+        }
+
+        public async Task<IEnumerable<RepairRequestResponse?>?> GetFinishedRepairRequestsAsync()
+        {
+            var repairRequests = await _repairRequestRepository.GetFinishedRepairRequestsAsync();
+            return _mapper.Map<IEnumerable<RepairRequestResponse?>?>(repairRequests);
         }
     }
 }
