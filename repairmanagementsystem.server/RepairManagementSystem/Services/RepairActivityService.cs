@@ -194,9 +194,9 @@ namespace RepairManagementSystem.Services
             {
                 return Result.Fail(400, $"Invalid status provided. Valid statuses are: {string.Join(", ", allowedStatuses)}.");
             }
-            if (repairActivity.RepairRequest?.Status == "CLOSED" || repairActivity.RepairRequest?.Status == "COMPLETED")
+            if (repairActivity.RepairRequest?.Status == "CANCELLED" || repairActivity.RepairRequest?.Status == "COMPLETED")
             {
-                return Result.Fail(400, "Cannot change status of a repair activity for a closed or completed repair request.");
+                return Result.Fail(400, "Cannot change status of a repair activity for a cancelled or completed repair request.");
             }
             if (newStatus == currentStatus)
             {
