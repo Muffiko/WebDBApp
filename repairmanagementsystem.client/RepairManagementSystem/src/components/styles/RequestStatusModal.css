@@ -75,3 +75,10 @@
 .modal-card button[type="submit"]:hover {
   background-color: #2563eb;
 }
+
+.modal-warning {
+  color: #f59e0b;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}

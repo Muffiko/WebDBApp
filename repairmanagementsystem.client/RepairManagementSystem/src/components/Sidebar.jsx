@@ -19,6 +19,7 @@ const Sidebar = () => {
         return [
           { path: "/new-requests", label: "New Requests", icon: "🟦" },
           { path: "/open-requests", label: "Open Requests", icon: "📂" },
+          { path: "/finished-requests", label: "Finished Requests", icon: "📁" },
           { path: "/workers", label: "Workers", icon: "🗂️" },
           { path: "/profile", label: "Profile", icon: "👤" }
         ];

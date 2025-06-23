@@ -223,7 +223,7 @@ namespace RepairManagementSystem
 
             //Add RepairRequests
             var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "OPEN", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
-            var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "IN_PROGRESS", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
+            var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "IN PROGRESS", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
             if (trackedManager != null)
             {
                req2.Manager = trackedManager;
@@ -236,8 +236,8 @@ namespace RepairManagementSystem
             await repairActivityTypeRepo.AddRepairActivityTypeAsync(activityType);
 
             // Add RepairActivities (tasks)
-            //var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO_DO", RepairRequestId = req1.RepairRequestId };
-            var act2 = new RepairActivity { name = "Check damages in CPU", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "IN_PROGRESS", RepairRequestId = req2.RepairRequestId, Worker = workerEntity2, WorkerId = workerEntity2.UserId };
+            //var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO DO", RepairRequestId = req1.RepairRequestId };
+            var act2 = new RepairActivity { name = "Check damages in CPU", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO DO", RepairRequestId = req2.RepairRequestId, Worker = workerEntity2, WorkerId = workerEntity2.UserId };
             //await repairActivityRepo.AddRepairActivityAsync(act1);
             await repairActivityRepo.AddRepairActivityAsync(act2);
         }

@@ -19,6 +19,7 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
                 workerId: w.workerId,
                 name: `${w.user.firstName} ${w.user.lastName}`,
                 email: w.user.email,
+                isAvailable: w.isAvailable,
             }));
             setWorkers(mapped);
         } catch (error) {
@@ -43,7 +44,7 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
         loadActivityTypes();
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const payload = {
@@ -52,10 +53,9 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
             sequenceNumber: nextSeq,
             description,
             workerId: workerId,
-            status: "TO_DO",
+            status: "TO DO",
         };
-
-        onSubmit(payload);
+        await onSubmit(payload);
         onClose();
     };
 
@@ -77,7 +77,7 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
 
                 <label>Activity type:</label>
                 <select value={activityType} onChange={(e) => setActivityType(e.target.value)} required>
-                    <option value="">Select...</option>
+                    <option value="" disabled>Select...</option>
                     {activityTypes.map((type) => (
                         <option key={type.repairActivityTypeId} value={type.repairActivityTypeId}>
                             {type.name}
@@ -86,11 +86,16 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
                 </select>
 
                 <label>Worker:</label>
-                <select value={workerId} onChange={(e) => setWorkerId(Number(e.target.value))}
+                <select value={workerId || ""} onChange={(e) => setWorkerId(Number(e.target.value))}
                 >
-                    <option value="">Select...</option>
+                    <option value="" disabled>Select...</option>
                     {workers.map((w) => (
-                        <option key={w.workerId} value={w.workerId}>
+                        <option
+                            key={w.workerId}
+                            value={w.workerId}
+                            disabled={!w.isAvailable}
+                            style={{ color: w.isAvailable ? 'inherit' : '#ccc' }}
+                        >
                             {w.name}
                         </option>
                     ))}

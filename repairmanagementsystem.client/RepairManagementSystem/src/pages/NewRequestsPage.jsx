@@ -49,18 +49,16 @@ const NewRequestsPage = () => {
   }, []);
 
   const { updateManagerRepairRequest } = useRepairRequestApi();
-  const { changeRepairRequestStatus } = useRepairRequestApi();
   const { id } = useParams();
   const navigate = useNavigate();
 
   const handleManagerAssign = async (repairRequestId, managerId) => {
     try {
       await updateManagerRepairRequest(repairRequestId, managerId);
-      await changeRepairRequestStatus(repairRequestId, "IN_PROGRESS", "");
       setRequests(prev =>
         prev.map(r =>
           r.repairRequestId === repairRequestId
-            ? { ...r, managerId: managerId, status: "IN_PROGRESS" }
+            ? { ...r, managerId: managerId }
             : r
         )
       );

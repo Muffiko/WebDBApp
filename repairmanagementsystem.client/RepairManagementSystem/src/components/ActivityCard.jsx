@@ -7,8 +7,8 @@ import { useRepairActivityTypesApi } from "../api/repairActivityType";
 const statusColors = {
   OPEN: "#4ade80",
   CANCELED: "#f87171",
-  IN_PROGRESS: "#fbbf24",
-  TODO: "#9ca3af",
+  "IN PROGRESS": "#fbbf24",
+  "TO DO": "#4ade00",
   COMPLETED: "#22c55e",
   CLOSED: "#f87171",
 };
@@ -90,7 +90,7 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
     if (readOnly) return;
     const newId = Number(e.target.value);
     setWorkerId(newId);
-    onUpdate(id, { workerId: newId, status: "IN_PROGRESS", startedAt: new Date().toISOString() });
+    onUpdate(id, { workerId: newId, status: "TO DO" });
   };
 
   const displayWorker = () => {
@@ -160,9 +160,16 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
               onClick={e => e.stopPropagation()}
               disabled={readOnly}
             >
-              <option value="">Unassigned</option>
-              {workers.map(w => (
-                <option key={w.workerId} value={w.workerId}>
+              <option value="" disabled>
+                Choose worker
+              </option>
+              {workers.map((w) => (
+                <option
+                  key={w.workerId}
+                  value={w.workerId}
+                  disabled={!w.isAvailable}
+                  style={{ color: w.isAvailable ? 'inherit' : '#ccc' }}
+                >
                   {w.firstName} {w.lastName}
                 </option>
               ))}
@@ -194,6 +201,9 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
                   onClick={e => e.stopPropagation()}
                   disabled={readOnly}
                 >
+                  <option value="" disabled>
+                    Choose activity
+                  </option>
                   {activityTypes.map(t => (
                     <option
                       key={t.repairActivityTypeId}

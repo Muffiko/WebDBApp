@@ -43,7 +43,7 @@ namespace RepairManagementSystem.Services
         {
             var repairActivity = _mapper.Map<RepairActivity>(repairActivityRequest);
             repairActivity.CreatedAt = DateTime.UtcNow;
-            repairActivity.Status = "TO_DO";
+            repairActivity.Status = "TO DO";
             repairActivity.RepairRequestId = repairActivityRequest.RepairRequestId;
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairActivityRequest.RepairRequestId);
             if (repairRequest == null)
@@ -179,7 +179,7 @@ namespace RepairManagementSystem.Services
 
         public async Task<Result> ChangeRepairActivityStatusAsync(int repairActivityId, ChangeRepairActivityStatusRequest request)
         {
-            var allowedStatuses = new[] { "TO_DO", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            var allowedStatuses = new[] { "TO DO", "IN PROGRESS", "CANCELLED", "COMPLETED" };
             string newStatus = request.Status?.Trim().ToUpperInvariant() ?? string.Empty;
 
             var repairActivity = await _repairActivityRepository.GetRepairActivityByIdAsync(repairActivityId);
@@ -208,9 +208,9 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(400, "Cannot change status of a repair activity that is already 'CANCELLED' or 'COMPLETED'.");
             }
 
-            if (newStatus == "IN_PROGRESS" && currentStatus != "TO_DO")
+            if (newStatus == "IN PROGRESS" && currentStatus != "TO DO")
             {
-                return Result.Fail(400, "Repair activity must be in 'TO_DO' status to change to 'IN_PROGRESS'.");
+                return Result.Fail(400, "Repair activity must be in 'TO DO' status to change to 'IN PROGRESS'.");
             }
 
             if ((newStatus == "CANCELLED" || newStatus == "COMPLETED") && string.IsNullOrWhiteSpace(request.Result))
@@ -224,7 +224,7 @@ namespace RepairManagementSystem.Services
                 repairActivity.Result = request.Result!;
                 repairActivity.Status = newStatus;
             }
-            else if (newStatus == "IN_PROGRESS")
+            else if (newStatus == "IN PROGRESS")
             {
                 repairActivity.StartedAt = DateTime.UtcNow;
                 repairActivity.Status = newStatus;

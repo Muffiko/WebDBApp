@@ -6,10 +6,11 @@ import "./styles/RequestDetailsPage.css";
 
 const statusColorMap = {
   OPEN: "blue",
-  IN_PROGRESS: "yellow",
+  "IN PROGRESS": "yellow",
   CLOSED: "gray",
   CANCELLED: "red",
   COMPLETED: "green",
+  "TO DO": "#4ade00"
 };
 
 const formatDate = (isoString) => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./styles/RequestStatusModal.css";
 
-const RequestStatusModal = ({ currentStatus, currentResult, onClose, onSubmit }) => {
+const RequestStatusModal = ({ currentStatus, currentResult, hasActivities, onClose, onSubmit }) => {
     const [result, setResult] = useState(currentResult || "");
 
     const statusOptions = ["COMPLETED", "CANCELLED"].filter(
@@ -9,7 +9,7 @@ const RequestStatusModal = ({ currentStatus, currentResult, onClose, onSubmit })
     );
 
     const [status, setStatus] = useState("");
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(status, result);
@@ -24,11 +24,17 @@ const RequestStatusModal = ({ currentStatus, currentResult, onClose, onSubmit })
                     <h2>Change Status / Result</h2>
                 </div>
 
+                {hasActivities && (
+                    <p className="modal-warning">
+                        Status cannot be changed as long as there are activities.
+                    </p>
+                )}
                 <label>Status:</label>
                 <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     required
+                    disabled={hasActivities}
                 >
                     <option value="" disabled>
                         Choose status
@@ -46,10 +52,10 @@ const RequestStatusModal = ({ currentStatus, currentResult, onClose, onSubmit })
                     onChange={(e) => setResult(e.target.value)}
                     rows={4}
                     required
+                    disabled={hasActivities}
                 />
 
-                <button type="submit">Save</button>
-
+                <button type="submit" disabled={hasActivities}>Save</button>
             </form>
         </div>
     );
