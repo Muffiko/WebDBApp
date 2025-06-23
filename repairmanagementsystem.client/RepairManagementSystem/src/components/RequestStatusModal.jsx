@@ -26,7 +26,7 @@ const RequestStatusModal = ({ currentStatus, currentResult, hasActivities, onClo
 
                 {hasActivities && (
                     <p className="modal-warning">
-                        Status cannot be changed as long as there are activities.
+                        Status cannot be changed as long as there are unfinished activities.
                     </p>
                 )}
                 <label>Status:</label>
