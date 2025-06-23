@@ -223,7 +223,7 @@ namespace RepairManagementSystem
 
             //Add RepairRequests
             var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "OPEN", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
-            var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "OPEN", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
+            var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "IN_PROGRESS", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
             if (trackedManager != null)
             {
                req2.Manager = trackedManager;
