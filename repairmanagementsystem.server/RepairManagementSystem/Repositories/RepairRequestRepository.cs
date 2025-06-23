@@ -90,8 +90,18 @@ namespace RepairManagementSystem.Repositories
                     .ThenInclude(ro => ro.RepairObjectType)
                 .Include(r => r.RepairActivities)
                     .ThenInclude(ra => ra.RepairActivityType)
-                .Where(r => r.ManagerId != null)
-                //.Where(r => r.ManagerId != null && r.Status == "IN_PROGRESS")
+                .Where(r => r.ManagerId != null && r.Status == "IN_PROGRESS")
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<RepairRequest?>?> GetFinishedRepairRequestsAsync()
+        {
+            return await _context.RepairRequests
+                .Include(r => r.RepairObject)
+                    .ThenInclude(ro => ro.RepairObjectType)
+                .Include(r => r.RepairActivities)
+                    .ThenInclude(ra => ra.RepairActivityType)
+                .Where(r => r.Status == "COMPLETED" || r.Status == "CANCELLED")
                 .ToListAsync();
         }
     }

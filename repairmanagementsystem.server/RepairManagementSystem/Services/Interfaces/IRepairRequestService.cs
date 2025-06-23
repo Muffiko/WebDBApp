@@ -18,5 +18,6 @@ namespace RepairManagementSystem.Services.Interfaces
         Task<Result> AssignRepairRequestToManagerAsync(int repairRequestId, RepairRequestAssign request);
         Task<Result> ChangeRepairRequestStatusAsync(int repairRequestId, RepairRequestChangeStatusRequest request);
         Task<Result> UnassignRepairRequestManagerAsync(int repairRequestId);
+        Task<IEnumerable<RepairRequestResponse?>?> GetFinishedRepairRequestsAsync();
     }
 }

@@ -129,5 +129,12 @@ namespace RepairManagementSystem.Controllers
             var result = await _repairRequestService.UnassignRepairRequestManagerAsync(repairRequestId);
             return this.ToApiResponse(result);
         }
+
+        [HttpGet("finished")]
+        public async Task<IActionResult> GetFinishedRepairRequests()
+        {
+            var finishedRequests = await _repairRequestService.GetFinishedRepairRequestsAsync();
+            return Ok(finishedRequests);
+        }
     }
 }
