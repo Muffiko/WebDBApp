@@ -96,8 +96,8 @@ const ManageRequestPage = () => {
 
       await updateRepairActivity(repairActivityId, {
         workerId: newWorkerId,
-        status: newWorkerId ? "IN_PROGRESS" : "OPEN",
-        startedAt: newWorkerId ? changes.startedAt ?? new Date().toISOString() : null,
+        status: "TO_DO",
+        startedAt: null,
         finishedAt: changes.finishedAt,
       });
 

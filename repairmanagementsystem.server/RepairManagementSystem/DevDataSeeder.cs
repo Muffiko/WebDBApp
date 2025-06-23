@@ -221,24 +221,24 @@ namespace RepairManagementSystem
                 trackedManager = await managerRepo.GetManagerByIdAsync(managerEntity.UserId);
             }
 
-            // Add RepairRequests
-            //var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "OPEN", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
-            //var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "OPEN", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
-            //if (trackedManager != null)
-            //{
-            //    req2.Manager = trackedManager;
-            //}
-            //await repairRequestRepo.AddRepairRequestAsync(req1);
-            //await repairRequestRepo.AddRepairRequestAsync(req2);
+            //Add RepairRequests
+            var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "OPEN", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
+            var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "OPEN", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
+            if (trackedManager != null)
+            {
+               req2.Manager = trackedManager;
+            }
+            await repairRequestRepo.AddRepairRequestAsync(req1);
+            await repairRequestRepo.AddRepairRequestAsync(req2);
 
             // Add RepairActivityType
             var activityType = new RepairActivityType { RepairActivityTypeId = "DMG", Name = "Check damages" };
             await repairActivityTypeRepo.AddRepairActivityTypeAsync(activityType);
 
-            //// Add RepairActivities (tasks)
-            //var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "IN_PROGRESS", RepairRequestId = req1.RepairRequestId, Worker = workerEntity1, WorkerId = workerEntity1.UserId };
+            // Add RepairActivities (tasks)
+            var act1 = new RepairActivity { name = "Check damages in motherboard", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "TO_DO", RepairRequestId = req1.RepairRequestId };
             //var act2 = new RepairActivity { name = "Check damages in CPU", RepairActivityTypeId = "DMG", RepairActivityType = activityType, SequenceNumber = 1, Description = "Initial check", Result = "", Status = "IN_PROGRESS", RepairRequestId = req2.RepairRequestId, Worker = workerEntity2, WorkerId = workerEntity2.UserId };
-            //await repairActivityRepo.AddRepairActivityAsync(act1);
+            await repairActivityRepo.AddRepairActivityAsync(act1);
             //await repairActivityRepo.AddRepairActivityAsync(act2);
         }
     }

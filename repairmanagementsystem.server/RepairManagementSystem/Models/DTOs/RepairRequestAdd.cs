@@ -10,7 +10,5 @@ namespace RepairManagementSystem.Models.DTOs
 
         [Required]
         public int RepairObjectId { get; set; }
-
-        public string Status { get; set; } = string.Empty;
     }
 }

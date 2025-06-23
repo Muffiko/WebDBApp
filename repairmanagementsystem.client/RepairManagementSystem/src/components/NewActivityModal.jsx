@@ -52,8 +52,7 @@ const NewActivityModal = ({ onClose, onSubmit, nextSeq }) => {
             sequenceNumber: nextSeq,
             description,
             workerId: workerId,
-            status: workerId ? "IN_PROGRESS" : "OPEN",
-            startedAt: workerId ? new Date().toISOString() : null,
+            status: "TO_DO",
         };
 
         onSubmit(payload);
