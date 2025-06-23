@@ -5,6 +5,6 @@ namespace RepairManagementSystem.Models.DTOs
     public class ChangeUserRoleRequest
     {
         [Required]
-        public string role = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }
