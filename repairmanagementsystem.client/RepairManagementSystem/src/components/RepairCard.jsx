@@ -4,10 +4,11 @@ import "./styles/RepairCard.css";
 
 const statusColors = {
   OPEN: "#4ade80",
-  IN_PROGRESS: "#facc15",
+  "IN PROGRESS": "#facc15",
   CLOSED: "#f87171",
   COMPLETED: "#22c55e",
   CANCELLED: "#f87171",
+  "TO DO": "#4ade00"
 };
 
 const RepairCard = ({ id, name, status, manager, createdAt }) => {

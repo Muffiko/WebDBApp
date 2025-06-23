@@ -13,7 +13,7 @@ import "./styles/ManageRequestPage.css";
 const ManageRequestPage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const { addRepairActivity, updateRepairActivity } = useRepairActivityApi();
+  const { addRepairActivity, updateRepairActivity, updateWorkerRepairActivity } = useRepairActivityApi();
   const { id } = useParams();
   const { getRepairRequestById, changeRepairRequestStatus } = useRepairRequestApi();
   const [requests, setRequests] = useState({});
@@ -35,13 +35,17 @@ const ManageRequestPage = () => {
         sequenceNumber: nextSeq,
         description: formData.description,
         repairRequestId: id,
-        workerId: formData.workerId,
+        //workerId: formData.workerId,
         status: formData.status,
         startedAt: formData.startedAt
       };
 
       const created = await addRepairActivity(payload);
 
+      const r = await getRepairRequestById(id);
+      const newAct = r.repairActivities.find(a =>
+        a.sequenceNumber === nextSeq && a.name === formData.name
+      );
       const newActivity = {
         repairRequestId: created.repairRequestId,
         sequenceNumber: created.sequenceNumber,
@@ -63,6 +67,7 @@ const ManageRequestPage = () => {
       };
 
       if (formData.workerId) {
+        await updateWorkerRepairActivity(newAct.repairActivityId, formData.workerId);
         await updateWorkerAvailability(formData.workerId, false);
       }
 
@@ -77,13 +82,14 @@ const ManageRequestPage = () => {
   const handleUpdateActivity = async (repairActivityId, changes) => {
     try {
       const current = activities.find(a => a.repairActivityId === repairActivityId);
+      const oldWorkerId = current.workerId;
+      const newWorkerId = changes.workerId ?? oldWorkerId;
       const payload = {
         repairActivityTypeId: changes.repairActivityTypeId,
         name: changes.name,
         sequenceNumber: current.sequenceNumber,
         description: changes.description,
         repairRequestId: id,
-        workerId: changes.workerId,
         result: changes.result,
         status: changes.status,
         startedAt: changes.startedAt,
@@ -91,20 +97,16 @@ const ManageRequestPage = () => {
       };
       const updated = await updateRepairActivity(repairActivityId, payload);
 
-      const oldWorkerId = current.workerId;
-      const newWorkerId = changes.workerId ?? oldWorkerId;
+      if (oldWorkerId !== newWorkerId) {
+        if (newWorkerId) {
+          await updateWorkerRepairActivity(repairActivityId, newWorkerId);
+        }
+      }
 
-      await updateRepairActivity(repairActivityId, {
-        workerId: newWorkerId,
-        status: "TO_DO",
-        startedAt: null,
-        finishedAt: changes.finishedAt,
-      });
-
-      if (oldWorkerId && oldWorkerId !== newWorkerId) {
+      if (oldWorkerId) {
         await updateWorkerAvailability(oldWorkerId, true);
       }
-      if (newWorkerId && oldWorkerId !== newWorkerId) {
+      if (newWorkerId) {
         await updateWorkerAvailability(newWorkerId, false);
       }
 
@@ -117,7 +119,7 @@ const ManageRequestPage = () => {
               sequenceNumber: updated.sequenceNumber,
               description: updated.description,
               repairRequestId: updated.repairRequestId,
-              workerId: updated.workerId,
+              workerId: newWorkerId,
               status: updated.status,
               result: updated.result,
               startedAt: updated.startedAt
@@ -157,9 +159,7 @@ const ManageRequestPage = () => {
         customer: customerName,
         manager: managerName,
         created: new Date(r.createdAt).toLocaleDateString(),
-        started: r.startedAt
-          ? new Date(r.startedAt).toLocaleDateString()
-          : "Not started",
+        started: new Date(r.createdAt).toLocaleDateString(),
         finished: r.finishedAt
           ? new Date(r.finishedAt).toLocaleDateString()
           : "Not finished",
@@ -197,10 +197,11 @@ const ManageRequestPage = () => {
 
   const statusColor = {
     OPEN: "blue",
-    IN_PROGRESS: "yellow",
+    "IN PROGRESS": "yellow",
     CLOSED: "gray",
     CANCELLED: "red",
     COMPLETED: "green",
+    "TO DO": "blue",
   }[requests.status];
 
   const isReadOnly = ["COMPLETED", "CANCELLED"].includes(requests.status);
@@ -292,7 +293,7 @@ const ManageRequestPage = () => {
           {showStatusModal && (
             <RequestStatusModal
               currentStatus={requests.status}
-              currentResult={requests.result}
+              hasActivities={activities.length > 0}
               onClose={() => setShowStatusModal(false)}
               onSubmit={(newStatus, newResult) =>
                 handleChangeRequestResult(requests.id, newStatus, newResult)

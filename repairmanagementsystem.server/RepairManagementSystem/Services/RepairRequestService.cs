@@ -120,7 +120,7 @@ namespace RepairManagementSystem.Services
             }
 
             repairRequest.ManagerId = request.ManagerId;
-            repairRequest.Status = "IN_PROGRESS";
+            repairRequest.Status = "IN PROGRESS";
             manager.ActiveRepairsCount++;
             manager.RepairRequests.Add(repairRequest);
             if (await _managerRepository.UpdateManagerAsync(manager))
@@ -135,7 +135,7 @@ namespace RepairManagementSystem.Services
 
         public async Task<Result> ChangeRepairRequestStatusAsync(int repairRequestId, RepairRequestChangeStatusRequest request)
         {
-            var allowedStatuses = new[] { "OPEN", "IN_PROGRESS", "CANCELLED", "COMPLETED" };
+            var allowedStatuses = new[] { "OPEN", "IN PROGRESS", "CANCELLED", "COMPLETED" };
             string newStatus = request.NewStatus?.Trim().ToUpperInvariant() ?? string.Empty;
 
             var repairRequest = await _repairRequestRepository.GetRepairRequestByIdAsync(repairRequestId);
@@ -168,9 +168,9 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(400, "Cannot revert to a previous status.");
             }
 
-            if (currentStatus == "OPEN" && newStatus != "IN_PROGRESS")
+            if (currentStatus == "OPEN" && newStatus != "IN PROGRESS")
             {
-                return Result.Fail(400, "Can only change status from 'OPEN' to 'IN_PROGRESS'.");
+                return Result.Fail(400, "Can only change status from 'OPEN' to 'IN PROGRESS'.");
             }
 
             if (newStatus == "CANCELLED" || newStatus == "COMPLETED")
@@ -179,7 +179,7 @@ namespace RepairManagementSystem.Services
                 repairRequest.Result = request.Result!;
                 repairRequest.Status = newStatus;
             }
-            else if (newStatus == "IN_PROGRESS")
+            else if (newStatus == "IN PROGRESS")
             {
                 repairRequest.StartedAt = DateTime.UtcNow;
                 repairRequest.Status = newStatus;

@@ -90,11 +90,11 @@ const OpenRequestsPage = () => {
           onCreate={() => setShowModal(true)}
           createLabel={null}
           selects={[
-            {
-              key: "status",
-              label: "Status:",
-              options: ["OPEN", "IN_PROGRESS", "CLOSED", "CANCELLED", "COMPLETED"]
-            },
+            // {
+            //   key: "status",
+            //   label: "Status:",
+            //   options: ["OPEN", "IN PROGRESS", "CLOSED", "CANCELLED", "COMPLETED", "TO DO"],
+            // },
             {
               key: "manager",
               label: "Manager:",

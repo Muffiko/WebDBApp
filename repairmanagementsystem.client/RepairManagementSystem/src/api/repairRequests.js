@@ -77,6 +77,17 @@ export const useRepairRequestApi = () => {
     return await response.json();
   };
 
+  const getFinishedRepairRequests = async () => {
+    const response = await authFetch("/RepairRequests/finished", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+    return await response.json();
+  };
+
   const updateManagerRepairRequest = async (repairRequestId, managerId) => {
     const response = await authFetch(`/RepairRequests/${repairRequestId}/assign`, {
       method: "PATCH",
@@ -114,6 +125,7 @@ export const useRepairRequestApi = () => {
     getUnassignedRepairRequests,
     getActiveRepairRequests,
     updateManagerRepairRequest,
-    changeRepairRequestStatus
+    changeRepairRequestStatus,
+    getFinishedRepairRequests
   };
 };

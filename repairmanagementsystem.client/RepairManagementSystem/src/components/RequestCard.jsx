@@ -4,10 +4,11 @@ import "./styles/RequestCard.css";
 
 const statusColors = {
   OPEN: "blue",
-  IN_PROGRESS: "yellow",
+  "IN PROGRESS": "yellow",
   CLOSED: "gray",
   COMPLETED: "green",
   CANCELLED: "red",
+  "TO DO": "#4ade00"
 };
 
 const RequestCard = ({ id, name, status, managerId, dateCreated }) => {

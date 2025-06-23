@@ -4,7 +4,7 @@ import "./styles/TaskCard.css";
 
 const statusColors = {
     OPEN: "blue",
-    IN_PROGRESS: "yellow",
+    "IN PROGRESS": "yellow",
     CLOSED: "gray"
 };
 

@@ -44,9 +44,24 @@ export const useRepairActivityApi = () => {
     return await response.json();
   };
 
+  const updateWorkerRepairActivity = async (repairActivityId, workerId) => {
+    const response = await authFetch(`/RepairActivities/${repairActivityId}/assign`, {
+      method: "PATCH",
+      body: JSON.stringify({ workerId }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  };
+
   return {
     getRepairActivities,
     addRepairActivity,
-    updateRepairActivity
+    updateRepairActivity,
+    updateWorkerRepairActivity
   };
 }
