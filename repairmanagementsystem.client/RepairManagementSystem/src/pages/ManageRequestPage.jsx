@@ -293,7 +293,7 @@ const ManageRequestPage = () => {
           {showStatusModal && (
             <RequestStatusModal
               currentStatus={requests.status}
-              hasActivities={activities.length > 0}
+              hasActivities={activities.some(a => ["TO DO", "IN PROGRESS"].includes(a.status?.toUpperCase()))}
               onClose={() => setShowStatusModal(false)}
               onSubmit={(newStatus, newResult) =>
                 handleChangeRequestResult(requests.id, newStatus, newResult)
