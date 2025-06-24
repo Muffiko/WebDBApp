@@ -5,11 +5,11 @@ import { useRepairRequestApi } from "../api/repairRequests";
 import "./styles/RequestDetailsPage.css";
 
 const statusColorMap = {
-  OPEN: "blue",
-  "IN PROGRESS": "yellow",
-  CLOSED: "gray",
-  CANCELLED: "red",
-  COMPLETED: "green",
+  OPEN: "#3b82f6",
+  "IN PROGRESS": "#facc15",
+  CLOSED: "#6b7280",
+  COMPLETED: "#10b981",
+  CANCELLED: "#ef4444",
   "TO DO": "#4ade00"
 };
 
@@ -64,7 +64,7 @@ const RequestDetailsPage = () => {
         <h1 className="repair-title">Repair</h1>
 
         <div className="repair-card">
-          <div className={`repair-status-label status--${statusColor}`}>
+          <div className={`repair-status-label`} style={{ backgroundColor: statusColor }}>
             {data.status}
           </div>
 

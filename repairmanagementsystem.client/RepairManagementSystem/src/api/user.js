@@ -71,10 +71,27 @@ export const useUserApi = () => {
     return await res.json();
   };
 
+  const updateUserRole = async (userId, role) => {
+    const res = await authFetch(`/Users/${userId}/role`, {
+      method: "PATCH",
+      body: JSON.stringify({ role })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw err;
+    }
+
+    return await res.json();
+  };
+
+
+
   return {
     changePassword,
     updateUserInfo,
     updateUserAddress,
+    updateUserRole,
     getUserProfile,
     getUsers
   };

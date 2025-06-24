@@ -7,8 +7,9 @@ const RepairsList = ({ repairs }) => (
     <div className="repairs-cards">
       {repairs.map((r, index) => (
         <RepairCard
-          key={r.id}
+          key={index + 1}
           id={index + 1}
+          requestId={r.repairRequestId}
           name={r.name}
           status={r.status}
           manager={r.manager}

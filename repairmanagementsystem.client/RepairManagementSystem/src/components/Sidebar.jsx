@@ -28,6 +28,11 @@ const Sidebar = () => {
           { path: "/tasks", label: "My Tasks", icon: "🟦" },
           { path: "/profile", label: "Profile", icon: "👤" }
         ];
+      case "Admin":
+        return [
+          { path: "/admin", label: "Admin panel", icon: "🔧 " },
+          { path: "/profile", label: "Profile", icon: "👤" }
+        ];
       default:
         // default to "User"
         return [

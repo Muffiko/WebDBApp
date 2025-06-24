@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./styles/NewRequestCard.css";
 import { useManagerApi } from "../api/manager";
 
-const NewRequestCard = ({ repairRequestId, name, repairObjectType, createdAt, description, managerId: initialManagerId, onAssign }) => {
+const NewRequestCard = ({ id, repairRequestId, name, repairObjectType, createdAt, description, managerId: initialManagerId, onAssign }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [managerId, setManagerId] = useState(initialManagerId);
     const selectRef = useRef();
@@ -45,7 +45,7 @@ const NewRequestCard = ({ repairRequestId, name, repairObjectType, createdAt, de
             className={`new-request-card ${isExpanded ? "expanded" : ""}`}
             onClick={() => setIsExpanded((v) => !v)}
         >
-            <div className="new-request-badge"> {repairRequestId} </div>
+            <div className="new-request-badge"> {id} </div>
             <span className="new-expand-icon">
                 {isExpanded ? "▾" : "▸"}
             </span>
