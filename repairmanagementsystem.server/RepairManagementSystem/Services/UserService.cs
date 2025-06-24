@@ -230,7 +230,7 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(404, "User with given id does not exist.");
             }
 
-            if (!TryParseRole(request.role, out var newRole))
+            if (!TryParseRole(request.Role, out var newRole))
             {
                 return Result.Fail(403, "Provided role does not exist");
             }
