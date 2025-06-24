@@ -11,12 +11,12 @@ const statusColors = {
   "TO DO": "#4ade00"
 };
 
-const RepairCard = ({ id, name, status, manager, createdAt }) => {
+const RepairCard = ({ id, requestId, name, status, manager, createdAt }) => {
   const navigate = useNavigate();
   const key = status.toUpperCase();
   const badgeColor = statusColors[key];
   const handleClick = () => {
-    navigate(`/manage-request/${id}`);
+    navigate(`/manage-request/${requestId}`);
   };
 
   return (

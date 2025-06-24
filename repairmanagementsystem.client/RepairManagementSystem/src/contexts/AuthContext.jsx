@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       const newToken = await refreshAccessToken();
       if (newToken) {
         login(newToken);
+        console.log(newToken)
       }
     } catch (err) {
       console.warn("🛑 Session restoration failed.");

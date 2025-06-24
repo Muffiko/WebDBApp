@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy-loaded pages
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -15,10 +16,11 @@ const ChangeAddressPage = lazy(() => import("./pages/ChangeAddressPage"));
 const MyRepairObjectsPage = lazy(() => import("./pages/MyRepairObjectsPage"));
 const NewRequestsPage = lazy(() => import("./pages/NewRequestsPage"));
 const OpenRequestsPage = lazy(() => import("./pages/OpenRequestsPage"));
+const FinishedRequestsPage = lazy(() => import("./pages/FinishedRequestsPage"));
 const WorkersPage = lazy(() => import("./pages/WorkersPage"));
 const TasksPage = lazy(() => import("./pages/TasksPage"));
 const ManageRequestPage = lazy(() => import("./pages/ManageRequestPage"));
-const FinishedRequestsPage = lazy(() => import("./pages/FinishedRequestsPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
 
 function App() {
   const { isAuthenticated, isAuthReady } = useAuth();
@@ -28,27 +30,109 @@ function App() {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
         {isAuthenticated && (
           <>
-            <Route path="/requests" element={<RequestsPage />} />
-            <Route path="/requests/:id" element={<RequestDetailsPage />} />
+            {/* Customer */}
+            <Route
+              path="/requests"
+              element={
+                <ProtectedRoute allowedRoles={["Customer"]}>
+                  <RequestsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/requests/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Customer"]}>
+                  <RequestDetailsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/objects"
+              element={
+                <ProtectedRoute allowedRoles={["Customer"]}>
+                  <MyRepairObjectsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Manager */}
+            <Route
+              path="/new-requests"
+              element={
+                <ProtectedRoute allowedRoles={["Manager"]}>
+                  <NewRequestsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/open-requests"
+              element={
+                <ProtectedRoute allowedRoles={["Manager"]}>
+                  <OpenRequestsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/finished-requests"
+              element={
+                <ProtectedRoute allowedRoles={["Manager"]}>
+                  <FinishedRequestsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/workers"
+              element={
+                <ProtectedRoute allowedRoles={["Manager"]}>
+                  <WorkersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manage-request/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Manager"]}>
+                  <ManageRequestPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Worker */}
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute allowedRoles={["Worker"]}>
+                  <TasksPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["Admin"]}>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Common: Profile */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/change-password" element={<ChangePasswordPage />} />
             <Route path="/profile/edit-info" element={<EditPersonalInfoPage />} />
             <Route path="/profile/change-address" element={<ChangeAddressPage />} />
-            <Route path="/objects" element={<MyRepairObjectsPage />} />
-            <Route path="/new-requests" element={<NewRequestsPage />} />
-            <Route path="/open-requests" element={<OpenRequestsPage />} />
-            <Route path="/workers" element={<WorkersPage />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/manage-request/:id" element={<ManageRequestPage />} />
-            <Route path="/finished-requests" element={<FinishedRequestsPage />} />
           </>
         )}
 
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

@@ -1,0 +1,151 @@
+.admin-container {
+  display: flex;
+  background-color: #0d0d12;
+  min-height: 100vh;
+  color: white;
+}
+
+.admin-page {
+  flex: 1;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.admin-panels {
+  display: flex;
+  justify-content: center;  
+  align-items: flex-start;   
+  gap: 2rem;              
+  flex-wrap: wrap;        
+  margin-top: 2rem;
+  max-height: calc(100vh - 325px); 
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.admin-panel {
+  background-color: #2a2a33;
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+  width: 600px;
+  height: 600px; /* sztywna wysokość */
+  overflow-y: auto; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+
+.add-type-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.add-type-form input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background-color: #333;
+  color: white;
+  border: none;
+}
+
+.add-type-form button {
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.types-list,
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.types-list li,
+.user-item {
+  background-color: #2a2a33;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-item select {
+  background-color: #3a3a42;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  color: white;
+}
+
+.admin-error {
+  color: #f87171;
+  margin-top: 1rem;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem;
+  background-color: #1f1f28;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+.stat-item {
+  font-size: 1rem;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.admin-user-search {
+  margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  background-color: #2a2a30;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}

@@ -5,9 +5,10 @@ import "./styles/NewRequestsList.css";
 const NewRequestsList = ({ newRequests, onAssign }) => (
     <div className="request-wrapper">
         <div className="request-cards">
-            {newRequests.map((r) => (
+            {newRequests.map((r, index) => (
                 <NewRequestCard
                     key={r.repairRequestId}
+                    id={index + 1}
                     repairRequestId={r.repairRequestId}
                     name={r.name}
                     repairObjectType={r.type}
