@@ -223,9 +223,39 @@ namespace RepairManagementSystem.Services
                 repairActivity.FinishedAt = DateTime.UtcNow;
                 repairActivity.Result = request.Result!;
                 repairActivity.Status = newStatus;
+                if (repairActivity.WorkerId.HasValue)
+                {
+                    var worker = await _workerRepository.GetWorkerByIdAsync(repairActivity.WorkerId.Value);
+                    if (worker != null)
+                    {
+                        int inProgressCount = worker.RepairActivities?.Count(a => a != null && a.Status != null && a.Status.ToUpperInvariant() == "IN PROGRESS") ?? 0;
+                        if (currentStatus == "IN PROGRESS") inProgressCount--;
+                        if (inProgressCount <= 3)
+                        {
+                            worker.IsAvailable = true;
+                            await _workerRepository.UpdateWorkerAsync(worker);
+                        }
+                    }
+                }
             }
             else if (newStatus == "IN PROGRESS")
             {
+                if (repairActivity.WorkerId.HasValue)
+                {
+                    var worker = await _workerRepository.GetWorkerByIdAsync(repairActivity.WorkerId.Value);
+                    if (worker != null)
+                    {
+                        int inProgressCount = worker.RepairActivities?.Count(a => a != null && a.Status != null && a.Status.ToUpperInvariant() == "IN PROGRESS") ?? 0;
+                        if (inProgressCount >= 3)
+                        {
+                            return Result.Fail(400, "Worker already has 3 activities in progress and cannot start another one.");
+                        }
+                        if (inProgressCount == 2) {
+                            worker.IsAvailable = false;
+                            await _workerRepository.UpdateWorkerAsync(worker);
+                        }
+                    }
+                }
                 repairActivity.StartedAt = DateTime.UtcNow;
                 repairActivity.Status = newStatus;
             }
@@ -278,7 +308,9 @@ namespace RepairManagementSystem.Services
                 }
             }
 
+
             activity.WorkerId = request.WorkerId;
+            worker.RepairActivities ??= [];
             worker.RepairActivities.Add(activity);
             await _workerRepository.UpdateWorkerAsync(worker);
             var success = await _repairActivityRepository.UpdateRepairActivityAsync(activity);

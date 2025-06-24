@@ -106,12 +106,12 @@ namespace RepairManagementSystem.Controllers
             return this.ToApiResponse(result);
         }
 
-        [HttpPatch("workers/{workerId:int}/availability")]
-        public async Task<IActionResult> UpdateWorkerAvailability(int workerId, [FromBody] UpdateWorkerAvailabilityRequest request)
-        {
-            var result = await _userService.UpdateWorkerAvailabilityAsync(workerId, request);
-            return this.ToApiResponse(result);
-        }
+        // [HttpPatch("workers/{workerId:int}/availability")]
+        // public async Task<IActionResult> UpdateWorkerAvailability(int workerId, [FromBody] UpdateWorkerAvailabilityRequest request)
+        // {
+        //     var result = await _userService.UpdateWorkerAvailabilityAsync(workerId, request);
+        //     return this.ToApiResponse(result);
+        // }
 
         [HttpGet("workers")]
         public async Task<IActionResult> GetWorkers()

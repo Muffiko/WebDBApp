@@ -68,7 +68,7 @@ const ManageRequestPage = () => {
 
       if (formData.workerId) {
         await updateWorkerRepairActivity(newAct.repairActivityId, formData.workerId);
-        await updateWorkerAvailability(formData.workerId, false);
+        // await updateWorkerAvailability(formData.workerId, false);
       }
 
       setActivities(prev => [...prev, newActivity]);
@@ -104,10 +104,10 @@ const ManageRequestPage = () => {
       }
 
       if (oldWorkerId) {
-        await updateWorkerAvailability(oldWorkerId, true);
+        // await updateWorkerAvailability(oldWorkerId, true);
       }
       if (newWorkerId) {
-        await updateWorkerAvailability(newWorkerId, false);
+        // await updateWorkerAvailability(newWorkerId, false);
       }
 
       setActivities(prev =>
