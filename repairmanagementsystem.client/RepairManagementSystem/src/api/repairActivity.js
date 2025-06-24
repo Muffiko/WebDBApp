@@ -15,6 +15,19 @@ export const useRepairActivityApi = () => {
 
     return await response.json();
   };
+  
+  const getMyRepairActivities = async () => {
+    const response = await authFetch("/RepairActivities/workers/my", {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  };
 
    const addRepairActivity = async (data) => {
     const response = await authFetch("/RepairActivities", {
@@ -60,6 +73,7 @@ export const useRepairActivityApi = () => {
 
   return {
     getRepairActivities,
+    getMyRepairActivities,
     addRepairActivity,
     updateRepairActivity,
     updateWorkerRepairActivity

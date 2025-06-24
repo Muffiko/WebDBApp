@@ -1,0 +1,85 @@
+﻿.task-detail-container {
+    display: flex;
+}
+
+.task-detail-page {
+    flex: 1;
+    padding: 2rem;
+    color: white;
+}
+
+.request-card {
+    background: #2e2e2e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.status-badge.gray { background: #aaa; color: black; }
+.status-badge.yellow { background: #f1c40f; color: black; }
+.status-badge.red { background: #e74c3c; }
+.status-badge.green { background: #2ecc71; }
+
+.task-sections {
+    margin-top: 2rem;
+}
+
+.task-card {
+    display: flex;
+    align-items: center;
+    background: #444;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.seq {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: #777;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 1rem;
+}
+
+.task-body {
+    flex-grow: 1;
+}
+
+.status-button {
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: center;
+}
+
+.status-button.gray { background: #aaa; color: black; }
+.status-button.yellow { background: #f1c40f; color: black; }
+.status-button.red { background: #e74c3c; }
+.status-button.green { background: #2ecc71; }
+
+.task-result {
+    margin-top: 1.5rem;
+    background: #333;
+    padding: 1rem;
+    border-radius: 8px;
+}

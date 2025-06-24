@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyTaskDetailPage from "./pages/MyTaskDetailPage";
+
 
 // Lazy-loaded pages
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -113,6 +115,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+              <Route path="/tasks/my/:number" element={<MyTaskDetailPage />} />
 
             {/* Admin */}
             <Route
