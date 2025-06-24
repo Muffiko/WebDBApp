@@ -3,25 +3,37 @@ import { useNavigate } from "react-router-dom";
 import "./styles/TaskCard.css";
 
 const statusColors = {
-    OPEN: "blue",
-    "IN PROGRESS": "yellow",
-    CLOSED: "gray"
+    open: "blue",
+    "in progress": "yellow",
+    closed: "gray"
 };
 
-const TaskCard = ({ id, name, status, dateCreated }) => {
+const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    if (dateStr === "0001-01-01T00:00:00" || isNaN(date)) return "Brak daty";
+    return date.toLocaleString("pl-PL", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+};
+
+const TaskCard = ({ id, name, status, createdAt, index }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/requests/${id}`);
+        navigate(`/tasks/my/${index}`);
     };
 
     return (
         <div className="task-card" onClick={handleClick}>
             <div className="task-name">{name}</div>
-            <div className={`task-status ${statusColors[status.toLowerCase()]}`}>
+            <div className={`task-status ${statusColors[status.toLowerCase()] || ""}`}>
                 {status}
             </div>
-            <div className="task-date">{dateCreated}</div>
+            <div className="task-date">{formatDate(createdAt)}</div>
         </div>
     );
 };
