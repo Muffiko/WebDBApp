@@ -36,7 +36,7 @@ namespace RepairManagementSystem.Models
         public string Status { get; set; } = string.Empty;
 
         [Required]
-        [JsonIgnore]
+
         public int RepairRequestId { get; set; }
 
         [ForeignKey(nameof(RepairRequestId))]
