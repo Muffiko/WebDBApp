@@ -29,7 +29,7 @@ const TasksPage = () => {
         };
 
         fetchMyTasks();
-    }, [getMyRepairActivities]);
+    }, []);
 
     const filtered = tasks.filter((task) =>
         task.name.toLowerCase().includes(filters.name.toLowerCase()) &&
@@ -51,7 +51,7 @@ const TasksPage = () => {
                         {
                             key: "status",
                             label: "Status:",
-                            options: ["OPEN", "IN PROGRESS", "CANCELLED", "COMPLETED"]
+                            options: ["TO DO", "IN PROGRESS", "CANCELLED", "COMPLETED"]
                         },
                     ]}
                 />
@@ -64,7 +64,7 @@ const TasksPage = () => {
                         <TaskCard
                             key={task.repairActivityId}
                             {...task}
-                            index={index + 1} // This controls /tasks/my/{index}
+                            index={index + 1}
                         />
                     ))}
                 </div>

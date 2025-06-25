@@ -115,8 +115,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-              <Route path="/tasks/my/:number" element={<MyTaskDetailPage />} />
-
+            <Route
+              path="/tasks/my/:number"
+              element={
+                <ProtectedRoute allowedRoles={["Worker"]}>
+                  <MyTaskDetailPage />
+                </ProtectedRoute>
+              }
+            />
             {/* Admin */}
             <Route
               path="/admin"
