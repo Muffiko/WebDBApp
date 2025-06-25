@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
 import "./styles/TaskCardDetail.css";
 import { formatDate, formatStatus, statusColors } from "../utils";
-import { useRepairActivityApi } from "../api/RepairActivity";
+import { useRepairActivityApi } from "../api/repairActivity";
 
 const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
     const { changeRepairActivityStatus } = useRepairActivityApi();
