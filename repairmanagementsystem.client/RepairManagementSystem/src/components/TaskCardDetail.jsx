@@ -1,0 +1,160 @@
+﻿import React, { useState } from "react";
+import "./styles/TaskCardDetail.css";
+import { formatDate, formatStatus, statusColors } from "../utils";
+import { useRepairActivityApi } from "../api/RepairActivity";
+
+const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
+    const { changeRepairActivityStatus } = useRepairActivityApi();
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [newStatus, setNewStatus] = useState(task.status || "");
+    const [result, setResult] = useState("");
+
+    const taskStatus = String(task.status).toLowerCase();
+    const taskStatusClass = statusColors[taskStatus] || "gray";
+
+    const openModal = (e) => {
+        e.stopPropagation();
+        setNewStatus(task.status || "");
+        setResult("");
+        setModalOpen(true);
+    };
+
+    const closeModal = () => setModalOpen(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!newStatus) {
+            alert("Please select a status");
+            return;
+        }
+
+        const needsResult = ["CANCELLED", "COMPLETED"].includes(newStatus);
+        if (needsResult && !result.trim()) {
+            alert("Result is required when status is CANCELLED or COMPLETED");
+            return;
+        }
+
+        try {
+            await changeRepairActivityStatus(task.repairActivityId, {
+                status: newStatus,
+                result,
+            });
+            setModalOpen(false);
+            alert("Status changed successfully!");
+
+            if (onChangeStatus) {
+                await onChangeStatus(task.repairActivityId, { status: newStatus, result });
+            }
+        } catch (error) {
+            alert("Error updating task status: " + error.message);
+        }
+    };
+
+    return (
+        <div className="task-card-detail" onClick={onToggle}>
+            <div className={`status-edge ${taskStatusClass}`} />
+
+            <div className="task-card-content">
+                {/* LEFT */}
+                <div className="task-left">
+                    <p className="task-name">{task.name}</p>
+                    {expanded && (
+                        <p className="task-type">
+                            <strong>Activity type:</strong> {task.repairActivityType?.name || "N/A"}
+                        </p>
+                    )}
+                </div>
+
+                {/* RIGHT */}
+                <div className="task-right">
+                    {expanded && (
+                        <>
+                            <p><strong>Created at:</strong> {formatDate(task.createdAt)}</p>
+                            <p><strong>Result:</strong> {task.result || "No result yet"}</p>
+                        </>
+                    )}
+
+                    <span className={`task-status-detail ${taskStatusClass}`}>
+                        {formatStatus(task.status)}
+                    </span>
+
+                    {expanded && (
+                        <button className="change-status-button" onClick={openModal}>
+                            Change Status
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* DESCRIPTION */}
+            {expanded && (
+                <div className="task-description-full">
+                    <p><strong>Description:</strong></p>
+                    <p>{task.description || "No description provided."}</p>
+                </div>
+            )}
+
+            {/* MODAL */}
+            {modalOpen && (
+                <div className="result-popup-overlay" onClick={closeModal} role="dialog" aria-modal="true">
+                    <div className="result-popup" onClick={(e) => e.stopPropagation()} tabIndex={-1}>
+                        <h3>Change Status</h3>
+                        <form onSubmit={handleSubmit}>
+                            <label>
+                                New Status:
+                                <select
+                                    value={newStatus}
+                                    onChange={(e) => setNewStatus(e.target.value)}
+                                    required
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        marginTop: "5px",
+                                        backgroundColor: "#2e2e2e",
+                                        color: "#eee",
+                                        border: "1px solid #444",
+                                        borderRadius: "8px",
+                                        padding: "8px"
+                                    }}
+                                >
+                                    <option value="">Select status</option>
+                                    <option value="TO DO">TO DO</option>
+                                    <option value="IN PROGRESS">IN PROGRESS</option>
+                                    <option value="COMPLETED">COMPLETED</option>
+                                    <option value="CANCELLED">CANCELLED</option>
+                                </select>
+                            </label>
+
+                            {(newStatus === "CANCELLED" || newStatus === "COMPLETED") && (
+                                <label style={{ display: "block", marginTop: "10px" }}>
+                                    <textarea
+                                        value={result}
+                                        onChange={(e) => setResult(e.target.value)}
+                                        required
+                                    />
+                                </label>
+                            )}
+
+                            <div className="popup-buttons">
+                                <button
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="change-status-button cancel"
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="change-status-button">
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default TaskCardDetail;

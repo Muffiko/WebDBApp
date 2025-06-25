@@ -31,7 +31,7 @@
 }
 
 .task-status.blue {
-    background-color: #3b82f6;
+    background-color: #2563eb;
     color: #fff;
 }
 
@@ -41,7 +41,22 @@
 }
 
 .task-status.gray {
-    background-color: #6b7280;
+    background-color: #ffff;
     color: #fff;
 }
+.task-status.green {
+    background-color: #6b7280;
+    color: green;
+}
+.task-status.red {
+    background-color: #6b7280;
+    color: red;
+}
+.task-status {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
   
