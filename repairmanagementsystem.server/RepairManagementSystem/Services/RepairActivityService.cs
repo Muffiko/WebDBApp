@@ -250,7 +250,8 @@ namespace RepairManagementSystem.Services
                         {
                             return Result.Fail(400, "Worker already has 3 activities in progress and cannot start another one.");
                         }
-                        if (inProgressCount == 2) {
+                        if (inProgressCount == 2)
+                        {
                             worker.IsAvailable = false;
                             await _workerRepository.UpdateWorkerAsync(worker);
                         }
@@ -258,6 +259,10 @@ namespace RepairManagementSystem.Services
                 }
                 repairActivity.StartedAt = DateTime.UtcNow;
                 repairActivity.Status = newStatus;
+            }
+            else if (newStatus == "TO DO" && currentStatus != "TO DO")
+            {
+                return Result.Fail(400, "Cannot change status of a repair activity to 'TO DO'.");
             }
 
             var success = await _repairActivityRepository.UpdateRepairActivityAsync(repairActivity);
