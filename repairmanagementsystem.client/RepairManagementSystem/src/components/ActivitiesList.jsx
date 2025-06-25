@@ -34,6 +34,7 @@ const ActivitiesList = ({ activities, onAdd, onUpdate, isReadOnly }) => {
             finishedAt={act.finishedAt}
             onUpdate={onUpdate}
             readOnly={isReadOnly}
+            result={act.result}
           />
         ))}
       </div>

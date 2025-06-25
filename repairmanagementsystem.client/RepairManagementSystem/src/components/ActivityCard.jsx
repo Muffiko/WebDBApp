@@ -13,7 +13,7 @@ const statusColors = {
   CLOSED: "#f87171",
 };
 
-const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate, readOnly = false }) => {
+const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: initialActivityType, description: initialDescription, workerId: initialWorkerId, status, createdAt, startedAt, finishedAt, onUpdate, readOnly = false , result}) => {
   const badgeColor = statusColors[status];
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState(initialName);
@@ -262,6 +262,14 @@ const ActivityCard = ({ id, sequenceNumber, name: initialName, activityType: ini
                 )}
                 <p className="field-value">{description}</p>
               </>
+            )}
+          </div>
+          <div className="activity-container">
+            {result !== "" && (
+              <div className="activity-description">
+                <span className="field-label">Activity result:</span>
+                <p className="field-value">{result}</p>
+              </div>
             )}
           </div>
         </div>
