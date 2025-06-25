@@ -222,7 +222,7 @@ namespace RepairManagementSystem
             }
 
             //Add RepairRequests
-            var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "OPEN", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
+            var req1 = new RepairRequest { Description = "Komputer nie działa", Result = "", Status = "COMPLETED", RepairObjectId = obj1.RepairObjectId, RepairObject = obj1, ManagerId = null, IsPaid = false };
             var req2 = new RepairRequest { Description = "Wiertarka nie wierci", Result = "", Status = "IN PROGRESS", RepairObjectId = obj2.RepairObjectId, RepairObject = obj2, ManagerId = trackedManager?.UserId, IsPaid = false };
             if (trackedManager != null)
             {
@@ -243,8 +243,11 @@ namespace RepairManagementSystem
                     SequenceNumber = 1,
                     Description = "Initial check",
                     Result = "",
-                    Status = "TO DO",
-                    RepairRequestId = req1.RepairRequestId };
+                    Status = "COMPLETED",
+                    RepairRequestId = req1.RepairRequestId,
+                    Worker = workerEntity2,
+                    WorkerId = workerEntity2.UserId };
+
             var act2 = new RepairActivity
                 { name = "Check damages in CPU",
                     RepairActivityTypeId = "DMG",
@@ -256,8 +259,76 @@ namespace RepairManagementSystem
                     RepairRequestId = req2.RepairRequestId,
                     Worker = workerEntity2,
                     WorkerId = workerEntity2.UserId };
+
             await repairActivityRepo.AddRepairActivityAsync(act1);
             await repairActivityRepo.AddRepairActivityAsync(act2);
+
+            var req3 = new RepairRequest
+            {
+                Description = "Laptop overheating",
+                Result = "",
+                Status = "IN PROGRESS",
+                RepairObjectId = obj1.RepairObjectId,
+                RepairObject = obj1,
+                ManagerId = trackedManager?.UserId,
+                Manager = trackedManager,
+                IsPaid = false
+            };
+            await repairRequestRepo.AddRepairRequestAsync(req3);
+
+            // Get saved request with ID populated
+            var savedReq3 = await repairRequestRepo.GetRepairRequestByIdAsync(req3.RepairRequestId);
+
+            // Now add 3 activities
+            var act3_1 = new RepairActivity
+            {
+                name = "Clean fan",
+                RepairActivityTypeId = "DMG",
+                RepairActivityType = activityType,
+                SequenceNumber = 1,
+                Description = "Remove dust from the fan",
+                Result = "",
+                Status = "COMPLETED",
+                RepairRequestId = savedReq3.RepairRequestId,
+                Worker = workerEntity2,
+                WorkerId = workerEntity2.UserId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var act3_2 = new RepairActivity
+            {
+                name = "Apply new thermal paste",
+                RepairActivityTypeId = "DMG",
+                RepairActivityType = activityType,
+                SequenceNumber = 2,
+                Description = "Improve cooling efficiency",
+                Result = "",
+                Status = "CANCELLED",
+                RepairRequestId = savedReq3.RepairRequestId,
+                Worker = workerEntity2,
+                WorkerId = workerEntity2.UserId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var act3_3 = new RepairActivity
+            {
+                name = "Test CPU temperature",
+                RepairActivityTypeId = "DMG",
+                RepairActivityType = activityType,
+                SequenceNumber = 3,
+                Description = "Ensure problem is fixed",
+                Result = "",
+                Status = "TO DO",
+                RepairRequestId = savedReq3.RepairRequestId,
+                Worker = workerEntity2,
+                WorkerId = workerEntity2.UserId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await repairActivityRepo.AddRepairActivityAsync(act3_1);
+            await repairActivityRepo.AddRepairActivityAsync(act3_2);
+            await repairActivityRepo.AddRepairActivityAsync(act3_3);
+
 
         }
     }

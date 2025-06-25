@@ -18,6 +18,8 @@ namespace RepairManagementSystem.Models.DTOs
 
         public int WorkerId { get; set; }
 
+        public int RepairRequestId { get; set; }
+
         public DateTime CreatedAt { get; set; }
     }
 }

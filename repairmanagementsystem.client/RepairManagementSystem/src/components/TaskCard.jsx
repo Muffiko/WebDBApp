@@ -1,11 +1,13 @@
 ﻿import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/TaskCard.css";
+import StatusBadge from "./StatusBadge";
 
 const statusColors = {
-    open: "blue",
+    "to do": "gray",
     "in progress": "yellow",
-    closed: "gray"
+    "closed": "red",
+    "completed": "green"
 };
 
 const formatDate = (dateStr) => {
@@ -30,9 +32,7 @@ const TaskCard = ({ id, name, status, createdAt, index }) => {
     return (
         <div className="task-card" onClick={handleClick}>
             <div className="task-name">{name}</div>
-            <div className={`task-status ${statusColors[status.toLowerCase()] || ""}`}>
-                {status}
-            </div>
+            <StatusBadge status={status} />
             <div className="task-date">{formatDate(createdAt)}</div>
         </div>
     );

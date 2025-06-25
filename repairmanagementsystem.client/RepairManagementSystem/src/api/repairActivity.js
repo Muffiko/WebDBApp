@@ -15,7 +15,7 @@ export const useRepairActivityApi = () => {
 
     return await response.json();
   };
-  
+
   const getMyRepairActivities = async () => {
     const response = await authFetch("/RepairActivities/workers/my", {
       method: "GET",
@@ -29,7 +29,20 @@ export const useRepairActivityApi = () => {
     return await response.json();
   };
 
-   const addRepairActivity = async (data) => {
+  const getRepairActivityById = async (id) => {
+    const response = await authFetch(`/RepairActivities/${id}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw err;
+    }
+
+    return await response.json();
+  };
+
+  const addRepairActivity = async (data) => {
     const response = await authFetch("/RepairActivities", {
       method: "POST",
       body: JSON.stringify(data),
@@ -48,12 +61,12 @@ export const useRepairActivityApi = () => {
       method: "PATCH",
       body: JSON.stringify(data),
     });
-  
+
     if (!response.ok) {
       const errData = await response.json();
       throw errData;
     }
-  
+
     return await response.json();
   };
 
@@ -71,11 +84,34 @@ export const useRepairActivityApi = () => {
     return await response.json();
   };
 
+  const changeRepairActivityStatus = async (id, statusData, token) => {
+    const response = await authFetch(`/RepairActivities/${id}/change-status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Upewnij się, że token jest przekazany poprawnie
+      },
+      body: JSON.stringify(statusData),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error status:", response.status, "Error body:", errorText);
+      throw new Error(errorText || `Request failed with status ${response.status}`);
+    }
+
+    // No JSON expected on success
+    return;
+  };
+
+  
   return {
     getRepairActivities,
     getMyRepairActivities,
+    getRepairActivityById,
     addRepairActivity,
     updateRepairActivity,
-    updateWorkerRepairActivity
+    updateWorkerRepairActivity,
+    changeRepairActivityStatus, 
   };
-}
+};
