@@ -44,7 +44,6 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
             return;
         }
 
-        // Close the modal
         setModalOpen(false);
         setErrorMessage("");
         setSuccessMessage("");
@@ -62,11 +61,9 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
                 });
             }
 
-            // Refresh the page
             window.location.reload();
         } catch (error) {
             console.error("Error updating task status:", error);
-            // Optional: Show an error notification or log
         }
     };
 
