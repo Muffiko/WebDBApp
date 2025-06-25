@@ -9,6 +9,8 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [newStatus, setNewStatus] = useState(task.status || "");
     const [result, setResult] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const taskStatus = String(task.status).toLowerCase();
     const taskStatusClass = statusColors[taskStatus] || "gray";
@@ -17,40 +19,57 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
         e.stopPropagation();
         setNewStatus(task.status || "");
         setResult("");
+        setErrorMessage("");
+        setSuccessMessage("");
         setModalOpen(true);
     };
 
-    const closeModal = () => setModalOpen(false);
+    const closeModal = () => {
+        setModalOpen(false);
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!newStatus) {
-            alert("Please select a status");
+            setErrorMessage("Please select a status");
             return;
         }
 
         const needsResult = ["CANCELLED", "COMPLETED"].includes(newStatus);
         if (needsResult && !result.trim()) {
-            alert("Result is required when status is CANCELLED or COMPLETED");
+            setErrorMessage("Result is required when status is CANCELLED or COMPLETED");
             return;
         }
+
+        // Close the modal
+        setModalOpen(false);
+        setErrorMessage("");
+        setSuccessMessage("");
 
         try {
             await changeRepairActivityStatus(task.repairActivityId, {
                 status: newStatus,
                 result,
             });
-            setModalOpen(false);
-            alert("Status changed successfully!");
 
             if (onChangeStatus) {
-                await onChangeStatus(task.repairActivityId, { status: newStatus, result });
+                await onChangeStatus(task.repairActivityId, {
+                    status: newStatus,
+                    result,
+                });
             }
+
+            // Refresh the page
+            window.location.reload();
         } catch (error) {
-            alert("Error updating task status: " + error.message);
+            console.error("Error updating task status:", error);
+            // Optional: Show an error notification or log
         }
     };
+
 
     return (
         <div className="task-card-detail" onClick={onToggle}>
@@ -136,6 +155,9 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
                                     />
                                 </label>
                             )}
+
+                            {errorMessage && <p className="error-message">{errorMessage}</p>}
+                            {successMessage && <p className="success-message">{successMessage}</p>}
 
                             <div className="popup-buttons">
                                 <button
