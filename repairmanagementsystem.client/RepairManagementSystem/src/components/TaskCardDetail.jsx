@@ -16,13 +16,7 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
     const taskStatusClass = statusColors[taskStatus] || "gray";
 
     useEffect(() => {
-        // Disable background scroll when modal is open
-        if (modalOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
-
+        document.body.style.overflow = modalOpen ? "hidden" : "auto";
         return () => {
             document.body.style.overflow = "auto";
         };
@@ -81,68 +75,61 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
     };
 
     return (
-        <div
-            className="task-card-detail"
-            onClick={(e) => {
-                if (!modalOpen) onToggle?.(e);
-            }}
-        >
-            <div className={`status-edge ${taskStatusClass}`} />
+        <>
+            <div
+                className="task-card-detail"
+                onClick={(e) => {
+                    if (!modalOpen) onToggle?.(e);
+                }}
+            >
+                <div className={`status-edge ${taskStatusClass}`} />
 
-            <div className="task-card-content">
-                {/* LEFT */}
-                <div className="task-left">
-                    <p className="task-name">{task.name}</p>
-                    {expanded && (
-                        <p className="task-type">
-                            <strong>Activity type:</strong>{" "}
-                            {task.repairActivityType?.name || "N/A"}
+                <div className="task-card-content">
+                    <div className="task-left">
+                        <p className="task-name">{task.name}</p>
+                        {expanded && (
+                            <p className="task-type">
+                                <strong>Activity type:</strong>{" "}
+                                {task.repairActivityType?.name || "N/A"}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="task-right">
+                        {expanded && (
+                            <>
+                                <p>
+                                    <strong>Created at:</strong> {formatDate(task.createdAt)}
+                                </p>
+                                <p>
+                                    <strong>Result:</strong> {task.result || "No result yet"}
+                                </p>
+                            </>
+                        )}
+
+                        <span className={`task-status-detail ${taskStatusClass}`}>
+              {formatStatus(task.status)}
+            </span>
+
+                        {expanded && (
+                            <button className="change-status-button" onClick={openModal}>
+                                Change Status
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {expanded && (
+                    <div className="task-description-full">
+                        <p>
+                            <strong>Description:</strong>
                         </p>
-                    )}
-                </div>
-
-                {/* RIGHT */}
-                <div className="task-right">
-                    {expanded && (
-                        <>
-                            <p>
-                                <strong>Created at:</strong>{" "}
-                                {formatDate(task.createdAt)}
-                            </p>
-                            <p>
-                                <strong>Result:</strong>{" "}
-                                {task.result || "No result yet"}
-                            </p>
-                        </>
-                    )}
-
-                    <span className={`task-status-detail ${taskStatusClass}`}>
-                        {formatStatus(task.status)}
-                    </span>
-
-                    {expanded && (
-                        <button
-                            className="change-status-button"
-                            onClick={openModal}
-                            m
-                        >
-                            Change Status
-                        </button>
-                    )}
-                </div>
+                        <p>{task.description || "No description provided."}</p>
+                    </div>
+                )}
             </div>
 
-            {/* DESCRIPTION */}
-            {expanded && (
-                <div className="task-description-full">
-                    <p>
-                        <strong>Description:</strong>
-                    </p>
-                    <p>{task.description || "No description provided."}</p>
-                </div>
-            )}
-
-            {/* MODAL */}
+            {/* Modal only rendered when modalOpen is true */}
             {modalOpen && (
                 <div
                     className="result-popup-overlay"
@@ -155,73 +142,41 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
                         onClick={(e) => e.stopPropagation()}
                         tabIndex={-1}
                     >
-                        <h3 style={{ marginTop: "0px" }}>Change Statuss</h3>
+                        <h3 className="modal-title">Change Status</h3>
                         <form onSubmit={handleSubmit}>
                             <label>
                                 <select
                                     value={newStatus}
-                                    onChange={(e) =>
-                                        setNewStatus(e.target.value)
-                                    }
+                                    onChange={(e) => setNewStatus(e.target.value)}
                                     required
-                                    style={{
-                                        width: "100%",
-                                        backgroundColor: "#2e2e2e",
-                                        color: "#eee",
-                                        border: "1px solid #444",
-                                        borderRadius: "8px",
-                                        padding: "8px",
-                                    }}
+                                    className="status-select"
                                 >
                                     <option value="">Select status</option>
                                     <option value="TO DO">TO DO</option>
-                                    <option value="IN PROGRESS">
-                                        IN PROGRESS
-                                    </option>
+                                    <option value="IN PROGRESS">IN PROGRESS</option>
                                     <option value="COMPLETED">COMPLETED</option>
                                     <option value="CANCELLED">CANCELLED</option>
                                 </select>
                             </label>
 
-                            {(newStatus === "CANCELLED" ||
-                                newStatus === "COMPLETED") && (
-                                <label
-                                    style={{
-                                        display: "block",
-                                        marginTop: "10px",
-                                    }}
-                                >
-                                    <textarea
-                                        value={result}
-                                        onChange={(e) =>
-                                            setResult(e.target.value)
-                                          }
-                                        required
-                                    />
+                            {(newStatus === "CANCELLED" || newStatus === "COMPLETED") && (
+                                <label className="result-textarea-label">
+                  <textarea
+                      value={result}
+                      onChange={(e) => setResult(e.target.value)}
+                      required
+                      className="result-textarea"
+                  />
                                 </label>
                             )}
 
-                            {errorMessage && (
-                                <p className="error-message">{errorMessage}</p>
-                            )}
+                            {errorMessage && <p className="error-message">{errorMessage}</p>}
                             {successMessage && (
-                                <p className="success-message">
-                                    {successMessage}
-                                </p>
+                                <p className="success-message">{successMessage}</p>
                             )}
 
                             <div className="popup-buttons">
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="change-status-button cancel"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="change-status-button"
-                                >
+                                <button type="submit" className="change-status-button">
                                     Save
                                 </button>
                             </div>
@@ -229,7 +184,7 @@ const TaskCardDetail = ({ task, expanded, onToggle, onChangeStatus }) => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
