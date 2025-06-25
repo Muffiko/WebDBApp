@@ -175,6 +175,7 @@ const ManageRequestPage = () => {
         activityType: a.repairActivityType.repairActivityTypeId,
         description: a.description || "",
         workerId: a.workerId,
+        result: a.result || "",
         status: a.status
           .toUpperCase(),
         createdAt: new Date(a.createdAt).toLocaleDateString("en-GB"),
