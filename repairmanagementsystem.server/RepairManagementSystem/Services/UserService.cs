@@ -55,14 +55,14 @@ namespace RepairManagementSystem.Services
             {
                 return Result.Fail(409, "A user with this email already exists.");
             }
-
+            user.Role = "Customer"; 
             var result = await _userRepository.AddUserAsync(user);
             if (!result)
             {
                 return Result.Fail(500, "Failed to add user to the database.");
             }
 
-            var customer = new Customer { UserId = user.UserId, PaymentMethod = string.Empty, User = user };
+            var customer = new Customer { UserId = user.UserId, PaymentMethod = string.Empty, User = user};
             if (await _customerRepository.AddCustomerAsync(customer))
             {
                 return Result.Ok("User registered successfully.");

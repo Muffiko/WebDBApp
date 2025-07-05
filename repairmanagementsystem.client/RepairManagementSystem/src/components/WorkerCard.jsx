@@ -10,7 +10,7 @@ const statusColors = {
 
 const activityStatusColors = {
     OPEN: "#4ade80",
-    CANCELED: "#f87171",
+    CANCELLED: "#f87171",
     "IN PROGRESS": "#fbbf24",
     "TO DO": "#4ade00",
     COMPLETED: "#22c55e",

@@ -92,24 +92,24 @@ builder.Services.AddSwaggerGen(options =>
     );
 });
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//{
-//    // Computer Name (default local database Name)
-//    String machineName = Environment.MachineName;
-//    options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
-//});
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseInMemoryDatabase("DONTUSETHIS");
+    // Computer Name (default local database Name)
+    string machineName = Environment.MachineName;
+   options.UseSqlServer($"Server={machineName};Database=RepairManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
+
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+// {
+//     options.UseInMemoryDatabase("DONTUSETHIS");
+// });
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await RepairManagementSystem.DevDataSeeder.SeedAdminUserAsync(services);
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     await RepairManagementSystem.DevDataSeeder.SeedAdminUserAsync(services);
+// }
 
 //using (var scope = app.Services.CreateScope())
 //{
