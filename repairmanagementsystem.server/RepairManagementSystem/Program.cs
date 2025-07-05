@@ -111,20 +111,20 @@ var app = builder.Build();
 //     await RepairManagementSystem.DevDataSeeder.SeedAdminUserAsync(services);
 // }
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    try
-//    {
-//        var context = services.GetRequiredService<ApplicationDbContext>();
-//        context.Database.Migrate();
-//    }
-//    catch (Exception ex)
-//    {
-//        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "Error while database data migration!");
-//    }
-//}
+using (var scope = app.Services.CreateScope())
+{
+   var services = scope.ServiceProvider;
+   try
+   {
+       var context = services.GetRequiredService<ApplicationDbContext>();
+       context.Database.Migrate();
+   }
+   catch (Exception ex)
+   {
+       var logger = services.GetRequiredService<ILogger<Program>>();
+       logger.LogError(ex, "Error while database data migration!");
+   }
+}
 
 app.UseCors("AllowFrontend");
 if (app.Environment.IsDevelopment())

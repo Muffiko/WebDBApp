@@ -35,7 +35,7 @@ const ManageRequestPage = () => {
         sequenceNumber: nextSeq,
         description: formData.description,
         repairRequestId: id,
-        //workerId: formData.workerId,
+        workerId: formData.workerId,
         status: formData.status,
         startedAt: formData.startedAt
       };

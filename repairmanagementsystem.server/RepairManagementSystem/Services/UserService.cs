@@ -252,7 +252,7 @@ namespace RepairManagementSystem.Services
                 await addAction(this, user.UserId, user);
             }
 
-            user.Role = newRole.ToString();
+            user.Role = char.ToUpper(newRole.ToString()[0]) + newRole.ToString()[1..].ToLower();
 
             return await _userRepository.UpdateUserAsync(user)
                 ? Result.Ok("User role updated successfully.")
