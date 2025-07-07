@@ -35,7 +35,7 @@ const ManageRequestPage = () => {
         sequenceNumber: nextSeq,
         description: formData.description,
         repairRequestId: id,
-        //workerId: formData.workerId,
+        workerId: formData.workerId,
         status: formData.status,
         startedAt: formData.startedAt
       };
@@ -66,10 +66,10 @@ const ManageRequestPage = () => {
           : "",
       };
 
-      if (formData.workerId) {
-        await updateWorkerRepairActivity(newAct.repairActivityId, formData.workerId);
-        // await updateWorkerAvailability(formData.workerId, false);
-      }
+      // if (formData.workerId) {
+      //   await updateWorkerRepairActivity(newAct.repairActivityId, formData.workerId);
+      //   // await updateWorkerAvailability(formData.workerId, false);
+      // }
 
       setActivities(prev => [...prev, newActivity]);
       await loadRepairRequests();
@@ -103,12 +103,12 @@ const ManageRequestPage = () => {
         }
       }
 
-      if (oldWorkerId) {
-        // await updateWorkerAvailability(oldWorkerId, true);
-      }
-      if (newWorkerId) {
-        // await updateWorkerAvailability(newWorkerId, false);
-      }
+      // if (oldWorkerId) {
+      //   // await updateWorkerAvailability(oldWorkerId, true);
+      // }
+      // if (newWorkerId) {
+      //   // await updateWorkerAvailability(newWorkerId, false);
+      // }
 
       setActivities(prev =>
         prev.map(a =>

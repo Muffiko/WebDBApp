@@ -51,7 +51,9 @@ namespace RepairManagementSystem.Services
                 return Result.Fail(404, "Repair request not found.");
             }
             repairActivity.RepairRequest = repairRequest;
+            
             repairActivity.WorkerId = repairActivityRequest.WorkerId;
+
             repairActivity.RepairActivityTypeId = repairActivityRequest.RepairActivityTypeId;
             var repairActivityType = await _repairActivityTypeRepository.GetRepairActivityTypeByIdAsync(repairActivityRequest.RepairActivityTypeId);
             if (repairActivityType == null)

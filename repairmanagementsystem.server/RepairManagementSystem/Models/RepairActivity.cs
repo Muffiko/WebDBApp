@@ -32,7 +32,7 @@ namespace RepairManagementSystem.Models
         public string Result { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(6)]
+        [MaxLength(16)]
         public string Status { get; set; } = string.Empty;
 
         [Required]
